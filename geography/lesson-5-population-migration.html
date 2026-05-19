@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Population & Migration — Geography Lesson 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --earth: #1A1208;
+    --soil: #2A1E0A;
+    --terracotta: #C1440E;
+    --ochre: #D4900A;
+    --sage: #4A7C59;
+    --sky-blue: #6BAED6;
+    --sand: #E8D5A3;
+    --text: #D8C8A8;
+    --muted: #7A6A4A;
+    --light: #F5ECD8;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--earth);color:var(--text);font-family:'Outfit',sans-serif;font-weight:300;line-height:1.8;overflow-x:hidden;}
+  .progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--terracotta);width:0%;transition:width 0.1s;z-index:999;}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:6rem 8vw;position:relative;overflow:hidden;}
+  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,#3A1A00 0%,#1A1208 60%,#0A0804 100%);}
+
+  /* Dots representing population */
+  .dot-field{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+  .dot{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--ochre);opacity:0;animation:dotAppear ease-in-out infinite;}
+  @keyframes dotAppear{0%{opacity:0;}20%{opacity:0.6;}80%{opacity:0.3;}100%{opacity:0;}}
+
+  .hero-eyebrow{font-family:'Fira Code',monospace;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--terracotta);margin-bottom:1.5rem;animation:fadeUp 0.6s ease both;position:relative;z-index:1;}
+  .hero h1{font-family:'Crimson Pro',serif;font-size:clamp(3.5rem,10vw,8rem);line-height:1.0;color:var(--light);font-weight:600;animation:fadeUp 0.6s 0.1s ease both;position:relative;z-index:1;}
+  .hero h1 em{display:block;font-style:italic;color:var(--ochre);font-size:0.65em;}
+  .hero-sub{max-width:520px;margin-top:2rem;font-size:1.05rem;color:var(--muted);animation:fadeUp 0.6s 0.2s ease both;position:relative;z-index:1;}
+  .hero-sub strong{color:var(--light);font-weight:600;}
+  .start-btn{display:inline-block;margin-top:3rem;padding:1rem 2.5rem;background:var(--terracotta);color:white;font-family:'Fira Code',monospace;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:background 0.2s,transform 0.2s;animation:fadeUp 0.6s 0.3s ease both;position:relative;z-index:1;}
+  .start-btn:hover{background:#D4550F;transform:translateY(-2px);}
+  .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'Fira Code',monospace;font-size:0.62rem;letter-spacing:0.2em;color:#2A1E0A;text-transform:uppercase;animation:bounce 2s ease infinite;z-index:1;}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+  section{padding:5rem 8vw;border-top:1px solid #2A1E0A;position:relative;}
+  .section-number{font-family:'Crimson Pro',serif;font-weight:600;font-size:7rem;color:#1E1008;position:absolute;top:2rem;right:6vw;line-height:1;pointer-events:none;user-select:none;}
+  .section-label{font-family:'Fira Code',monospace;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--terracotta);margin-bottom:1rem;}
+  h2{font-family:'Crimson Pro',serif;font-weight:600;font-size:clamp(2rem,4.5vw,3.2rem);color:var(--light);margin-bottom:1.5rem;line-height:1.2;}
+  h3{font-weight:600;font-size:1.05rem;color:var(--ochre);margin:2rem 0 0.75rem;}
+  p{color:var(--muted);max-width:680px;margin-bottom:1rem;}
+  p strong{color:var(--light);font-weight:600;}
+
+  .big-idea{background:linear-gradient(135deg,#2A1200,#1A1208);border-left:4px solid var(--terracotta);padding:2rem 2.5rem;margin:2rem 0;max-width:700px;}
+  .big-idea p{font-family:'Crimson Pro',serif;font-style:italic;font-size:1.2rem;color:var(--light);max-width:none;}
+
+  .nz-callout{background:linear-gradient(135deg,#001A08,#000D04);border:1px solid var(--sage);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .nz-callout::before{content:'🇳🇿 NZ CONNECTION';font-family:'Fira Code',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--sage);display:block;margin-bottom:0.75rem;}
+  .nz-callout p{color:#A5C8A8;max-width:none;}
+  .nz-callout strong{color:#E0F0E0;}
+
+  .challenge{background:#150E04;border:1px solid var(--terracotta);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .challenge::before{content:'⚡ CHALLENGE';font-family:'Fira Code',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--terracotta);display:block;margin-bottom:0.75rem;}
+  .challenge p{max-width:none;}
+  .challenge ol,.challenge ul{padding-left:1.5rem;color:var(--muted);margin-top:0.75rem;}
+  .challenge li{margin-bottom:0.5rem;}
+  .challenge li strong{color:var(--light);}
+
+  .think-deeper{background:linear-gradient(135deg,#1A1400,#1A1208);border-left:4px solid var(--ochre);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .think-deeper::before{content:'🔭 THINK DEEPER';font-family:'Fira Code',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--ochre);display:block;margin-bottom:0.75rem;}
+  .think-deeper p{max-width:none;color:#C0A840;}
+  .think-deeper strong{color:var(--light);}
+
+  /* Push-pull diagram */
+  .pushpull{display:grid;grid-template-columns:1fr auto 1fr;gap:1.5rem;align-items:center;margin:2rem 0;max-width:700px;}
+  .pp-card{padding:1.5rem;border:1px solid;}
+  .pp-card.push{background:#1A0800;border-color:var(--terracotta);}
+  .pp-card.pull{background:#001A08;border-color:var(--sage);}
+  .pp-label{font-family:'Fira Code',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;}
+  .pp-card.push .pp-label{color:var(--terracotta);}
+  .pp-card.pull .pp-label{color:var(--sage);}
+  .pp-card ul{list-style:none;font-size:0.875rem;color:var(--muted);}
+  .pp-card li{padding:0.3rem 0;border-bottom:1px solid #2A1E0A;}
+  .pp-card li:last-child{border:none;}
+  .pp-arrow{font-size:2rem;color:var(--ochre);text-align:center;}
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:2rem 0;max-width:900px;}
+  .vocab-card{background:#150E04;border:1px solid #2A1E0A;padding:1.25rem 1.5rem;cursor:pointer;transition:border-color 0.2s;position:relative;}
+  .vocab-card:hover{border-color:var(--terracotta);}
+  .vocab-term{font-family:'Fira Code',monospace;font-size:0.82rem;color:var(--ochre);margin-bottom:0.5rem;}
+  .vocab-def{font-size:0.875rem;color:var(--muted);display:none;}
+  .vocab-card.open .vocab-def{display:block;}
+  .vocab-card.open{border-color:var(--ochre);}
+  .vocab-hint{font-family:'Fira Code',monospace;font-size:0.58rem;letter-spacing:0.1em;color:#2A1E0A;position:absolute;bottom:0.6rem;right:0.75rem;}
+
+  .quiz-wrap{max-width:700px;margin:2rem 0;}
+  .quiz-q{font-size:1rem;color:var(--light);font-weight:600;margin-bottom:1rem;}
+  .quiz-options{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem;}
+  .quiz-opt{background:#150E04;border:1px solid #2A1E0A;color:var(--muted);padding:0.85rem 1.25rem;text-align:left;cursor:pointer;font-family:'Outfit',sans-serif;font-size:0.9rem;transition:all 0.15s;}
+  .quiz-opt:hover{border-color:var(--terracotta);color:var(--light);}
+  .quiz-opt.correct{border-color:var(--sage);color:#A5C8A8;background:#001500;}
+  .quiz-opt.wrong{border-color:#8B1A00;color:#FF9A9A;background:#1A0500;}
+  .quiz-feedback{font-size:0.875rem;padding:1rem 1.25rem;margin-top:0.5rem;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.good{background:#001500;border-left:3px solid var(--sage);color:#A5C8A8;}
+  .quiz-feedback.bad{background:#1A0500;border-left:3px solid #8B1A00;color:#FF9A9A;}
+
+  .resource-list{list-style:none;max-width:700px;margin:1.5rem 0;}
+  .resource-list li{border-bottom:1px solid #2A1E0A;padding:1rem 0;display:flex;gap:1rem;align-items:flex-start;}
+  .resource-type{font-family:'Fira Code',monospace;font-size:0.62rem;letter-spacing:0.1em;background:#150E04;color:var(--muted);padding:0.25rem 0.5rem;flex-shrink:0;margin-top:0.1rem;}
+  .resource-list a{color:var(--terracotta);text-decoration:none;font-size:0.95rem;}
+  .resource-list a:hover{color:var(--ochre);}
+  .resource-list p{margin:0.25rem 0 0;font-size:0.8rem;max-width:none;}
+
+  footer{padding:4rem 8vw;border-top:1px solid #2A1E0A;text-align:center;}
+  footer p{font-family:'Fira Code',monospace;font-size:0.68rem;letter-spacing:0.12em;color:#2A1E0A;max-width:none;text-align:center;}
+  .divider{height:1px;background:linear-gradient(to right,transparent,var(--terracotta),transparent);opacity:0.2;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="dot-field" id="dotField"></div>
+  <div class="hero-eyebrow">Geography · Lesson 05 of 06</div>
+  <h1>Population<br><em>&amp; Migration</em></h1>
+  <p class="hero-sub">Eight billion people. Every one of them living somewhere for a reason. <strong>Population geography asks why people are where they are — and what happens when they move.</strong> New Zealand's entire story is a story of migration.</p>
+  <a href="#bigidea" class="start-btn">Start Learning ↓</a>
+  <div class="scroll-hint">↓ Scroll to explore</div>
+</div>
+
+<div class="divider"></div>
+
+<section id="bigidea">
+  <span class="section-number">01</span>
+  <div class="section-label">The Big Idea</div>
+  <h2>People Are Not Spread Evenly — and That's Not an Accident</h2>
+
+  <div class="big-idea reveal">
+    <p>"Population distribution — who lives where — is a direct result of geography, history, and economics. Nobody chose to be born where they were. And when people move, they're almost always responding to forces bigger than themselves."</p>
+  </div>
+
+  <p class="reveal">About 90% of the world's population lives in just 10% of its land area. People cluster near rivers, coasts, fertile plains, and mild climates. Vast areas — the Sahara, the Siberian interior, Antarctica — are almost empty. This isn't random. It's the result of thousands of years of people going where survival was possible and prosperity was likely.</p>
+
+  <p class="reveal">Migration — the movement of people — is as old as humanity. Humans walked out of Africa 70,000 years ago and eventually populated every continent. Today, migration continues for the same fundamental reasons: to escape danger, to find opportunity, to join family, to survive.</p>
+
+  <h3>Push and Pull Factors</h3>
+  <p>Geographers explain migration using push-pull theory — the factors that push people away from where they are, and the factors that pull them toward somewhere new.</p>
+
+  <div class="pushpull reveal">
+    <div class="pp-card push">
+      <div class="pp-label">🔴 Push Factors (Drive People Away)</div>
+      <ul>
+        <li>War &amp; conflict</li>
+        <li>Poverty &amp; unemployment</li>
+        <li>Natural disasters</li>
+        <li>Famine &amp; drought</li>
+        <li>Political persecution</li>
+        <li>Climate change</li>
+      </ul>
+    </div>
+    <div class="pp-arrow">→</div>
+    <div class="pp-card pull">
+      <div class="pp-label">🟢 Pull Factors (Attract People)</div>
+      <ul>
+        <li>Economic opportunity</li>
+        <li>Safety &amp; stability</li>
+        <li>Family connections</li>
+        <li>Better healthcare/education</li>
+        <li>Political freedom</li>
+        <li>Climate &amp; lifestyle</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand's entire population story is migration. <strong>Māori arrived from Polynesia around 1250–1300 CE</strong> — the last major landmass on Earth to be settled by humans, navigating thousands of kilometres of open ocean using stars, currents, and swells. Then came British colonisation from the 1840s. Then waves of Chinese migrants during the gold rush, Irish famine survivors, Scottish settlers in Otago, Dalmatian gumdiggers in Northland. Post-WWII, Polynesian migration brought Samoan, Tongan, and Cook Island communities. Recent decades have brought large Asian and South Asian populations. <strong>Walk down any Wellington street and you're walking through layers of migration geography.</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">Key Vocabulary</div>
+  <h2>Know the Words, Own the Subject</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Population Density</div>
+      <div class="vocab-def">The number of people per square kilometre. Bangladesh has ~1,100 people/km². Australia has ~3 people/km². New Zealand has ~18 people/km² — relatively sparse, with most people clustered in a few cities. Density shapes everything: services, infrastructure, housing costs, culture.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Refugee</div>
+      <div class="vocab-def">A person who has been forced to leave their country due to war, persecution, or disaster. Legally distinct from a migrant (who chooses to move). Under international law, countries are obligated not to return refugees to places where they face serious harm.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Demographic Transition</div>
+      <div class="vocab-def">The historical shift from high birth rates + high death rates (pre-industrial) to low birth rates + low death rates (developed countries). Most wealthy countries are now in "Stage 4" — ageing populations, low growth. Some are in "Stage 5" — shrinking populations (Japan, Germany).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Diaspora</div>
+      <div class="vocab-def">A population scattered across many countries from a common origin. The Māori diaspora (NZ Māori living in Australia) now numbers over 200,000. The Pacific diaspora in Auckland. The Indian diaspora globally. Diasporas maintain cultural connections across geography.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Brain Drain</div>
+      <div class="vocab-def">When educated, skilled workers emigrate from a country, taking their skills and tax base elsewhere. NZ has a significant "brain drain" to Australia — attracted by higher wages. But NZ also benefits from brain gain from other countries. Net migration shapes national economies.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Climate Refugee</div>
+      <div class="vocab-def">People displaced by climate change effects — sea level rise, drought, extreme weather. The Pacific Islands face existential threats: Tuvalu and Kiribati may be uninhabitable within decades. NZ has a special obligation here as a Pacific neighbour and significant greenhouse gas emitter.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">Watch</div>
+  <h2>Your Documentary Briefing</h2>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Life+in+a+Day+2020+full+documentary+YouTube" target="_blank">Life in a Day 2020 (YouTube, free, ~1hr 30 mins)</a>
+        <p>Footage submitted by ordinary people from 192 countries, all filmed on the same day. Watch the first 45 minutes. You'll see instantly how geography, culture, and population interact. How does where you're born shape who you become?</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">SHORTER</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Human+migration+geography+documentary" target="_blank">Search: "Human migration geography documentary" YouTube</a>
+        <p>Several solid 20-40 minute options available. Try National Geographic or DW Documentary results.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">NZ SPECIFIC</span>
+      <div>
+        <a href="https://natlib.govt.nz/schools/topics/5bf1ecb012575740df2ef355/immigration-to-aotearoa-new-zealand" target="_blank">National Library — Immigration to Aotearoa</a>
+        <p>Primary sources, images, and articles on NZ's migration history. Includes the Dawn Raids, Chinese exclusion, Pacific migration, and recent patterns.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="challenge reveal">
+    <p>While watching, note:</p>
+    <ol>
+      <li><strong>What does where you live determine about your daily life?</strong> (Think about what's available, safe, possible)</li>
+      <li><strong>Pick one person you see. What push or pull factors might have shaped their location?</strong></li>
+      <li><strong>What surprised you about how different — or similar — people's lives are?</strong></li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">Test Yourself</div>
+  <h2>Five Questions. Read Carefully.</h2>
+
+  <div class="quiz-wrap">
+    <div class="quiz-q">1. What is the difference between a refugee and an economic migrant?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Refugees travel further; economic migrants stay closer to home</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">Refugees are forced to leave by danger or persecution; economic migrants choose to move for opportunity</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Economic migrants have more legal rights in their destination country</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The terms mean the same thing — "refugee" is just more formal</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. The distinction matters legally and morally. Refugees are protected under international law because they cannot safely return home. Economic migrants choose to move and generally have less legal protection if they're deported. The distinction shapes how countries respond to different groups of people arriving at their borders.</div>
+    <div class="quiz-feedback bad" id="q1-bad">The key distinction is choice vs compulsion. A refugee has no safe option to stay — they're fleeing war, persecution, or disaster. An economic migrant makes a choice to move seeking better opportunities. This distinction determines legal rights and obligations under international law.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. Māori were the last people to settle a major landmass. Why did they reach New Zealand last?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">New Zealand is very close to Australia and was deliberately avoided by other Pacific peoples</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Early humans could not build boats capable of ocean crossings before 1200 CE</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">New Zealand is geographically extremely remote — it was the last habitable place reachable by the progressive spread of human settlement across the Pacific</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">New Zealand had hostile wildlife that prevented earlier settlement</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Correct. Humans spread outward from Africa and Asia over tens of thousands of years. The Pacific Islands were settled progressively — closer ones first, then further ones as navigation skills improved. New Zealand, at the southern tip of the Pacific, was simply the last major habitable landmass that could be reached. Polynesian navigators were extraordinarily skilled, using stars, ocean swells, and bird patterns to navigate thousands of kilometres.</div>
+    <div class="quiz-feedback bad" id="q2-bad">It's purely geographic distance and sequence. Humans spread across the Pacific progressively — settling closer islands first over thousands of years, developing navigation skills as they went. New Zealand is at the far southern end of the Pacific, and Polynesian navigators only reached it around 1250–1300 CE — the end of a 70,000-year human migration story from Africa.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What is "brain drain" and why might it be a problem for New Zealand?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">When students don't study hard enough and the country loses educational investment</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">When skilled, educated people emigrate — taking their talents, tax contributions, and economic value to another country</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">When immigration brings workers who take jobs from local educated workers</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">When foreign students study in NZ and then return home without contributing to the economy</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Yes. New Zealand has a persistent brain drain to Australia — where wages are higher, particularly in medicine, engineering, and technology. NZ invests in educating these people, then loses their tax contributions and skills to Australia. NZ compensates partly through "brain gain" — attracting skilled migrants from other countries — but the net effect is complex.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Brain drain is when a country's educated and skilled workers emigrate, taking their earning potential and tax contributions elsewhere. For NZ, Australia is the primary destination — higher wages attract NZ-trained doctors, engineers, and IT workers. The government effectively subsidises their education, then loses the return on that investment.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Why might Pacific Island nations face becoming "climate refugees" in the coming decades?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Pacific Islands are being affected by increasing volcanic eruptions linked to climate change</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Changing ocean currents are reducing fish stocks, removing the islands' only food source</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">Rising sea levels and increased storm intensity threaten to make low-lying islands uninhabitable or completely submerged</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Higher temperatures make the islands too hot for human habitation during summer months</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Correct. Nations like Tuvalu, Kiribati, and the Marshall Islands average only 2 metres above sea level. Sea levels are rising, storm surges are intensifying, and saltwater is already contaminating freshwater supplies and agricultural land. Some communities have already begun relocating. New Zealand has negotiated a specific arrangement with Tuvalu allowing its citizens to migrate here as sea levels rise.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Many Pacific Island nations sit only 1–3 metres above sea level. As glaciers melt and ocean water thermally expands, sea levels are rising. Storm surges already flood previously safe areas. Freshwater is being contaminated by saltwater intrusion. For some communities, permanent relocation is not a distant possibility — it's already underway.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. What is a diaspora — and why does it matter geographically?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">A geographic term for the study of population movement patterns</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">A group of people who share the same religion, regardless of where they live</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">A population scattered across many countries from a common homeland — maintaining cultural, economic, and emotional ties across distance</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">An international agreement allowing citizens of one country to live in another</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Correct. Diasporas are geographically fascinating because they challenge the idea that culture is tied to place. The Samoan diaspora in South Auckland is larger than the population of Samoa itself. These communities send remittances (money) home, shape politics in both countries, and maintain language and culture far from their origin. Geography and identity become complicated and rich.</div>
+    <div class="quiz-feedback bad" id="q5-bad">A diaspora is a population that has dispersed from a homeland but maintains shared identity, culture, and connection across that dispersal. The Pacific diaspora in Auckland, the Indian diaspora globally, the Jewish diaspora across centuries — all maintain cultural and economic ties across huge geographic distances. It shows that community doesn't require geographic proximity.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">Go Deeper</div>
+  <h2>For the Curious</h2>
+
+  <div class="think-deeper reveal">
+    <p><strong>The Dawn Raids.</strong> In the 1970s, New Zealand police conducted raids on Pacific Island communities — arriving before dawn to check whether people were overstaying their visas. The raids were widely condemned as racist: European overstayers were rarely targeted, while Pacific people were. In 2021, the NZ Government officially apologised for the Dawn Raids. Read about them at the National Library Schools collection — it's an important part of NZ's migration history that connects human geography to politics and race.</p>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand has made a historic commitment to Tuvalu. Under the <strong>PACER Plus framework</strong> and a 2023 bilateral agreement, Tuvalu citizens have been offered a pathway to migrate to New Zealand as their islands become uninhabitable due to sea level rise. NZ is the first country to formally offer this to climate refugees. This is an extraordinary moment in migration geography — where climate science, international law, and human geography intersect directly. Search: <strong>"New Zealand Tuvalu climate migration agreement."</strong></p>
+  </div>
+
+  <div class="challenge reveal">
+    <p><strong>Research Challenge — Your Own Family's Migration Story</strong></p>
+    <ol>
+      <li>Ask someone in your family: <strong>where did your grandparents or great-grandparents come from?</strong> When did they come to New Zealand, and why?</li>
+      <li>Map the migration on a rough sketch — origin country, route if known, destination in NZ.</li>
+      <li>Identify the <strong>push and pull factors</strong> that drove that migration. Were they economic? Political? Family-based? Forced?</li>
+      <li>Write three sentences connecting your family's migration to the push-pull theory you learned in this lesson.</li>
+    </ol>
+  </div>
+
+  <div class="think-deeper reveal">
+    <p><strong>A question to sit with:</strong> New Zealand has one of the world's most generous immigration systems relative to its size. But immigration is also politically controversial — debates about housing, wages, cultural change, and national identity recur every election cycle. <strong>If you were designing NZ's immigration policy, what would you prioritise — economic need, family connection, humanitarian obligation, or cultural fit? And who gets to decide what "cultural fit" means?</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">06</span>
+  <div class="section-label">Resources</div>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://natlib.govt.nz/schools/topics/5bf1ecb012575740df2ef355/immigration-to-aotearoa-new-zealand" target="_blank">National Library — Immigration to Aotearoa</a>
+        <p>Primary sources, images, and articles covering all waves of NZ migration from Māori settlement to the present. Excellent for research.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">DATA</span>
+      <div>
+        <a href="https://www.stats.govt.nz/topics/population" target="_blank">Stats NZ — Population Data</a>
+        <p>New Zealand's official population statistics. Census data, migration trends, ethnic composition, and projections. Real data on who lives in NZ and how that's changing.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Life+in+a+Day+2020+full+documentary" target="_blank">Life in a Day 2020 (YouTube, free)</a>
+        <p>~1hr 30 mins. Footage from 192 countries, one day. Remarkable window into how geography shapes daily life globally.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">EXPLORE</span>
+      <div>
+        <a href="https://ourworldindata.org/migration" target="_blank">Our World in Data — Migration</a>
+        <p>Interactive charts on global migration patterns, refugee numbers, remittances, and more. Rich data, clearly visualised.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <p>GEOGRAPHY SERIES — LESSON 05 OF 06 — POPULATION & MIGRATION<br>
+  Built for an 11-year-old in Wellington, New Zealand, who is smarter than the curriculum.</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(s/h*100)+'%';});
+  const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  function answer(btn,isCorrect,qId){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(isCorrect?'correct':'wrong');document.getElementById(qId+(isCorrect?'-good':'-bad')).classList.add('show');if(!isCorrect)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+  // Animated dot field
+  const df=document.getElementById('dotField');
+  for(let i=0;i<80;i++){const d=document.createElement('div');d.className='dot';d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';d.style.animationDelay=Math.random()*8+'s';d.style.animationDuration=(4+Math.random()*6)+'s';df.appendChild(d);}
+</script>
+</body>
+</html>

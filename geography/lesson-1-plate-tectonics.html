@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plate Tectonics & Volcanoes — Geography Lesson 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire: #FF4500;
+    --lava: #FF6B1A;
+    --magma: #CC2200;
+    --ash: #1A1A1A;
+    --rock: #2C2C2C;
+    --crust: #3D3530;
+    --cream: #F5EFE6;
+    --gold: #FFB347;
+    --teal: #00C9A7;
+    --text: #F0E8DC;
+    --muted: #9A8E82;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ash);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 6rem 8vw;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 70% 60%, #8B1A00 0%, #3D0A00 40%, #0D0D0D 100%);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FF4500' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lava);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 12vw, 10rem);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 span {
+    display: block;
+    color: var(--fire);
+    -webkit-text-stroke: 1px var(--fire);
+  }
+
+  .hero-sub {
+    max-width: 540px;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    color: var(--muted);
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-sub strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  .start-btn {
+    display: inline-block;
+    margin-top: 3rem;
+    padding: 1rem 2.5rem;
+    background: var(--fire);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .start-btn:hover { background: var(--lava); transform: translateY(-2px); }
+
+  .volcano-graphic {
+    position: absolute;
+    right: -2vw;
+    bottom: 0;
+    width: 50vw;
+    max-width: 600px;
+    opacity: 0.15;
+    animation: fadeUp 1s 0.4s ease both;
+    pointer-events: none;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 5rem 8vw;
+    border-top: 1px solid #2A2A2A;
+    position: relative;
+  }
+
+  .section-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 8rem;
+    color: #222;
+    position: absolute;
+    top: 2rem;
+    right: 6vw;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--lava);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--cream);
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 2rem 0 0.75rem;
+  }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; }
+  p strong { color: var(--cream); font-weight: 600; }
+
+  /* ── BIG IDEA CARD ── */
+  .big-idea {
+    background: linear-gradient(135deg, #2A0A00, #1A1A1A);
+    border-left: 4px solid var(--fire);
+    padding: 2rem 2.5rem;
+    margin: 2rem 0;
+    max-width: 700px;
+  }
+
+  .big-idea p {
+    font-size: 1.15rem;
+    color: var(--cream);
+    font-style: italic;
+    font-weight: 300;
+    max-width: none;
+  }
+
+  /* ── NZ CALLOUT ── */
+  .nz-callout {
+    background: linear-gradient(135deg, #003830, #001A16);
+    border: 1px solid var(--teal);
+    border-radius: 2px;
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    max-width: 700px;
+    position: relative;
+  }
+
+  .nz-callout::before {
+    content: '🇳🇿 NZ CONNECTION';
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .nz-callout p { color: #A0D8CF; max-width: none; }
+  .nz-callout strong { color: #E0F7F3; }
+
+  /* ── CHALLENGE BOX ── */
+  .challenge {
+    background: #1E1E1E;
+    border: 1px solid #FF4500;
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    max-width: 700px;
+    position: relative;
+  }
+
+  .challenge::before {
+    content: '⚡ CHALLENGE';
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--fire);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .challenge p { max-width: none; }
+
+  .challenge ol, .challenge ul {
+    padding-left: 1.5rem;
+    color: var(--muted);
+    margin-top: 0.75rem;
+  }
+
+  .challenge li { margin-bottom: 0.5rem; }
+  .challenge li strong { color: var(--cream); }
+
+  /* ── VOCAB ── */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+    max-width: 900px;
+  }
+
+  .vocab-card {
+    background: var(--rock);
+    border: 1px solid #3A3A3A;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+
+  .vocab-card:hover { border-color: var(--lava); background: #333; }
+
+  .vocab-term {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .vocab-def {
+    font-size: 0.875rem;
+    color: var(--muted);
+    display: none;
+  }
+
+  .vocab-card.open .vocab-def { display: block; }
+  .vocab-card.open { border-color: var(--gold); }
+
+  .vocab-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: #555;
+    position: absolute;
+    bottom: 0.6rem;
+    right: 0.75rem;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { max-width: 700px; margin: 2rem 0; }
+
+  .quiz-q {
+    font-size: 1rem;
+    color: var(--cream);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+
+  .quiz-opt {
+    background: #222;
+    border: 1px solid #3A3A3A;
+    color: var(--muted);
+    padding: 0.85rem 1.25rem;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+    border-radius: 1px;
+  }
+
+  .quiz-opt:hover { border-color: var(--lava); color: var(--cream); background: #2A2A2A; }
+  .quiz-opt.correct { border-color: var(--teal); color: #A0D8CF; background: #001A16; }
+  .quiz-opt.wrong { border-color: #8B0000; color: #FF9999; background: #1A0000; }
+
+  .quiz-feedback {
+    font-size: 0.875rem;
+    padding: 1rem 1.25rem;
+    margin-top: 0.5rem;
+    display: none;
+    border-radius: 1px;
+  }
+
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #001A16; border-left: 3px solid var(--teal); color: #A0D8CF; }
+  .quiz-feedback.bad { background: #1A0000; border-left: 3px solid #CC0000; color: #FF9999; }
+
+  /* ── PLATE MAP ── */
+  .plate-diagram {
+    background: #161616;
+    border: 1px solid #333;
+    padding: 2rem;
+    margin: 2rem 0;
+    max-width: 700px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .plate-diagram pre {
+    color: var(--muted);
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .plate-diagram .label { font-size: 0.65rem; color: #555; margin-top: 0.75rem; }
+
+  /* ── THINK DEEPER ── */
+  .think-deeper {
+    background: linear-gradient(135deg, #1A1200, #1A1A1A);
+    border-left: 4px solid var(--gold);
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    max-width: 700px;
+  }
+
+  .think-deeper::before {
+    content: '🔭 THINK DEEPER';
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .think-deeper p { max-width: none; color: #C8B870; }
+  .think-deeper strong { color: var(--cream); }
+
+  /* ── RESOURCES ── */
+  .resource-list { list-style: none; max-width: 700px; margin: 1.5rem 0; }
+
+  .resource-list li {
+    border-bottom: 1px solid #2A2A2A;
+    padding: 1rem 0;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .resource-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    background: #2A2A2A;
+    color: var(--muted);
+    padding: 0.25rem 0.5rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .resource-list a {
+    color: var(--lava);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  .resource-list a:hover { color: var(--gold); }
+  .resource-list p { margin: 0.25rem 0 0; font-size: 0.8rem; max-width: none; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--fire);
+    width: 0%;
+    transition: width 0.1s linear;
+    z-index: 999;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 4rem 8vw;
+    border-top: 1px solid #2A2A2A;
+    text-align: center;
+  }
+
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: #444;
+    max-width: none;
+    text-align: center;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── LAVA PULSE ── */
+  @keyframes lavaPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 69, 0, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(255, 69, 0, 0.25); }
+  }
+
+  .nz-callout { animation: lavaPulse 4s ease-in-out infinite; }
+
+  /* ── SCROLL INDICATOR ── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: #555;
+    text-transform: uppercase;
+    animation: bounce 2s ease infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--fire), transparent);
+    margin: 0;
+    opacity: 0.3;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Geography · Lesson 01 of 06</div>
+  <h1>Plate<br><span>Tectonics</span><br>&amp; Volcanoes</h1>
+  <p class="hero-sub">
+    The ground under your feet is moving. Right now. <strong>New Zealand sits on the edge of two colliding tectonic plates</strong> — which is why it shakes, erupts, and looks the way it does. This lesson explains why.
+  </p>
+  <a href="#bigidea" class="start-btn">Start Learning ↓</a>
+
+  <svg class="volcano-graphic" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M250 20 L350 350 L150 350 Z" fill="#FF4500" opacity="0.6"/>
+    <path d="M250 80 L320 350 L180 350 Z" fill="#CC2200" opacity="0.5"/>
+    <ellipse cx="250" cy="30" rx="40" ry="18" fill="#FF6B1A" opacity="0.7"/>
+    <path d="M230 30 Q240 0 250 20 Q260 0 270 30" fill="#FF4500" opacity="0.9"/>
+    <path d="M220 25 Q235 -10 242 15" stroke="#FF6B1A" stroke-width="3" fill="none" opacity="0.6"/>
+    <path d="M260 22 Q268 -5 278 20" stroke="#FF4500" stroke-width="2" fill="none" opacity="0.5"/>
+  </svg>
+
+  <div class="scroll-hint">↓ Scroll to explore</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 1: THE BIG IDEA -->
+<section id="bigidea">
+  <span class="section-number">01</span>
+  <div class="section-label">The Big Idea</div>
+  <h2>The Earth Is Not Solid All the Way Through</h2>
+
+  <div class="big-idea reveal">
+    <p>"The ground feels permanent. It isn't. The surface of the Earth is broken into about 20 giant pieces — called tectonic plates — and they're constantly moving, colliding, and pulling apart. Everything dramatic on Earth's surface happens because of this."</p>
+  </div>
+
+  <p class="reveal">The Earth has four layers: a thin <strong>crust</strong> on the outside (that's what you walk on), a thick <strong>mantle</strong> made of rock so hot it can slowly flow like very thick toffee, a liquid <strong>outer core</strong>, and a solid <strong>inner core</strong> at the centre.</p>
+
+  <p class="reveal">The tectonic plates sit on top of the mantle. The heat from the core creates slow currents in the mantle — like the convection currents in a pot of hot soup — and these currents drag the plates around. It's incredibly slow (about the speed your fingernails grow), but over millions of years, it moves continents.</p>
+
+  <h3>The Three Types of Plate Boundary</h3>
+  <p>Where plates meet, things get interesting. There are three types of collision:</p>
+
+  <div class="plate-diagram reveal">
+    <pre>
+  DIVERGENT (Pulling Apart)
+  ←━━━━━━━━━━━|━━━━━━━━━━━→
+              ↑
+        New crust forms
+        (Mid-ocean ridges, rift valleys)
+
+  CONVERGENT (Crashing Together)
+  →━━━━━━━━━━→|←━━━━━━━━━←
+              ↓
+        One plate sinks (subduction)
+        Mountains form. Volcanoes. Earthquakes.
+
+  TRANSFORM (Sliding Past Each Other)
+        ━━━━━━━━━━→
+  ←━━━━━━━━━━
+        Earthquakes along fault lines
+    </pre>
+    <div class="label">↑ Simplified cross-section showing plate boundary types</div>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand sits right on a <strong>convergent boundary</strong> between the Australian Plate and the Pacific Plate. Off the east coast of the North Island, the Pacific Plate is subducting (diving underneath) the Australian Plate. This is directly responsible for the <strong>Taupo Volcanic Zone</strong> — one of the most geologically active regions on Earth — and why New Zealand has so many earthquakes.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2: VOCAB -->
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">Key Vocabulary</div>
+  <h2>Know the Words, Own the Subject</h2>
+  <p>Click each card to reveal the definition. Try to guess it first.</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Tectonic Plate</div>
+      <div class="vocab-def">A large, rigid slab of Earth's lithosphere (crust + upper mantle) that floats on the semi-molten mantle below. There are about 20 major plates.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Subduction</div>
+      <div class="vocab-def">When one tectonic plate is forced under another and sinks into the mantle. The sinking plate melts, and the resulting magma can rise to create volcanoes.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Magma vs Lava</div>
+      <div class="vocab-def">Magma is molten rock underground. The moment it erupts and reaches the surface, it becomes lava. Same stuff, different location.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Ring of Fire</div>
+      <div class="vocab-def">A horseshoe-shaped zone around the Pacific Ocean with 75% of the world's volcanoes and 90% of all earthquakes. New Zealand sits at the southern end of it.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Seismic Wave</div>
+      <div class="vocab-def">Vibrations that travel through the Earth caused by an earthquake or explosion. Seismologists use these waves to study the Earth's interior — they can't dig there, so they listen instead.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Alpine Fault</div>
+      <div class="vocab-def">A major fault line running 600km along the South Island of New Zealand. It moves about 20–30mm per year and is overdue for a major earthquake (Magnitude 8+). Scientists call the coming event "The Big One."</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 3: WATCH -->
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">Watch</div>
+  <h2>Your Documentary Briefing</h2>
+
+  <p>Before or after you read, watch this. It covers plate tectonics through the lens of real eruptions and real geology — not a classroom animation.</p>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Voyage+of+the+Continents+Oceania+New+Zealand" target="_blank">Voyage of the Continents — Oceania Episode</a>
+        <p>Search YouTube: "Voyage of the Continents Oceania." This episode covers New Zealand's specific tectonic story — two plates, volcanic islands, and geological instability. ~52 mins. Watch as much as grabs you.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">BONUS</span>
+      <a href="https://www.youtube.com/results?search_query=Ring+of+Fire+National+Geographic+documentary" target="_blank">Ring of Fire — National Geographic (YouTube)</a>
+    </li>
+  </ul>
+
+  <div class="challenge reveal">
+    <p>While watching, write down answers to these three questions. Just rough notes — no essay required.</p>
+    <ol>
+      <li><strong>What geological event formed the New Zealand landmass?</strong></li>
+      <li><strong>Which two plates does NZ sit between?</strong></li>
+      <li><strong>What's one thing that surprised you?</strong></li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 4: QUIZ -->
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">Test Yourself</div>
+  <h2>Five Questions. No Guessing Allowed.</h2>
+  <p>Read each question properly before answering. Some have trick elements.</p>
+
+  <div class="quiz-wrap">
+
+    <!-- Q1 -->
+    <div class="quiz-q">1. What drives tectonic plate movement?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this, false, 'q1')">The Moon's gravitational pull on the crust</button>
+      <button class="quiz-opt" onclick="answer(this, true, 'q1')">Convection currents in the mantle caused by heat from the core</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q1')">The rotation of the Earth spinning the plates outward</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q1')">Ocean water seeping into cracks and pushing plates apart</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. Heat from the Earth's core creates slow convection currents in the semi-molten mantle, dragging the plates around like items on a very slow conveyor belt.</div>
+    <div class="quiz-feedback bad" id="q1-bad">Not quite. The moon does affect tides, but plate movement is driven by convection currents in the mantle — heat from the core causes the mantle to circulate slowly, pulling the plates with it.</div>
+
+    <!-- Q2 -->
+    <div class="quiz-q" style="margin-top:2rem;">2. New Zealand is on the Ring of Fire. What percentage of the world's earthquakes happen in this zone?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this, false, 'q2')">About 40%</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q2')">About 60%</button>
+      <button class="quiz-opt" onclick="answer(this, true, 'q2')">About 90%</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q2')">About 99%</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes — roughly 90% of all earthquakes on Earth occur along the Ring of Fire, because it's a chain of convergent plate boundaries all the way around the Pacific.</div>
+    <div class="quiz-feedback bad" id="q2-bad">The correct answer is about 90%. The Ring of Fire traces the edge of the Pacific Plate and several others — nearly all the world's subduction zones are here, which is why so many earthquakes occur along it.</div>
+
+    <!-- Q3 -->
+    <div class="quiz-q" style="margin-top:2rem;">3. What is the difference between magma and lava?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this, false, 'q3')">Magma is hotter than lava</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q3')">Lava is found underground; magma is on the surface</button>
+      <button class="quiz-opt" onclick="answer(this, true, 'q3')">They're the same material — magma underground, lava once it erupts</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q3')">Magma contains more gas; lava is denser and heavier</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Exactly right. It's the same molten rock — just a different name depending on where it is. Underground: magma. Once it reaches the surface: lava.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Actually, magma and lava are the same material. The difference is location — magma is underground, and lava is what we call it once it erupts and reaches the surface.</div>
+
+    <!-- Q4 -->
+    <div class="quiz-q" style="margin-top:2rem;">4. The Alpine Fault runs through the South Island. What type of plate boundary is it?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this, false, 'q4')">Divergent — the plates are pulling apart</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q4')">Convergent — one plate is being subducted under the other</button>
+      <button class="quiz-opt" onclick="answer(this, true, 'q4')">Transform — the plates are sliding horizontally past each other</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q4')">It's not a plate boundary — it's an ancient crack in a single plate</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Correct. The Alpine Fault is a transform boundary where the Australian and Pacific plates slide past each other. Unlike the subduction happening off the North Island, here the movement is mostly horizontal — which still generates massive earthquakes.</div>
+    <div class="quiz-feedback bad" id="q4-bad">The Alpine Fault is a transform boundary. The Australian and Pacific Plates slide horizontally past each other — similar to California's San Andreas Fault. It moves about 20–30mm per year and is overdue for a major quake.</div>
+
+    <!-- Q5 -->
+    <div class="quiz-q" style="margin-top:2rem;">5. If geologists can't dig to the Earth's core, how do they know what's down there?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this, false, 'q5')">They've calculated the density of the whole Earth and worked backwards</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q5')">Volcanic eruptions bring core material to the surface</button>
+      <button class="quiz-opt" onclick="answer(this, true, 'q5')">By studying how seismic waves from earthquakes travel through the Earth</button>
+      <button class="quiz-opt" onclick="answer(this, false, 'q5')">They can't — the inner structure of Earth is still unknown</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Right. Seismic waves from earthquakes travel through the Earth and change speed or direction depending on the material they pass through. By recording these waves at different points on the surface, geologists can "see" the interior — like an X-ray but using sound.</div>
+    <div class="quiz-feedback bad" id="q5-bad">The answer is seismic waves. Earthquakes send waves through the Earth, and by tracking how those waves change speed and direction, geologists can determine what materials they're passing through. It's effectively an X-ray of the planet.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 5: GO DEEPER -->
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">Go Deeper</div>
+  <h2>For the Curious</h2>
+
+  <p>If the quiz felt too easy, here's where it gets harder.</p>
+
+  <div class="think-deeper reveal">
+    <p><strong>The Taupo Supervolcano.</strong> Lake Taupo in the middle of the North Island is one of the most volcanically active places on Earth. The lake itself sits inside a caldera — the collapsed remains of an enormous eruption. The last major eruption, around 232 AD, was so violent it turned sunsets red in Rome and China. Scientists estimate it ejected <strong>120 cubic kilometres of material</strong> into the atmosphere in under an hour. Taupo is considered a supervolcano — and it's still active. GNS Science monitors it constantly. Look up: "Taupo Volcanic Zone" on the GNS website.</p>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>Go to <strong>geonet.org.nz</strong> — New Zealand's real-time earthquake monitoring site. You can see every earthquake that's happened in NZ in the last 24 hours, right now. Look at the map. Notice where the dots cluster. That's the plate boundary.</p>
+  </div>
+
+  <div class="challenge reveal">
+    <p><strong>Research Challenge — "The Big One"</strong></p>
+    <p>The Alpine Fault is considered one of the most dangerous faults in the world because it hasn't ruptured in about 300 years — and the average interval between major ruptures is around 300 years. Scientists have a term for this: <em>overdue</em>.</p>
+    <ol>
+      <li>Search: <strong>"Alpine Fault Big One New Zealand"</strong></li>
+      <li>Find out: What magnitude earthquake do scientists expect? What would the impact be on the South Island?</li>
+      <li>Write three sentences: What is likely to happen, where, and why can't they predict exactly when?</li>
+    </ol>
+  </div>
+
+  <div class="think-deeper reveal">
+    <p><strong>A bigger question to sit with:</strong> Volcanic eruptions seem purely destructive — but without them, life on Earth might not exist. <strong>How?</strong> Volcanoes released the gases that formed Earth's early atmosphere. They created the land that organisms colonised. They still cycle nutrients through ecosystems. Whakaari / White Island, despite its dangers, supports unique microbial life that scientists study to understand the origins of life. What does that tell you about how we decide whether something is "good" or "bad" in geography?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 6: RESOURCES -->
+<section>
+  <span class="section-number">06</span>
+  <div class="section-label">Resources</div>
+  <h2>Where to Go Next</h2>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.gns.cri.nz" target="_blank">GNS Science — gns.cri.nz</a>
+        <p>New Zealand's own geological and nuclear sciences research institute. Real data, real monitoring, real NZ focus. Start with "Volcanoes" and "Earthquakes" in the top menu.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">LIVE DATA</span>
+      <div>
+        <a href="https://www.geonet.org.nz" target="_blank">GeoNet — geonet.org.nz</a>
+        <p>Live earthquake monitoring for New Zealand. Check the map today — you'll almost certainly see recent activity.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Voyage+of+the+Continents+Oceania" target="_blank">Voyage of the Continents — Oceania (YouTube)</a>
+        <p>Covers NZ's specific tectonic story. ~52 minutes. Well-produced, not dry.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">EXPLORE</span>
+      <div>
+        <a href="https://www.usgs.gov/programs/earthquake-hazards/science/plate-tectonics" target="_blank">USGS Plate Tectonics — usgs.gov</a>
+        <p>The United States Geological Survey's explanations of plate tectonics — authoritative, well-illustrated, and deeper than most school resources.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <p>GEOGRAPHY SERIES — LESSON 01 OF 06 — PLATE TECTONICS &amp; VOLCANOES<br>
+  Built for an 11-year-old in Wellington, New Zealand, who is smarter than the curriculum.</p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Quiz logic
+  function answer(btn, isCorrect, qId) {
+    const parent = btn.parentElement;
+    const buttons = parent.querySelectorAll('.quiz-opt');
+    buttons.forEach(b => b.disabled = true);
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      document.getElementById(qId + '-good').classList.add('show');
+    } else {
+      btn.classList.add('wrong');
+      document.getElementById(qId + '-bad').classList.add('show');
+      // Show correct answer
+      buttons.forEach(b => {
+        if (b.onclick.toString().includes('true')) b.classList.add('correct');
+      });
+    }
+  }
+</script>
+
+</body>
+</html>

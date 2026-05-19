@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curious Minds · A Learning Collection</title>
+<meta name="description" content="Self-directed learning courses for curious kids. Geography, Mathematics, and the Big Bang — built for minds that want more.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --ink:       #0E0E0E;
+    --paper:     #F7F4EE;
+    --paper-2:   #F0EDE6;
+    --rule:      #DDD9D0;
+    --muted:     #9A9488;
+    --accent:    #C8411A;
+    --accent-2:  #1A5FA8;
+    --course-geo:     #2D4A3E;
+    --course-maths:   #1A2818;
+    --course-cleo:    #5C1A7A;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* grain */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.1rem 7vw;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(247,244,238,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    animation: fadeDown 0.5s var(--ease) both;
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem; color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 7vw 5rem;
+    gap: 4rem;
+    overflow: hidden;
+  }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; padding-top: 7rem; gap: 3rem; }
+    .hero-art { display: none; }
+  }
+
+  /* Art panel */
+  .hero-art {
+    position: relative; height: 460px;
+    animation: fadeUp 0.6s 0.3s var(--ease) both;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .art-ring {
+    position: absolute; border-radius: 50%; border: 1px solid;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+  }
+  .art-ring-1 { width: 360px; height: 360px; border-color: var(--rule); }
+  .art-ring-2 { width: 230px; height: 230px; border-color: #D4A843; opacity:0.25; animation: spin 44s linear infinite; }
+  .art-ring-3 { width: 120px; height: 120px; border-color: var(--accent-2); opacity:0.2; animation: spin 22s linear infinite reverse; }
+
+  .art-symbols {
+    position: relative; z-index:2;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; text-align: center;
+  }
+
+  .art-sym {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem; line-height: 1;
+    opacity: 0.16; cursor: default; user-select: none;
+    transition: opacity 0.3s;
+  }
+  .art-sym:hover { opacity: 0.45; }
+  .art-sym.m { color: var(--course-maths); }
+  .art-sym.g { color: var(--course-geo); }
+  .art-sym.c { color: var(--course-cleo); }
+  .art-sym.x { color: var(--accent); font-style: italic; }
+
+  /* Hero text */
+  .hero-text { position: relative; z-index: 2; }
+
+  .hero-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1.25rem;
+    animation: fadeUp 0.5s 0.05s var(--ease) both;
+  }
+
+  .hero-h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 1.05; color: var(--ink);
+    animation: fadeUp 0.5s 0.1s var(--ease) both;
+  }
+  .hero-h1 em { font-style: italic; color: var(--accent); }
+
+  .hero-sub {
+    margin-top: 1.5rem; max-width: 420px;
+    font-size: 1rem; color: var(--muted); line-height: 1.75;
+    animation: fadeUp 0.5s 0.15s var(--ease) both;
+  }
+  .hero-sub strong { color: var(--ink); }
+
+  .hero-stats {
+    margin-top: 2rem; display: flex; gap: 2.5rem; flex-wrap: wrap;
+    animation: fadeUp 0.5s 0.2s var(--ease) both;
+  }
+
+  .stat { display: flex; flex-direction: column; gap: 0.12rem; }
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem; color: var(--ink); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hero-cta {
+    margin-top: 2.5rem; display: inline-flex; align-items: center; gap: 0.75rem;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--rule); padding-bottom: 0.2rem;
+    transition: border-color 0.2s, color 0.2s;
+    animation: fadeUp 0.5s 0.25s var(--ease) both;
+  }
+  .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+  .hero-cta .arr { transition: transform 0.2s; }
+  .hero-cta:hover .arr { transform: translateX(4px); }
+
+  /* ── DIVIDERS ── */
+  .rule { position:relative;z-index:1; height:1px; background:var(--rule); margin:0 7vw; }
+
+  /* ── INTRO ── */
+  .intro {
+    position: relative; z-index: 1;
+    padding: 4rem 7vw;
+  }
+  .intro p {
+    font-size: 1rem; color: var(--muted); line-height: 1.8; max-width: 620px;
+  }
+  .intro p strong { color: var(--ink); }
+  .intro p + p { margin-top: 1rem; }
+
+  /* ── COURSES ── */
+  .courses {
+    position: relative; z-index: 1;
+    padding: 0 7vw 5rem;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+  .section-rule { flex:1; height:1px; background:var(--rule); }
+
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* ── CARD ── */
+  .card {
+    text-decoration: none; color: inherit;
+    background: var(--paper-2); border: 1px solid var(--rule);
+    display: flex; flex-direction: column;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s;
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.5s var(--ease) both;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 44px rgba(0,0,0,0.08);
+    border-color: transparent;
+  }
+  .card::before {
+    content: '';
+    position: absolute; left:0; top:0; bottom:0; width:4px;
+    background: var(--col);
+    transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.3s var(--ease);
+  }
+  .card:hover::before { transform: scaleY(1); }
+
+  .card-body { padding: 2rem 2rem 1.5rem; flex: 1; }
+
+  .card-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--col); margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-age {
+    font-size: 0.56rem; color: var(--muted);
+    background: var(--paper); border: 1px solid var(--rule);
+    padding: 0.18rem 0.5rem;
+  }
+
+  .card-icon {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem; color: var(--col); opacity: 0.14;
+    line-height: 1; margin-bottom: 0.6rem; display: block;
+    transition: opacity 0.25s;
+  }
+  .card:hover .card-icon { opacity: 0.28; }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem; color: var(--ink);
+    line-height: 1.15; margin-bottom: 0.6rem;
+  }
+  .card-hook {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 0.87rem; color: var(--col); margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  .card-desc {
+    font-size: 0.862rem; color: var(--muted); line-height: 1.65;
+  }
+
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    padding: 0 2rem 0.75rem;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.05em;
+    color: var(--muted); background: var(--paper);
+    border: 1px solid var(--rule); padding: 0.18rem 0.55rem;
+  }
+
+  .card-foot {
+    padding: 1rem 2rem 1.5rem; border-top: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-cta {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--col);
+    display: flex; align-items: center; gap: 0.4rem;
+    transition: gap 0.2s;
+  }
+  .card:hover .card-cta { gap: 0.7rem; }
+  .card-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; color: var(--muted);
+  }
+
+  .card:nth-child(1) { animation-delay: 0.3s;  --col: var(--course-maths); }
+  .card:nth-child(2) { animation-delay: 0.38s; --col: var(--course-geo); }
+  .card:nth-child(3) { animation-delay: 0.46s; --col: var(--course-cleo); }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    position: relative; z-index: 1;
+    padding: 4rem 7vw;
+    background: var(--paper-2);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 2rem; margin-top: 2.5rem;
+  }
+  .how-n {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 2.5rem; color: var(--rule); line-height: 1; margin-bottom: 0.6rem;
+  }
+  .how-title { font-weight: 500; font-size: 0.9rem; color: var(--ink); margin-bottom: 0.35rem; }
+  .how-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  .pre-footer {
+    position: relative; z-index: 1;
+    padding: 3rem 7vw;
+  }
+  .pre-footer p { font-size: 0.875rem; color: var(--muted); max-width: 480px; }
+  .pre-footer p strong { color: var(--ink); }
+
+  footer {
+    position: relative; z-index: 1;
+    background: var(--ink);
+    padding: 1.75rem 7vw;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-brand { display: flex; align-items: center; gap: 1rem; }
+
+  .footer-wordmark {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 1.2rem; color: var(--paper);
+  }
+
+  .footer-pip {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  .footer-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #4A4A4A;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.08em;
+    color: #383838; text-align: right; line-height: 1.7;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes spin {
+    from { transform: translate(-50%,-50%) rotate(0deg); }
+    to   { transform: translate(-50%,-50%) rotate(360deg); }
+  }
+
+  .reveal {
+    opacity:0; transform:translateY(14px);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Curious Minds</a>
+  <span class="nav-tag">A Learning Collection</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <div class="hero-kicker">Self-directed · Wellington, New Zealand</div>
+    <h1 class="hero-h1">Learning for<br><em>curious</em> minds</h1>
+    <p class="hero-sub">Three courses. Eighteen-plus lessons. Topics that go <strong>far beyond the school curriculum</strong> — built for kids who want to understand how the world actually works.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">3</span>
+        <span class="stat-label">Courses</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">18+</span>
+        <span class="stat-label">Lessons</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">∞</span>
+        <span class="stat-label">Curiosity</span>
+      </div>
+    </div>
+
+    <a href="#courses" class="hero-cta">Browse courses <span class="arr">→</span></a>
+  </div>
+
+  <div class="hero-art" aria-hidden="true">
+    <div class="art-ring art-ring-1"></div>
+    <div class="art-ring art-ring-2"></div>
+    <div class="art-ring art-ring-3"></div>
+    <div class="art-symbols">
+      <span class="art-sym m">π</span>
+      <span class="art-sym g">⊕</span>
+      <span class="art-sym c">★</span>
+      <span class="art-sym x">φ</span>
+    </div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- INTRO -->
+<div class="intro reveal">
+  <p>These lessons were built for self-directed learning — no teacher needed, no schedule, no pressure. Each course has its own visual identity, its own set of videos and resources, and a quiz at the end of every lesson.</p>
+  <p>Pick a course. Open any lesson. <strong>Go at your own pace.</strong> When the quiz feels easy, dig into the challenge sections at the bottom of each page.</p>
+</div>
+
+<div class="rule"></div>
+
+<!-- COURSES -->
+<div class="courses" id="courses">
+  <div class="section-header">
+    <span class="section-label">✦ Three Courses</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="course-grid">
+
+    <!-- MATHS -->
+    <a class="card" href="maths/maths-index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Mathematics
+          <span class="card-age">Year 7 · Age 11+</span>
+        </div>
+        <span class="card-icon">∑</span>
+        <h2 class="card-title">Maths for the Curious</h2>
+        <p class="card-hook">"The most beautiful ideas in mathematics — none of which are taught in school."</p>
+        <p class="card-desc">From the never-ending digits of π to the infinities that broke mathematicians' brains, six lessons on the ideas that make maths genuinely extraordinary. History, puzzles, and real-world connections throughout.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">π &amp; Circles</span>
+        <span class="tag">Prime Numbers</span>
+        <span class="tag">Fibonacci</span>
+        <span class="tag">Infinity</span>
+        <span class="tag">Probability</span>
+        <span class="tag">Cryptography</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">6 lessons</span>
+      </div>
+    </a>
+
+    <!-- GEOGRAPHY -->
+    <a class="card" href="geography/index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Geography
+          <span class="card-age">Year 7 · Age 11+</span>
+        </div>
+        <span class="card-icon">⊕</span>
+        <h2 class="card-title">Geography for the Curious</h2>
+        <p class="card-hook">"Why is the world the shape it's in — physically, politically, and humanly?"</p>
+        <p class="card-desc">Plate tectonics to global trade, urbanisation to climate. Six lessons on physical and human geography with strong New Zealand connections — finishing with a Wellington capstone investigation.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Plate Tectonics</span>
+        <span class="tag">Rivers</span>
+        <span class="tag">Climate</span>
+        <span class="tag">Urbanisation</span>
+        <span class="tag">Migration</span>
+        <span class="tag">Global Trade</span>
+        <span class="tag">+ Capstone</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">6 lessons + capstone</span>
+      </div>
+    </a>
+
+    <!-- CLEO -->
+    <a class="card" href="cleo/cleo-index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Astrophysics
+          <span class="card-age">Year 4 · Age 7+</span>
+        </div>
+        <span class="card-icon">★</span>
+        <h2 class="card-title">Cleo's Big Bang Course</h2>
+        <p class="card-hook">"From nothing, everything — the 13.8 billion year story of how we got here."</p>
+        <p class="card-desc">Four lessons on the origin of the universe for a future astrophysicist. The Big Bang, the first stars, the evidence — and the extraordinary women scientists who found it. Creative activities throughout.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Before the Bang</span>
+        <span class="tag">First 3 Minutes</span>
+        <span class="tag">Lights On</span>
+        <span class="tag">How Do We Know?</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">4 lessons</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how reveal">
+  <div class="section-header">
+    <span class="section-label">How each lesson works</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="how-grid">
+    <div><div class="how-n">01</div><div class="how-title">The Big Idea</div><div class="how-desc">The concept explained clearly, with its history and why it matters.</div></div>
+    <div><div class="how-n">02</div><div class="how-title">Vocabulary</div><div class="how-desc">Tap-to-reveal definitions. Try to guess before opening each one.</div></div>
+    <div><div class="how-n">03</div><div class="how-title">Watch</div><div class="how-desc">Curated videos — the best explainers on YouTube for each topic.</div></div>
+    <div><div class="how-n">04</div><div class="how-title">Quiz</div><div class="how-desc">Five questions per lesson. Every answer has a full explanation.</div></div>
+    <div><div class="how-n">05</div><div class="how-title">Go Deeper</div><div class="how-desc">Challenge problems for when the quiz feels too easy.</div></div>
+    <div><div class="how-n">06</div><div class="how-title">Resources</div><div class="how-desc">Books, websites, and channels for further exploration.</div></div>
+  </div>
+</div>
+
+<!-- PRE-FOOTER -->
+<div class="pre-footer reveal">
+  <p><strong>No login. No account. No tracking.</strong> Open the files in a browser and learn. Progress is saved locally in your browser only.</p>
+</div>
+
+<!-- FOOTER — antomatic.design -->
+<footer>
+  <div class="footer-brand">
+    <span class="footer-wordmark">antomatic.design</span>
+    <div class="footer-pip"></div>
+    <span class="footer-sub">Crafted with curiosity · Wellington, NZ</span>
+  </div>
+  <div class="footer-right">
+    Built for curious minds<br>
+    Free to share &amp; remix
+  </div>
+</footer>
+
+<script>
+  document.querySelector('.hero-cta').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>

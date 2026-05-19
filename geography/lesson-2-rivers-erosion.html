@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rivers & Erosion — Geography Lesson 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Source+Sans+3:wght@300;400;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #0A1628;
+    --water: #1565C0;
+    --flow: #42A5F5;
+    --ripple: #90CAF9;
+    --silt: #8D6E63;
+    --bank: #4E342E;
+    --mud: #3E2723;
+    --foam: #E3F2FD;
+    --cream: #F5F0E8;
+    --gold: #FFC107;
+    --muted: #7986A8;
+    --text: #D0DCF0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--deep);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--flow); width: 0%; transition: width 0.1s; z-index: 999;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 6rem 8vw;
+    position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #0A1628 0%, #0D2744 50%, #0A1E3A 100%);
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 160px;
+    background: linear-gradient(to top, rgba(10,30,58,0.9), transparent);
+    pointer-events: none;
+  }
+
+  /* Animated water lines */
+  .water-lines {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  }
+  .water-line {
+    position: absolute; height: 1px; background: linear-gradient(to right, transparent, rgba(66,165,245,0.3), transparent);
+    animation: flowRight 8s linear infinite;
+  }
+  .water-line:nth-child(1) { top: 30%; width: 60%; animation-delay: 0s; }
+  .water-line:nth-child(2) { top: 45%; width: 80%; animation-delay: -2s; opacity: 0.6; }
+  .water-line:nth-child(3) { top: 60%; width: 50%; animation-delay: -4s; opacity: 0.4; }
+  .water-line:nth-child(4) { top: 72%; width: 70%; animation-delay: -6s; opacity: 0.3; }
+
+  @keyframes flowRight {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--flow); margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 1.0; color: var(--foam);
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    display: block; font-style: italic; color: var(--flow);
+    font-size: 0.7em;
+  }
+
+  .hero-sub {
+    max-width: 520px; margin-top: 2rem; font-size: 1.1rem; color: var(--muted);
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-sub strong { color: var(--foam); font-weight: 600; }
+
+  .start-btn {
+    display: inline-block; margin-top: 3rem; padding: 1rem 2.5rem;
+    background: var(--water); color: white;
+    font-family: 'Source Code Pro', monospace; font-size: 0.82rem;
+    letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none;
+    border: none; cursor: pointer; transition: background 0.2s, transform 0.2s;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .start-btn:hover { background: var(--flow); transform: translateY(-2px); }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-family: 'Source Code Pro', monospace; font-size: 0.62rem;
+    letter-spacing: 0.2em; color: #2A4060; text-transform: uppercase;
+    animation: bounce 2s ease infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* SECTIONS */
+  section { padding: 5rem 8vw; border-top: 1px solid #0F2040; position: relative; }
+
+  .section-number {
+    font-family: 'Playfair Display', serif; font-size: 7rem; color: #0D1F38;
+    position: absolute; top: 2rem; right: 6vw; line-height: 1;
+    pointer-events: none; user-select: none;
+  }
+
+  .section-label {
+    font-family: 'Source Code Pro', monospace; font-size: 0.68rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--flow); margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 3rem); color: var(--foam);
+    margin-bottom: 1.5rem; line-height: 1.2;
+  }
+
+  h3 { font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 1.05rem; color: var(--gold); margin: 2rem 0 0.75rem; }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; }
+  p strong { color: var(--foam); font-weight: 600; }
+
+  .big-idea {
+    background: linear-gradient(135deg, #0D2744, #0A1628);
+    border-left: 4px solid var(--flow); padding: 2rem 2.5rem; margin: 2rem 0; max-width: 700px;
+  }
+  .big-idea p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; color: var(--foam); max-width: none; }
+
+  .nz-callout {
+    background: linear-gradient(135deg, #1A2800, #0F1A00);
+    border: 1px solid #4CAF50; padding: 2rem 2.5rem; margin: 2.5rem 0; max-width: 700px;
+  }
+  .nz-callout::before {
+    content: '🇳🇿 NZ CONNECTION'; font-family: 'Source Code Pro', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; color: #66BB6A; display: block; margin-bottom: 0.75rem;
+  }
+  .nz-callout p { color: #A5D6A7; max-width: none; }
+  .nz-callout strong { color: #E8F5E9; }
+
+  .challenge {
+    background: #0D1F38; border: 1px solid var(--flow); padding: 2rem 2.5rem; margin: 2.5rem 0; max-width: 700px;
+  }
+  .challenge::before {
+    content: '⚡ CHALLENGE'; font-family: 'Source Code Pro', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; color: var(--flow); display: block; margin-bottom: 0.75rem;
+  }
+  .challenge p { max-width: none; }
+  .challenge ol, .challenge ul { padding-left: 1.5rem; color: var(--muted); margin-top: 0.75rem; }
+  .challenge li { margin-bottom: 0.5rem; }
+  .challenge li strong { color: var(--foam); }
+
+  .think-deeper {
+    background: linear-gradient(135deg, #1A1200, #0A1628);
+    border-left: 4px solid var(--gold); padding: 2rem 2.5rem; margin: 2.5rem 0; max-width: 700px;
+  }
+  .think-deeper::before {
+    content: '🔭 THINK DEEPER'; font-family: 'Source Code Pro', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; color: var(--gold); display: block; margin-bottom: 0.75rem;
+  }
+  .think-deeper p { max-width: none; color: #C8B870; }
+  .think-deeper strong { color: var(--foam); }
+
+  /* RIVER CROSS-SECTION */
+  .diagram {
+    background: #060F1E; border: 1px solid #1A3A5C; padding: 2rem;
+    margin: 2rem 0; max-width: 700px; font-family: 'Source Code Pro', monospace; font-size: 0.72rem;
+  }
+  .diagram pre { color: var(--muted); line-height: 1.6; white-space: pre; overflow-x: auto; }
+  .diagram .label { font-size: 0.62rem; color: #2A4060; margin-top: 0.75rem; }
+
+  /* VOCAB */
+  .vocab-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem; margin: 2rem 0; max-width: 900px;
+  }
+  .vocab-card {
+    background: #0D1F38; border: 1px solid #1A3A5C; padding: 1.25rem 1.5rem;
+    cursor: pointer; transition: border-color 0.2s; position: relative;
+  }
+  .vocab-card:hover { border-color: var(--flow); }
+  .vocab-term { font-family: 'Source Code Pro', monospace; font-size: 0.82rem; color: var(--gold); margin-bottom: 0.5rem; }
+  .vocab-def { font-size: 0.875rem; color: var(--muted); display: none; }
+  .vocab-card.open .vocab-def { display: block; }
+  .vocab-card.open { border-color: var(--flow); }
+  .vocab-hint { font-family: 'Source Code Pro', monospace; font-size: 0.58rem; letter-spacing: 0.1em; color: #1A3A5C; position: absolute; bottom: 0.6rem; right: 0.75rem; }
+
+  /* QUIZ */
+  .quiz-wrap { max-width: 700px; margin: 2rem 0; }
+  .quiz-q { font-size: 1rem; color: var(--foam); font-weight: 600; margin-bottom: 1rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+  .quiz-opt {
+    background: #0D1F38; border: 1px solid #1A3A5C; color: var(--muted);
+    padding: 0.85rem 1.25rem; text-align: left; cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--flow); color: var(--foam); }
+  .quiz-opt.correct { border-color: #4CAF50; color: #A5D6A7; background: #0A1800; }
+  .quiz-opt.wrong { border-color: #C62828; color: #EF9A9A; background: #1A0808; }
+  .quiz-feedback { font-size: 0.875rem; padding: 1rem 1.25rem; margin-top: 0.5rem; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #0A1800; border-left: 3px solid #4CAF50; color: #A5D6A7; }
+  .quiz-feedback.bad { background: #1A0808; border-left: 3px solid #C62828; color: #EF9A9A; }
+
+  .resource-list { list-style: none; max-width: 700px; margin: 1.5rem 0; }
+  .resource-list li { border-bottom: 1px solid #0F2040; padding: 1rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+  .resource-type { font-family: 'Source Code Pro', monospace; font-size: 0.62rem; letter-spacing: 0.1em; background: #0D1F38; color: var(--muted); padding: 0.25rem 0.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .resource-list a { color: var(--flow); text-decoration: none; font-size: 0.95rem; }
+  .resource-list a:hover { color: var(--gold); }
+  .resource-list p { margin: 0.25rem 0 0; font-size: 0.8rem; max-width: none; }
+
+  footer { padding: 4rem 8vw; border-top: 1px solid #0F2040; text-align: center; }
+  footer p { font-family: 'Source Code Pro', monospace; font-size: 0.68rem; letter-spacing: 0.12em; color: #1A3050; max-width: none; text-align: center; }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--flow), transparent); opacity: 0.2; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="hero">
+  <div class="water-lines">
+    <div class="water-line"></div><div class="water-line"></div>
+    <div class="water-line"></div><div class="water-line"></div>
+  </div>
+  <div class="hero-eyebrow">Geography · Lesson 02 of 06</div>
+  <h1>Rivers<br><em>&amp; Erosion</em></h1>
+  <p class="hero-sub">Water carved the Grand Canyon. Water built the Nile Delta. Water shaped every valley you've ever seen. <strong>Rivers are the slowest and most powerful sculptors on Earth</strong> — and New Zealand's short, steep rivers are some of the world's most dramatic.</p>
+  <a href="#bigidea" class="start-btn">Start Learning ↓</a>
+  <div class="scroll-hint">↓ Scroll to explore</div>
+</div>
+
+<div class="divider"></div>
+
+<section id="bigidea">
+  <span class="section-number">01</span>
+  <div class="section-label">The Big Idea</div>
+  <h2>Rivers Don't Just Carry Water — They Carry Landscapes</h2>
+
+  <div class="big-idea reveal">
+    <p>"A river is not just a channel of water. It's a system — constantly picking up material, carrying it, and depositing it somewhere else. Over millions of years, this transforms mountains into plains, and plains into deltas."</p>
+  </div>
+
+  <p class="reveal">Rivers do three things: <strong>erosion</strong> (wearing away rock and soil), <strong>transportation</strong> (carrying that material downstream), and <strong>deposition</strong> (dropping it somewhere new). The balance between these three processes determines what a river looks like at any given point.</p>
+
+  <p class="reveal">A young, steep river high in the mountains erodes aggressively — cutting V-shaped valleys. A mature, slow-moving river on a flat plain deposits sediment — creating wide, winding meanders and floodplains. The same river can do both depending on where you look.</p>
+
+  <h3>The Long Profile of a River</h3>
+
+  <div class="diagram reveal">
+    <pre>
+  SOURCE (mountains)
+  ▲
+  │  ·  Fast-moving, turbulent
+  │    ·  V-shaped valley, waterfalls
+  │       ·  Mostly EROSION
+  │          ·  
+  │             ·  Middle course
+  │                ·  Meanders begin
+  │                   ·  Mix of erosion + deposition
+  │                      ·
+  │                         ·  Lower course
+  │                            ·  Slow, wide, muddy
+  │                               ·  DEPOSITION dominates
+  │                                  ·  Floodplains, deltas
+  ──────────────────────────────────────────────────► SEA
+    </pre>
+    <div class="label">↑ The long profile — a river's journey from source to mouth</div>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand's rivers are unusual by world standards. Because the country is so narrow and the mountains so close to the coast, rivers like the <strong>Waimakariri</strong> and <strong>Clutha</strong> are extremely short but carry enormous amounts of sediment. The South Island's braided rivers — wide, shallow, constantly shifting channels — are almost unique on Earth. They form because the rivers deposit more gravel than they can carry in a single channel, so they split into dozens of smaller streams. You can see them clearly from the air when flying over Canterbury.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">Key Vocabulary</div>
+  <h2>Know the Words, Own the Subject</h2>
+  <p>Tap each card to reveal the definition. Try to guess first.</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Erosion</div>
+      <div class="vocab-def">The wearing away and removal of rock and soil by water, wind, or ice. Rivers erode by hydraulic action (water pressure), abrasion (rocks scraping the bed), and solution (dissolving minerals).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Meander</div>
+      <div class="vocab-def">A bend in a river caused by uneven erosion. The outside of a bend erodes faster (creating a cliff called a river cliff), while the inside deposits sediment (a slip-off slope). Over time, meanders migrate and grow.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Oxbow Lake</div>
+      <div class="vocab-def">When a meander gets so exaggerated that the river cuts through the neck of the loop, leaving the old curve isolated as a crescent-shaped lake. The river straightens itself; the oxbow slowly silts up.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Floodplain</div>
+      <div class="vocab-def">The flat land either side of a river that gets flooded periodically. Made of rich, deposited sediment (alluvium) — which is why floodplains have been farmed for thousands of years (think: Nile, Ganges, Mississippi).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Drainage Basin</div>
+      <div class="vocab-def">The total area of land that drains into a single river system. Separated from neighbouring basins by a watershed (high ground). New Zealand's Southern Alps form a major watershed — rain falling west flows to the Tasman Sea; east flows to the Pacific.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Braided River</div>
+      <div class="vocab-def">A river that splits into multiple interweaving channels separated by gravel bars. Forms when a river carries more sediment than it can transport in one channel. Rare globally — New Zealand's Canterbury Plains have some of the best examples on Earth.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">Watch</div>
+  <h2>Your Documentary Briefing</h2>
+  <p>Professor Iain Stewart is one of the best geography communicators alive. This BBC documentary episode connects rivers to the rise of entire civilisations.</p>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=How+Earth+Made+Us+Water+Iain+Stewart" target="_blank">How Earth Made Us — Water Episode (BBC, Iain Stewart)</a>
+        <p>Search YouTube: "How Earth Made Us Water Iain Stewart." The Water episode (~50 mins) shows how rivers shaped the Nile, the Indus Valley, and Angkor Wat civilisations. You don't have to watch it all — the first 25 minutes is enough to get the core idea.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">BONUS</span>
+      <a href="https://www.youtube.com/results?search_query=New+Zealand+braided+rivers+Canterbury+aerial" target="_blank">Search: "New Zealand braided rivers Canterbury aerial" (YouTube)</a>
+    </li>
+  </ul>
+
+  <div class="challenge reveal">
+    <p>While watching, note answers to these questions:</p>
+    <ol>
+      <li><strong>How did the Nile River shape Egyptian civilisation?</strong></li>
+      <li><strong>What happened when rivers were dammed or diverted?</strong></li>
+      <li><strong>What connects rivers in the documentary to power — political power?</strong></li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">Test Yourself</div>
+  <h2>Five Questions. Read Carefully.</h2>
+
+  <div class="quiz-wrap">
+    <div class="quiz-q">1. Why does a river erode more on the outside of a meander bend than the inside?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">Water moves faster on the outside, creating more erosive force</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The outside bank is made of softer rock</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Gravity pulls water toward the outside of bends</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The outside is deeper, so more water flows there</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. The current is faster on the outside of a bend — it has further to travel in the same time. Faster water = more energy = more erosion. On the inside, water slows and deposits sediment instead.</div>
+    <div class="quiz-feedback bad" id="q1-bad">The key is speed. Water travels faster on the outside of a meander (it has further to go around the bend), giving it more energy to erode. On the inside, water is slower and deposits sediment — creating the gentle sloping bank.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What is a watershed?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">The point where a river meets the sea</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">A dam built to control flooding</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">High ground that separates two adjacent drainage basins</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">The widest point of a river where the most water flows</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. A watershed is high ground — often a mountain ridge — that determines which river system rainfall flows into. In New Zealand, the Southern Alps act as a major watershed dividing rivers flowing west to the Tasman from those flowing east to the Pacific.</div>
+    <div class="quiz-feedback bad" id="q2-bad">A watershed is the high ground (like a mountain ridge) that separates two drainage basins. Rain falling on one side goes into one river system; rain on the other side goes into a completely different one. In NZ, the Southern Alps form a clear watershed.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. Why have the world's great civilisations (Egypt, Mesopotamia, Indus Valley) always developed beside rivers?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Rivers provided fish as the only reliable food source</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Rivers were the only source of stone for building</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">Floodplains provided fertile soil, fresh water, and transport routes all in one place</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Early peoples were afraid of the sea and stayed inland</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Exactly. Rivers provided the full package: fertile floodplain soils (from deposited silt), reliable fresh water for drinking and irrigation, and a transport network for trade. No other landscape offered all three together.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Rivers offered the complete package that civilisations needed: fertile soils from flood deposits, reliable water for agriculture and drinking, and transport routes for trade. That combination — found nowhere else — is why early cities clustered on floodplains.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. An oxbow lake forms when:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">A river is blocked by a landslide, creating a lake upstream</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">A meander's loop gets cut off as the river straightens through the neck</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Glacial meltwater fills a low-lying hollow beside a river</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Heavy rain fills a floodplain depression that doesn't drain</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Right. As meanders get more exaggerated over time, eventually the river erodes through the narrow neck of land between two bends, cutting off the loop. The abandoned loop becomes an oxbow lake, which gradually silts up over decades.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Oxbow lakes form from meanders. As a meander bends more and more, the neck of land between the two bends gets thinner. Eventually the river breaks through, the old loop is cut off, and you have a crescent-shaped lake that slowly fills with sediment.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. New Zealand's braided rivers are rare globally. What causes the braided pattern?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">The rivers are too shallow to cut a single deep channel</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">The rivers carry more sediment than one channel can transport, so they split into many</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Strong winds push the water sideways, splitting the flow</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Earthquakes crack the riverbeds, creating multiple channels</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Correct. NZ's steep mountains erode rapidly, sending huge quantities of gravel into rivers. When a river has more sediment than it can carry in one channel, it deposits gravel bars and splits around them — creating that distinctive braided pattern visible from the air over Canterbury.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Braiding happens when a river is overwhelmed with sediment. NZ's steep Southern Alps erode quickly, dumping enormous quantities of gravel into rivers. The river can't carry it all in one channel — it deposits gravel bars and splits around them, creating dozens of interwoven streams.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">Go Deeper</div>
+  <h2>For the Curious</h2>
+
+  <div class="think-deeper reveal">
+    <p><strong>The Hutt River and Wellington.</strong> The river that runs through Lower Hutt — the Hutt River (Te Awa Kairangi) — has flooded Wellington's suburbs many times. The floodplain it built is exactly why Lower Hutt developed where it did: flat, fertile land near the coast. But that same geology makes it flood-prone. After the 2021 and 2023 floods, engineers are now reconsidering how to manage the river. Should they straighten it? Widen it? Restore the old meanders? Each choice has trade-offs. Look up: <strong>"Hutt River flood management Wellington"</strong> and read what's being proposed.</p>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>The <strong>Whanganui River</strong> was granted legal personhood by the New Zealand government in 2017 — meaning it has the same legal rights as a person. This was recognition of the river's deep significance to Māori (Ko au te awa, ko te awa ko au — "I am the river, the river is me"). It's the first river in the world to be granted this status. Think about what this means geographically and culturally: instead of treating the river as a resource to be used, the law now says it has its own interests that must be protected.</p>
+  </div>
+
+  <div class="challenge reveal">
+    <p><strong>Research Challenge — The Grand Canyon</strong></p>
+    <ol>
+      <li>The Grand Canyon is 1.6 km deep and was carved almost entirely by the Colorado River. <strong>How long did this take?</strong></li>
+      <li>The rock at the bottom of the canyon is almost <strong>2 billion years old</strong>. What does that tell you about erosion rates?</li>
+      <li>Search: <strong>"Grand Canyon formation geology"</strong>. Write two sentences connecting what you learned about erosion in this lesson to the Canyon's formation.</li>
+    </ol>
+  </div>
+
+  <div class="think-deeper reveal">
+    <p><strong>A question to sit with:</strong> Erosion is usually presented as a problem — it destroys farmland, undercuts buildings, silts up harbours. But without erosion, where would the fertile soils that feed most of the world come from? Where would the sand on beaches come from? Where would river deltas (home to hundreds of millions of people) come from? <strong>Is erosion a problem or a process — and does the difference matter?</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">06</span>
+  <div class="section-label">Resources</div>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://education.nationalgeographic.org/resource/erosion/" target="_blank">National Geographic Education — Erosion</a>
+        <p>Clear explanations with excellent diagrams. Start with the main article, then explore the linked resources.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.horizons.govt.nz/rivers-and-lakes" target="_blank">Horizons Regional Council — Rivers & Lakes (NZ)</a>
+        <p>Real river monitoring data for rivers in the Manawatu-Whanganui region. Live flow data, flood alerts, and water quality information.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=How+Earth+Made+Us+Water+BBC+Iain+Stewart" target="_blank">How Earth Made Us — Water (BBC)</a>
+        <p>~50 mins. Iain Stewart connecting rivers to the rise and fall of civilisations. Genuinely excellent television.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">EXPLORE</span>
+      <div>
+        <a href="https://www.lawa.org.nz" target="_blank">LAWA — Land Air Water Aotearoa</a>
+        <p>New Zealand's environmental monitoring portal. Search any river in NZ and see real-time data on water levels, flow, and quality.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <p>GEOGRAPHY SERIES — LESSON 02 OF 06 — RIVERS & EROSION<br>
+  Built for an 11-year-old in Wellington, New Zealand, who is smarter than the curriculum.</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progressBar').style.width = (s/h*100) + '%';
+  });
+  const observer = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  function answer(btn, isCorrect, qId) {
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    document.getElementById(qId + (isCorrect ? '-good' : '-bad')).classList.add('show');
+    if (!isCorrect) btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => { if(b.onclick.toString().includes('true')) b.classList.add('correct'); });
+  }
+</script>
+</body>
+</html>

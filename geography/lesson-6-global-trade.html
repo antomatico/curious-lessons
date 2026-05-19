@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Trade & Resources — Geography Lesson 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #080C10;
+    --dark: #0D1218;
+    --panel: #121820;
+    --gold: #C8920A;
+    --electric: #00FF88;
+    --red-trade: #FF4060;
+    --blue-sea: #0090CC;
+    --text: #B8C8D8;
+    --muted: #5A6878;
+    --light: #E8F0F8;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--void);color:var(--text);font-family:'Rajdhani',sans-serif;font-weight:400;line-height:1.75;overflow-x:hidden;}
+  .progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--electric);width:0%;transition:width 0.1s;z-index:999;}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:6rem 8vw;position:relative;overflow:hidden;background:var(--void);}
+
+  /* Trade route animated lines */
+  .trade-lines{position:absolute;inset:0;pointer-events:none;}
+  .trade-line{position:absolute;height:1px;background:linear-gradient(to right,transparent,rgba(0,255,136,0.4),transparent);animation:tradePulse 6s ease-in-out infinite;}
+  .trade-line:nth-child(1){top:25%;width:70%;left:10%;animation-delay:0s;}
+  .trade-line:nth-child(2){top:40%;width:50%;left:30%;animation-delay:-2s;opacity:0.6;}
+  .trade-line:nth-child(3){top:60%;width:80%;left:5%;animation-delay:-4s;opacity:0.4;}
+  .trade-line:nth-child(4){top:75%;width:60%;left:20%;animation-delay:-1s;opacity:0.3;}
+  @keyframes tradePulse{0%,100%{opacity:0;}50%{opacity:1;}}
+
+  /* Container ship silhouette */
+  .ship{position:absolute;right:5vw;bottom:10%;opacity:0.06;pointer-events:none;}
+
+  .hero-eyebrow{font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--electric);margin-bottom:1.5rem;animation:fadeUp 0.6s ease both;position:relative;z-index:1;}
+  .hero h1{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(3rem,9vw,7rem);line-height:1.0;color:var(--light);letter-spacing:0.03em;animation:fadeUp 0.6s 0.1s ease both;position:relative;z-index:1;}
+  .hero h1 span{display:block;color:var(--electric);font-size:0.6em;letter-spacing:0.1em;font-weight:500;}
+  .hero-sub{max-width:520px;margin-top:2rem;font-size:1.05rem;color:var(--muted);animation:fadeUp 0.6s 0.2s ease both;position:relative;z-index:1;}
+  .hero-sub strong{color:var(--light);font-weight:600;}
+  .start-btn{display:inline-block;margin-top:3rem;padding:1rem 2.5rem;background:var(--electric);color:#000;font-family:'Courier Prime',monospace;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;font-weight:700;transition:background 0.2s,transform 0.2s;animation:fadeUp 0.6s 0.3s ease both;position:relative;z-index:1;}
+  .start-btn:hover{background:#80FFBB;transform:translateY(-2px);}
+  .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'Courier Prime',monospace;font-size:0.62rem;letter-spacing:0.2em;color:#1A2030;text-transform:uppercase;animation:bounce 2s ease infinite;z-index:1;}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+  section{padding:5rem 8vw;border-top:1px solid #1A2030;position:relative;}
+  .section-number{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:7rem;color:#0D1218;position:absolute;top:2rem;right:6vw;line-height:1;pointer-events:none;user-select:none;}
+  .section-label{font-family:'Courier Prime',monospace;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--electric);margin-bottom:1rem;}
+  h2{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(2rem,4.5vw,3.2rem);color:var(--light);margin-bottom:1.5rem;line-height:1.15;letter-spacing:0.03em;}
+  h3{font-weight:600;font-size:1.1rem;color:var(--gold);margin:2rem 0 0.75rem;}
+  p{color:var(--muted);max-width:680px;margin-bottom:1rem;}
+  p strong{color:var(--light);font-weight:600;}
+
+  .big-idea{background:linear-gradient(135deg,#0D1800,#0D1218);border-left:4px solid var(--electric);padding:2rem 2.5rem;margin:2rem 0;max-width:700px;}
+  .big-idea p{font-family:'Libre Baskerville',serif;font-style:italic;font-size:1.1rem;color:var(--light);max-width:none;}
+
+  .nz-callout{background:linear-gradient(135deg,#001A0A,#000D05);border:1px solid #00A050;padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .nz-callout::before{content:'🇳🇿 NZ CONNECTION';font-family:'Courier Prime',monospace;font-size:0.62rem;letter-spacing:0.2em;color:#00C060;display:block;margin-bottom:0.75rem;}
+  .nz-callout p{color:#80C8A0;max-width:none;}
+  .nz-callout strong{color:#C0E8D0;}
+
+  .challenge{background:#0D1218;border:1px solid var(--electric);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .challenge::before{content:'⚡ CHALLENGE';font-family:'Courier Prime',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--electric);display:block;margin-bottom:0.75rem;}
+  .challenge p{max-width:none;}
+  .challenge ol,.challenge ul{padding-left:1.5rem;color:var(--muted);margin-top:0.75rem;}
+  .challenge li{margin-bottom:0.5rem;}
+  .challenge li strong{color:var(--light);}
+
+  .think-deeper{background:linear-gradient(135deg,#1A1000,#0D1218);border-left:4px solid var(--gold);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .think-deeper::before{content:'🔭 THINK DEEPER';font-family:'Courier Prime',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--gold);display:block;margin-bottom:0.75rem;}
+  .think-deeper p{max-width:none;color:#B8900A;}
+  .think-deeper strong{color:var(--light);}
+
+  /* Trade flow table */
+  .trade-table{width:100%;max-width:700px;border-collapse:collapse;margin:2rem 0;font-size:0.875rem;}
+  .trade-table th{font-family:'Courier Prime',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--electric);border-bottom:1px solid #1A2A3A;padding:0.75rem 1rem;text-align:left;background:#0D1218;}
+  .trade-table td{padding:0.75rem 1rem;border-bottom:1px solid #141E28;color:var(--muted);}
+  .trade-table tr:hover td{background:#0D1820;color:var(--text);}
+  .trade-table td:first-child{color:var(--light);font-weight:500;}
+
+  /* Resource power grid */
+  .resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin:2rem 0;max-width:860px;}
+  .resource-card{background:var(--panel);border:1px solid #1A2A3A;padding:1.25rem;position:relative;overflow:hidden;}
+  .resource-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .resource-card.oil::before{background:var(--red-trade);}
+  .resource-card.food::before{background:var(--electric);}
+  .resource-card.minerals::before{background:var(--gold);}
+  .resource-card.tech::before{background:var(--blue-sea);}
+  .resource-icon{font-size:1.5rem;margin-bottom:0.5rem;}
+  .resource-name{font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;}
+  .resource-fact{font-size:0.82rem;color:var(--text);}
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:2rem 0;max-width:900px;}
+  .vocab-card{background:var(--panel);border:1px solid #1A2A3A;padding:1.25rem 1.5rem;cursor:pointer;transition:border-color 0.2s;position:relative;}
+  .vocab-card:hover{border-color:var(--electric);}
+  .vocab-term{font-family:'Courier Prime',monospace;font-size:0.82rem;color:var(--gold);margin-bottom:0.5rem;}
+  .vocab-def{font-size:0.875rem;color:var(--muted);display:none;}
+  .vocab-card.open .vocab-def{display:block;}
+  .vocab-card.open{border-color:var(--electric);}
+  .vocab-hint{font-family:'Courier Prime',monospace;font-size:0.58rem;letter-spacing:0.1em;color:#1A2A3A;position:absolute;bottom:0.6rem;right:0.75rem;}
+
+  .quiz-wrap{max-width:700px;margin:2rem 0;}
+  .quiz-q{font-size:1rem;color:var(--light);font-weight:600;margin-bottom:1rem;}
+  .quiz-options{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem;}
+  .quiz-opt{background:var(--panel);border:1px solid #1A2A3A;color:var(--muted);padding:0.85rem 1.25rem;text-align:left;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.95rem;transition:all 0.15s;}
+  .quiz-opt:hover{border-color:var(--electric);color:var(--light);}
+  .quiz-opt.correct{border-color:var(--electric);color:#80FFB0;background:#001A08;}
+  .quiz-opt.wrong{border-color:var(--red-trade);color:#FF9090;background:#1A0808;}
+  .quiz-feedback{font-size:0.875rem;padding:1rem 1.25rem;margin-top:0.5rem;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.good{background:#001A08;border-left:3px solid var(--electric);color:#80FFB0;}
+  .quiz-feedback.bad{background:#1A0808;border-left:3px solid var(--red-trade);color:#FF9090;}
+
+  .resource-list{list-style:none;max-width:700px;margin:1.5rem 0;}
+  .resource-list li{border-bottom:1px solid #141E28;padding:1rem 0;display:flex;gap:1rem;align-items:flex-start;}
+  .resource-type{font-family:'Courier Prime',monospace;font-size:0.62rem;letter-spacing:0.1em;background:var(--panel);color:var(--muted);padding:0.25rem 0.5rem;flex-shrink:0;margin-top:0.1rem;}
+  .resource-list a{color:var(--electric);text-decoration:none;font-size:0.95rem;}
+  .resource-list a:hover{color:var(--gold);}
+  .resource-list p{margin:0.25rem 0 0;font-size:0.8rem;max-width:none;}
+
+  footer{padding:4rem 8vw;border-top:1px solid #1A2030;text-align:center;}
+  footer p{font-family:'Courier Prime',monospace;font-size:0.68rem;letter-spacing:0.12em;color:#1A2030;max-width:none;text-align:center;}
+  .divider{height:1px;background:linear-gradient(to right,transparent,var(--electric),transparent);opacity:0.15;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="hero">
+  <div class="trade-lines">
+    <div class="trade-line"></div><div class="trade-line"></div>
+    <div class="trade-line"></div><div class="trade-line"></div>
+  </div>
+  <svg class="ship" width="400" height="120" viewBox="0 0 400 120">
+    <rect x="20" y="70" width="360" height="30" fill="white"/>
+    <rect x="40" y="40" width="280" height="32" fill="white"/>
+    <rect x="60" y="10" width="60" height="32" fill="white"/>
+    <rect x="150" y="10" width="60" height="32" fill="white"/>
+    <polygon points="380,100 400,70 380,70" fill="white"/>
+  </svg>
+  <div class="hero-eyebrow">Geography · Lesson 06 of 06</div>
+  <h1>Global Trade<span>&amp; Resource Geography</span></h1>
+  <p class="hero-sub">The shirt you're wearing was probably made in Bangladesh. The phone in your pocket assembled in China from minerals mined in Congo. <strong>Every object you own is the product of a global geography you've never thought about — until now.</strong></p>
+  <a href="#bigidea" class="start-btn">Start Learning ↓</a>
+  <div class="scroll-hint">↓ Scroll to explore</div>
+</div>
+
+<div class="divider"></div>
+
+<section id="bigidea">
+  <span class="section-number">01</span>
+  <div class="section-label">The Big Idea</div>
+  <h2>Resources Are Not Spread Evenly — and That Shapes Everything</h2>
+
+  <div class="big-idea reveal">
+    <p>"No country has everything it needs. Geography determines who has oil, who has farmland, who has minerals, who has labour. Trade is the mechanism that connects them — and whoever controls the most critical resources tends to control the most political power."</p>
+  </div>
+
+  <p class="reveal">The global economy is essentially a massive system for moving stuff from where it is to where it's needed. Raw materials are extracted in one country, processed in another, manufactured into products in a third, and consumed in a fourth. This is called a <strong>global supply chain</strong> — and COVID-19 showed the world just how fragile it can be when one link breaks.</p>
+
+  <h3>Resources That Shape World Geography</h3>
+
+  <div class="resource-grid reveal">
+    <div class="resource-card oil">
+      <div class="resource-icon">🛢️</div>
+      <div class="resource-name">Oil & Gas</div>
+      <div class="resource-fact">Concentrated in the Middle East, Russia, and Venezuela. Powers wars, alliances, and entire economies. Saudi Arabia has 17% of global reserves.</div>
+    </div>
+    <div class="resource-card food">
+      <div class="resource-icon">🌾</div>
+      <div class="resource-name">Food & Agriculture</div>
+      <div class="resource-fact">The US, Brazil, and Ukraine feed much of the world. Ukraine's 2022 invasion by Russia triggered a global food price crisis affecting 50+ countries.</div>
+    </div>
+    <div class="resource-card minerals">
+      <div class="resource-icon">⚙️</div>
+      <div class="resource-name">Critical Minerals</div>
+      <div class="resource-fact">Lithium (batteries), cobalt (electronics), and rare earth elements. Congo has 70% of world cobalt. China controls 60% of rare earth processing.</div>
+    </div>
+    <div class="resource-card tech">
+      <div class="resource-icon">💻</div>
+      <div class="resource-name">Semiconductors</div>
+      <div class="resource-fact">Taiwan makes ~90% of the world's most advanced microchips. Every smartphone, car, and weapon system depends on them — making Taiwan one of the most geopolitically significant islands on Earth.</div>
+    </div>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand's economy is almost entirely built on <strong>primary resource exports</strong> — things that come out of the ground or off the land. Dairy (largest export), meat, wool, timber, and increasingly tourism. NZ exports to China, Australia, the US, Japan, and the EU. This makes NZ deeply vulnerable to global commodity prices and trade relationships — particularly with China, which is now NZ's largest trading partner. When China and Australia had a trade dispute in 2020, NZ watched carefully. <strong>Small countries near powerful ones always have complicated trade geography.</strong></p>
+  </div>
+
+  <h3>How Global Trade Flows Work</h3>
+  <p>Most of the world's goods travel by ship. About <strong>90% of global trade by volume</strong> moves on container ships — enormous vessels that can carry 20,000+ shipping containers. The key strategic bottlenecks are:</p>
+
+  <table class="trade-table reveal">
+    <thead>
+      <tr><th>Chokepoint</th><th>Where</th><th>Why It Matters</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Strait of Hormuz</td><td>Persian Gulf exit</td><td>~20% of global oil passes through here daily</td></tr>
+      <tr><td>Suez Canal</td><td>Egypt</td><td>Connects Europe and Asia — when blocked in 2021, cost $9B/day</td></tr>
+      <tr><td>Strait of Malacca</td><td>Malaysia/Singapore</td><td>Busiest shipping lane on Earth — 80% of Asian oil imports</td></tr>
+      <tr><td>Panama Canal</td><td>Central America</td><td>Connects Pacific and Atlantic — vital for US-Asia trade</td></tr>
+      <tr><td>Taiwan Strait</td><td>Between China/Taiwan</td><td>Semiconductor supply chain + military flashpoint</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">Key Vocabulary</div>
+  <h2>Know the Words, Own the Subject</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Supply Chain</div>
+      <div class="vocab-def">The entire sequence of steps needed to produce and deliver a product — from raw material extraction through manufacturing, packaging, shipping, and retail. Modern supply chains span dozens of countries. The iPhone involves components from 43 countries.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Comparative Advantage</div>
+      <div class="vocab-def">The economic principle that countries should specialise in producing what they're relatively best at, then trade for everything else. NZ has a comparative advantage in dairy and meat — not because no other country can produce them, but because NZ's geography and climate makes it unusually efficient.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Commodity</div>
+      <div class="vocab-def">A raw material or agricultural product that can be bought and sold — oil, wheat, iron ore, milk powder, timber. Commodity prices fluctuate based on global supply and demand and heavily affect the economies of countries that export them (like New Zealand).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Trade Deficit / Surplus</div>
+      <div class="vocab-def">When a country imports more than it exports (deficit) or exports more than it imports (surplus). NZ often runs a trade deficit — we import more goods by value than we export. China runs the world's largest trade surplus — it sells far more than it buys.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Geopolitics</div>
+      <div class="vocab-def">How geography influences politics and international relations. Countries go to war over trade routes, resources, and strategic geography. The South China Sea dispute is partly about fishing rights, partly about undersea oil and gas, and partly about who controls the world's most important shipping lane.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Resource Curse</div>
+      <div class="vocab-def">The paradox where countries rich in natural resources (oil, diamonds, minerals) often have worse economic development and more conflict than countries without them. Oil wealth in Nigeria or diamonds in Sierra Leone have funded wars, corruption, and inequality rather than prosperity. Why? Because resource wealth concentrates power without requiring broad economic development.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">Watch</div>
+  <h2>Your Documentary Briefing</h2>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/watch?v=1KtTAb9Tl6E" target="_blank">WSJ: Why Global Supply Chains May Never Be the Same (YouTube, free, ~30 mins)</a>
+        <p>Wall Street Journal documentary covering how sailors, truck drivers, and warehouse workers keep the global economy moving — and what COVID revealed about supply chain fragility. Excellent and accessible.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">BONUS</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=DW+Documentary+globalization+winners+losers+world+trade" target="_blank">DW Documentary: Globalization — Winners and Losers in World Trade (~42 mins, free)</a>
+        <p>Broader look at how global trade benefits some countries and disadvantages others. Connects geography, economics, and politics directly.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="challenge reveal">
+    <p>While watching, note:</p>
+    <ol>
+      <li><strong>What broke down during COVID, and why?</strong></li>
+      <li><strong>Who are the invisible workers who keep global trade moving?</strong></li>
+      <li><strong>What would happen to New Zealand if container shipping became impossible for a month?</strong></li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">Test Yourself</div>
+  <h2>Five Questions. Read Carefully.</h2>
+
+  <div class="quiz-wrap">
+    <div class="quiz-q">1. About what percentage of global trade by volume travels by sea?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">About 40%</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">About 60%</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">About 90%</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">About 99%</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct — roughly 90% of global trade by volume moves by sea. This is why maritime geography — chokepoints, shipping lanes, ports — is so strategically critical. When the Ever Given got stuck in the Suez Canal in 2021 for six days, it held up an estimated $9 billion of goods per day.</div>
+    <div class="quiz-feedback bad" id="q1-bad">About 90% of global trade by volume moves by sea. This is why naval power and maritime geography have always been central to geopolitics — controlling key shipping routes means controlling global commerce. The Suez Canal, Panama Canal, and Strait of Hormuz are not just geography; they're power.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What is the "resource curse" — and which of these is the best example of it?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Norway — oil wealth made it one of the world's richest countries</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">Nigeria — despite having massive oil reserves, most citizens live in poverty and the country has experienced decades of instability and conflict</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Japan — lack of natural resources forced it to develop advanced manufacturing</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">New Zealand — dairy exports have created over-dependence on a single industry</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes — Nigeria is the classic resource curse example. Despite being Africa's largest oil producer, the majority of its population lives in poverty. Oil wealth concentrated power among a small elite, funded corruption, enabled conflict, and actually discouraged the broader economic development that countries without resources were forced to pursue. Norway is often given as the counter-example — it managed oil wealth through a sovereign wealth fund that benefited all citizens.</div>
+    <div class="quiz-feedback bad" id="q2-bad">The resource curse refers to countries rich in resources but poor in development outcomes. Nigeria is the textbook example — massive oil wealth, persistent poverty and instability. Norway is the counter-example: oil wealth managed through a sovereign wealth fund that now holds over $1 trillion for all Norwegian citizens. The difference is governance and institutional quality, not geography alone.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. New Zealand's largest trading partner is China. Why might this create geographic and political risk?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">China is very far from New Zealand, making shipping costs prohibitively expensive</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">China and New Zealand have different time zones, making business difficult</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">Dependence on a single large trading partner means NZ is vulnerable if that relationship is disrupted — economically or politically</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">China's economy is growing too fast for NZ to compete as a supplier</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Correct. When one country is dependent on a single trading partner for a large share of its exports, political disagreements can become economic weapons. China applied trade pressure on Australia in 2020 (blocking wine, barley, beef, coal imports) after Australia called for a COVID inquiry. NZ watched this closely — too much dependence creates geopolitical vulnerability.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Trade concentration is a geographic risk. When NZ exports a large share of its goods to China, it becomes vulnerable to Chinese political decisions. If China decides to restrict NZ imports (as it did with Australian goods in 2020), NZ's economy suffers. Diversifying trading partners is a geographic-economic strategy to reduce that risk.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Taiwan produces about 90% of the world's most advanced microchips. Why does this make Taiwan geopolitically important far beyond its size?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Taiwan's location makes it the most important naval base in the Pacific</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">Modern economies — cars, smartphones, weapons — all depend on these chips, so a disruption to Taiwan's supply would cripple global industry</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Taiwan's large population makes it a major consumer market for global goods</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Taiwan controls the shipping lane between China and the rest of Asia</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Exactly. TSMC (Taiwan Semiconductor Manufacturing Company) makes the chips in your phone, your car, your laptop, and most military equipment. If Taiwan were seized or its semiconductor fabs destroyed, global industry would grind to a halt within months. This is what geographers call "critical infrastructure geography" — small places with enormous global leverage.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Taiwan's leverage comes from semiconductor geography. TSMC makes chips that go into virtually every advanced piece of technology on Earth. No chips means no smartphones, no modern cars, no military systems. This gives a small island extraordinary geopolitical weight — it's not about size or population, but about what's produced there and how irreplaceable it is.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. When the Ever Given container ship blocked the Suez Canal for six days in 2021, shops in Europe and North America faced shortages of goods. What does this reveal about global supply chains?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">That European and North American countries are too dependent on cheap labour elsewhere</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">That container ships are poorly designed and need to be made wider</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">That global supply chains have very little buffer — they're optimised for efficiency, not resilience, so a single disruption cascades quickly</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">That the Suez Canal is too important and should be widened immediately</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Correct. Modern supply chains are built on "just-in-time" principles — meaning goods are delivered exactly when needed with minimal stockpiles. This is efficient in normal conditions, but creates extreme fragility. Six days of blockage cascaded into weeks of delays, empty shelves, and billions in losses. COVID showed the same thing on a global scale: efficiency and resilience are often opposites.</div>
+    <div class="quiz-feedback bad" id="q5-bad">The Ever Given revealed "just-in-time" fragility. Modern supply chains hold minimal buffer stock — goods arrive exactly when needed. This is hyper-efficient but fragile: one disruption at a chokepoint cascades through the entire system. Six days became weeks of delays. COVID made the same point at global scale: supply chains optimised for efficiency are fragile under stress.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">Go Deeper</div>
+  <h2>For the Curious</h2>
+
+  <div class="think-deeper reveal">
+    <p><strong>The Phone in Your Pocket.</strong> A modern smartphone contains about 60 different elements from the periodic table. The tungsten in your phone's vibration motor likely came from a mine in Rwanda. The cobalt in the battery probably from the Democratic Republic of Congo — where mining conditions are often extremely dangerous. The screen's rare earth elements processed in China. Assembled in China or Vietnam. Designed in the US. Sold globally. Your phone is a geography lesson you hold in your hand. <strong>Search: "smartphone supply chain map"</strong> and trace it.</p>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand's economy depends on commodities — and commodity prices are set globally, not by NZ. When the global price of milk powder drops (as it did sharply in 2015), NZ dairy farmers suffer regardless of how efficiently they operate. When China restricts beef imports, NZ exporters scramble. <strong>This vulnerability is the defining geographic challenge of small commodity-exporting economies.</strong> Research: <strong>"New Zealand export partners 2024"</strong> — see how concentrated NZ's trade relationships are, and think about the risk that creates.</p>
+  </div>
+
+  <div class="challenge reveal">
+    <p><strong>Research Challenge — Trace One Object</strong></p>
+    <p>Pick one object in your house: a shoe, a piece of clothing, a piece of fruit, or your school bag.</p>
+    <ol>
+      <li>Find out <strong>where it was made</strong> (check the label).</li>
+      <li>Research: <strong>what raw materials does it contain, and where do they typically come from?</strong></li>
+      <li>Identify at least <strong>three countries</strong> involved in getting that object to your home.</li>
+      <li>Write three sentences describing the supply chain — and one sentence on what would happen if one country in that chain had a crisis.</li>
+    </ol>
+  </div>
+
+  <div class="think-deeper reveal">
+    <p><strong>A question to sit with:</strong> Global trade has lifted hundreds of millions of people out of poverty by connecting labour in developing countries to wealthy consumers. But it has also created inequality — the people mining cobalt in Congo earn a fraction of the profit captured by the companies selling the final product. <strong>Who should decide whether global trade is "fair"? Is it enough that trade creates economic growth — or does it matter how that growth is distributed?</strong> And what geography would need to change for the answer to be different?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">06</span>
+  <div class="section-label">Resources</div>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.rgs.org/schools/resources-for-schools/global-trade/the-global-supply-chain" target="_blank">Royal Geographical Society — Global Supply Chain</a>
+        <p>Excellent structured lesson tracking the supply chain of cotton clothing across multiple countries. Uses Google Earth to show the geographic journey.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">DATA</span>
+      <div>
+        <a href="https://ourworldindata.org/trade-and-globalization" target="_blank">Our World in Data — Trade & Globalisation</a>
+        <p>Interactive charts showing how global trade has grown, which countries trade what, and how trade shapes development. Excellent data visualisation.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/watch?v=1KtTAb9Tl6E" target="_blank">WSJ: Why Global Supply Chains May Never Be the Same</a>
+        <p>~30 mins, free on YouTube. The most accessible documentary introduction to how global trade actually works.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">NZ DATA</span>
+      <div>
+        <a href="https://www.stats.govt.nz/topics/international-trade" target="_blank">Stats NZ — International Trade Statistics</a>
+        <p>What NZ exports, to whom, and what we import. Real data on NZ's place in global trade geography.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <p>GEOGRAPHY SERIES — LESSON 06 OF 06 — GLOBAL TRADE & RESOURCE GEOGRAPHY<br>
+  Built for an 11-year-old in Wellington, New Zealand, who is smarter than the curriculum.<br><br>
+  ✦ SERIES COMPLETE ✦</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(s/h*100)+'%';});
+  const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  function answer(btn,isCorrect,qId){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(isCorrect?'correct':'wrong');document.getElementById(qId+(isCorrect?'-good':'-bad')).classList.add('show');if(!isCorrect)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>

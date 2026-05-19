@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Systems & Weather — Geography Lesson 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #0B1E3D;
+    --cloud: #C5D8F0;
+    --wind: #5BA8D4;
+    --storm: #2E7DB5;
+    --sun: #FFD600;
+    --warm: #FF7043;
+    --cold: #4DD0E1;
+    --green: #66BB6A;
+    --text: #C5D8F0;
+    --muted: #6A8CAA;
+    --cream: #EEF4FF;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--sky); color:var(--text); font-family:'Space Grotesk',sans-serif; font-weight:300; line-height:1.75; overflow-x:hidden; }
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--wind); width:0%; transition:width 0.1s; z-index:999; }
+
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+    padding:6rem 8vw; position:relative; overflow:hidden;
+    background:radial-gradient(ellipse at 20% 50%, #1A3A6B 0%, #0B1E3D 60%);
+  }
+
+  /* Cloud layers */
+  .cloud-layer { position:absolute; inset:0; pointer-events:none; }
+  .cloud {
+    position:absolute; background:rgba(197,216,240,0.04);
+    border-radius:50%; filter:blur(40px);
+    animation:driftCloud linear infinite;
+  }
+  .cloud:nth-child(1) { width:40vw; height:20vh; top:20%; left:-10%; animation-duration:40s; }
+  .cloud:nth-child(2) { width:30vw; height:15vh; top:50%; left:20%; animation-duration:55s; animation-delay:-20s; opacity:0.6; }
+  .cloud:nth-child(3) { width:50vw; height:25vh; top:70%; left:60%; animation-duration:35s; animation-delay:-10s; opacity:0.4; }
+  @keyframes driftCloud { from{transform:translateX(0);} to{transform:translateX(120vw);} }
+
+  .hero-eyebrow { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--wind); margin-bottom:1.5rem; animation:fadeUp 0.6s ease both; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(3rem,9vw,7.5rem); line-height:1.0; color:var(--cream); font-weight:800; animation:fadeUp 0.6s 0.1s ease both; }
+  .hero h1 span { display:block; color:var(--wind); font-weight:700; font-size:0.65em; }
+  .hero-sub { max-width:520px; margin-top:2rem; font-size:1.05rem; color:var(--muted); animation:fadeUp 0.6s 0.2s ease both; }
+  .hero-sub strong { color:var(--cream); font-weight:600; }
+  .start-btn { display:inline-block; margin-top:3rem; padding:1rem 2.5rem; background:var(--storm); color:white; font-family:'IBM Plex Mono',monospace; font-size:0.82rem; letter-spacing:0.15em; text-transform:uppercase; text-decoration:none; border:none; cursor:pointer; transition:background 0.2s,transform 0.2s; animation:fadeUp 0.6s 0.3s ease both; }
+  .start-btn:hover { background:var(--wind); transform:translateY(-2px); }
+  .scroll-hint { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:#1A3050; text-transform:uppercase; animation:bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
+
+  section { padding:5rem 8vw; border-top:1px solid #112030; position:relative; }
+  .section-number { font-family:'Syne',sans-serif; font-size:7rem; color:#0D1A2E; position:absolute; top:2rem; right:6vw; line-height:1; pointer-events:none; user-select:none; }
+  .section-label { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--wind); margin-bottom:1rem; }
+  h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(1.8rem,4vw,3rem); color:var(--cream); margin-bottom:1.5rem; line-height:1.15; }
+  h3 { font-weight:600; font-size:1.05rem; color:var(--sun); margin:2rem 0 0.75rem; }
+  p { color:var(--muted); max-width:680px; margin-bottom:1rem; }
+  p strong { color:var(--cream); font-weight:600; }
+
+  .big-idea { background:linear-gradient(135deg,#0F2A4A,#0B1E3D); border-left:4px solid var(--wind); padding:2rem 2.5rem; margin:2rem 0; max-width:700px; }
+  .big-idea p { font-size:1.15rem; color:var(--cream); font-style:italic; max-width:none; }
+
+  .nz-callout { background:linear-gradient(135deg,#002A1A,#001510); border:1px solid var(--green); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .nz-callout::before { content:'🇳🇿 NZ CONNECTION'; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--green); display:block; margin-bottom:0.75rem; }
+  .nz-callout p { color:#A5D6A7; max-width:none; }
+  .nz-callout strong { color:#E8F5E9; }
+
+  .challenge { background:#0D1A2E; border:1px solid var(--wind); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .challenge::before { content:'⚡ CHALLENGE'; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--wind); display:block; margin-bottom:0.75rem; }
+  .challenge p { max-width:none; }
+  .challenge ol,.challenge ul { padding-left:1.5rem; color:var(--muted); margin-top:0.75rem; }
+  .challenge li { margin-bottom:0.5rem; }
+  .challenge li strong { color:var(--cream); }
+
+  .think-deeper { background:linear-gradient(135deg,#1A1400,#0B1E3D); border-left:4px solid var(--sun); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .think-deeper::before { content:'🔭 THINK DEEPER'; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--sun); display:block; margin-bottom:0.75rem; }
+  .think-deeper p { max-width:none; color:#C8B870; }
+  .think-deeper strong { color:var(--cream); }
+
+  /* Two-column climate compare */
+  .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:2rem 0; max-width:700px; }
+  .compare-card { padding:1.5rem; }
+  .compare-card.warm { background:linear-gradient(135deg,#2A1000,#1A0800); border:1px solid var(--warm); }
+  .compare-card.cold { background:linear-gradient(135deg,#001A2A,#000F1A); border:1px solid var(--cold); }
+  .compare-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.75rem; }
+  .compare-card.warm .compare-label { color:var(--warm); }
+  .compare-card.cold .compare-label { color:var(--cold); }
+  .compare-card p { font-size:0.875rem; max-width:none; margin:0; }
+
+  .diagram { background:#060F1E; border:1px solid #1A3050; padding:2rem; margin:2rem 0; max-width:700px; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; }
+  .diagram pre { color:var(--muted); line-height:1.6; white-space:pre; overflow-x:auto; }
+  .diagram .label { font-size:0.62rem; color:#1A3050; margin-top:0.75rem; }
+
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; margin:2rem 0; max-width:900px; }
+  .vocab-card { background:#0D1A2E; border:1px solid #1A3050; padding:1.25rem 1.5rem; cursor:pointer; transition:border-color 0.2s; position:relative; }
+  .vocab-card:hover { border-color:var(--wind); }
+  .vocab-term { font-family:'IBM Plex Mono',monospace; font-size:0.82rem; color:var(--sun); margin-bottom:0.5rem; }
+  .vocab-def { font-size:0.875rem; color:var(--muted); display:none; }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-card.open { border-color:var(--wind); }
+  .vocab-hint { font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#1A3050; position:absolute; bottom:0.6rem; right:0.75rem; }
+
+  .quiz-wrap { max-width:700px; margin:2rem 0; }
+  .quiz-q { font-size:1rem; color:var(--cream); font-weight:600; margin-bottom:1rem; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.5rem; }
+  .quiz-opt { background:#0D1A2E; border:1px solid #1A3050; color:var(--muted); padding:0.85rem 1.25rem; text-align:left; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:0.9rem; transition:all 0.15s; }
+  .quiz-opt:hover { border-color:var(--wind); color:var(--cream); }
+  .quiz-opt.correct { border-color:var(--green); color:#A5D6A7; background:#001500; }
+  .quiz-opt.wrong { border-color:#C62828; color:#EF9A9A; background:#1A0808; }
+  .quiz-feedback { font-size:0.875rem; padding:1rem 1.25rem; margin-top:0.5rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#001500; border-left:3px solid var(--green); color:#A5D6A7; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid #C62828; color:#EF9A9A; }
+
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid #112030; padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type { font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; background:#0D1A2E; color:var(--muted); padding:0.25rem 0.5rem; flex-shrink:0; margin-top:0.1rem; }
+  .resource-list a { color:var(--wind); text-decoration:none; font-size:0.95rem; }
+  .resource-list a:hover { color:var(--sun); }
+  .resource-list p { margin:0.25rem 0 0; font-size:0.8rem; max-width:none; }
+
+  footer { padding:4rem 8vw; border-top:1px solid #112030; text-align:center; }
+  footer p { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; color:#1A3050; max-width:none; text-align:center; }
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--wind),transparent); opacity:0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(20px); transition:opacity 0.6s ease,transform 0.6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="hero">
+  <div class="cloud-layer">
+    <div class="cloud"></div><div class="cloud"></div><div class="cloud"></div>
+  </div>
+  <div class="hero-eyebrow">Geography · Lesson 03 of 06</div>
+  <h1>Climate<br>Systems<span>&amp; Weather Patterns</span></h1>
+  <p class="hero-sub">Weather is what's happening outside right now. Climate is what you expect to happen. <strong>Understanding the difference — and why Wellington is so windy — requires understanding how the whole atmosphere works as a system.</strong></p>
+  <a href="#bigidea" class="start-btn">Start Learning ↓</a>
+  <div class="scroll-hint">↓ Scroll to explore</div>
+</div>
+
+<div class="divider"></div>
+
+<section id="bigidea">
+  <span class="section-number">01</span>
+  <div class="section-label">The Big Idea</div>
+  <h2>The Atmosphere Is a Heat Engine</h2>
+
+  <div class="big-idea reveal">
+    <p>"The Sun heats the Earth unevenly — more at the equator, less at the poles. This imbalance drives everything: winds, ocean currents, rainfall patterns, seasons. Every storm, every drought, every calm summer's day is the atmosphere trying to even out that temperature difference."</p>
+  </div>
+
+  <p class="reveal">The difference between <strong>weather</strong> and <strong>climate</strong> is time. Weather is the atmosphere's conditions right now — temperature, wind, rain. Climate is the long-term average of those conditions over decades. Wellington's weather changes hour to hour. Wellington's climate — consistently windy, mild, wet — has been the same for thousands of years.</p>
+
+  <h3>How the Atmosphere Circulates</h3>
+  <p>The atmosphere doesn't move randomly. It circulates in predictable bands called <strong>circulation cells</strong>:</p>
+
+  <div class="diagram reveal">
+    <pre>
+  NORTH POLE  (Cold — air sinks, flows toward equator)
+  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  60°N  ← Polar Cell → Cool, wet (UK, Canada, NZ South Island)
+  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  30°N  ← Ferrel Cell → Mild westerly winds
+  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+   0°   ← Hadley Cell → HOT, wet (tropics, rainforests)
+  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+  30°S  ← Ferrel Cell → Mild westerly winds  ← NZ is HERE
+  ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+  60°S  ← Polar Cell → Cold, stormy Southern Ocean
+  SOUTH POLE (Coldest place on Earth)
+    </pre>
+    <div class="label">↑ Global atmospheric circulation cells — NZ sits in the southern Ferrel Cell</div>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>Wellington's famous wind is not a coincidence. New Zealand sits in the "Roaring Forties" — the latitude band between 40° and 50° south, where the Ferrel Cell drives powerful westerly winds with almost nothing to block them. There's barely any landmass between New Zealand and South America at this latitude — just open ocean for thousands of kilometres. The wind builds up speed and hits Cook Strait, which funnels it even faster between the two islands. <strong>Wellington is consistently one of the windiest cities on Earth.</strong> That's pure atmospheric geography.</p>
+  </div>
+
+  <h3>Weather vs Climate — The Key Distinction</h3>
+  <div class="compare-grid reveal">
+    <div class="compare-card warm">
+      <div class="compare-label">🌦 Weather</div>
+      <p style="color:#FFAB91;">Short-term. Changes daily or hourly. What you check before going outside. Can be unusual, extreme, unexpected. "It's raining today in Wellington."</p>
+    </div>
+    <div class="compare-card cold">
+      <div class="compare-label">🌍 Climate</div>
+      <p style="color:#80DEEA;">Long-term average. Changes over decades. The overall pattern. Predictable and measurable. "Wellington averages 124 days of rain per year."</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">Key Vocabulary</div>
+  <h2>Know the Words, Own the Subject</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Greenhouse Effect</div>
+      <div class="vocab-def">The natural process by which certain gases (CO₂, methane, water vapour) trap heat in the atmosphere. Without it, Earth would be -18°C. The problem is human activity is adding extra greenhouse gases, trapping too much heat.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Ocean Current</div>
+      <div class="vocab-def">Large-scale movements of seawater driven by temperature, salinity, and wind. They distribute heat around the planet — the Gulf Stream keeps Western Europe warm; without it, London would have the climate of Moscow.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">El Niño</div>
+      <div class="vocab-def">A periodic warming of the central Pacific Ocean that disrupts normal weather patterns worldwide — causing droughts in some regions and floods in others. Affects New Zealand's rainfall and temperature significantly every 2–7 years.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Orographic Rainfall</div>
+      <div class="vocab-def">Rain caused by mountains forcing moist air upward. As air rises it cools and the moisture condenses as rain. The west coast of the South Island gets up to 8,000mm of rain per year from this — while Canterbury, just over the Alps, gets less than 700mm. Same country, opposite climates.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Coriolis Effect</div>
+      <div class="vocab-def">The deflection of moving air and water caused by the Earth's rotation. In the Southern Hemisphere, it deflects winds to the left; in the Northern Hemisphere, to the right. This is why cyclones spin clockwise in the Southern Hemisphere and anticlockwise in the Northern.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Climate Feedback Loop</div>
+      <div class="vocab-def">When climate change causes effects that in turn cause more climate change. Example: melting Arctic ice (white, reflective) exposes dark ocean (heat-absorbing), which warms the water, melting more ice. The change accelerates itself.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">Watch</div>
+  <h2>Your Documentary Briefing</h2>
+  <p>This documentary is free on YouTube. It's one of the most visually striking climate films ever made — uses time-lapse photography of melting glaciers as evidence, not graphics.</p>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Before+the+Flood+Leonardo+DiCaprio+full+documentary" target="_blank">Before the Flood (2016) — Leonardo DiCaprio, National Geographic</a>
+        <p>Search YouTube: "Before the Flood full documentary." Free. ~1hr 36 mins. Watch the first 45 minutes if time is short — it covers ocean warming, atmospheric feedback loops, and the human geography of climate impact. DiCaprio talks to scientists and world leaders.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">SHORTER</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=DW+Documentary+wind+climate+change" target="_blank">DW Documentary: Wind and Climate Change (YouTube, ~42 mins)</a>
+        <p>More focused on atmospheric systems — how wind patterns are shifting and why that matters for weather extremes.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="challenge reveal">
+    <p>While watching, note answers to these questions:</p>
+    <ol>
+      <li><strong>What is the relationship between ocean temperature and extreme weather?</strong></li>
+      <li><strong>How does climate change affect different countries differently?</strong> (Which ones face the biggest consequences and why?)</li>
+      <li><strong>What is one thing individuals can change, and one thing only governments can change?</strong></li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">Test Yourself</div>
+  <h2>Five Questions. Read Carefully.</h2>
+
+  <div class="quiz-wrap">
+    <div class="quiz-q">1. Why is Wellington so windy compared to most cities?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">It sits in the Roaring Forties, where uninterrupted westerly winds are funnelled through Cook Strait</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">It's at high altitude, where winds are always stronger</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The Pacific Ocean generates strong winds that hit Wellington first</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Wellington's harbour shape creates a natural wind tunnel</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Exactly. Wellington sits around 41°S — right in the Roaring Forties, where powerful westerly winds circle the globe with almost no landmass to break them up. Cook Strait funnels and accelerates those winds further. It's not random — it's atmospheric geography.</div>
+    <div class="quiz-feedback bad" id="q1-bad">Wellington's wind is explained by its latitude. At ~41°S it sits in the "Roaring Forties" — a band of persistent, powerful westerly winds with thousands of kilometres of open ocean to build up speed before hitting New Zealand. Cook Strait then funnels the wind even faster.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What is the difference between climate and weather?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Climate is global; weather is local</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Climate is measured in degrees; weather is described in words</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">Weather is short-term atmospheric conditions; climate is the long-term average pattern</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Climate includes storms and extremes; weather is only the daily temperature</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Correct. A useful way to remember it: climate is what you expect, weather is what you get. Climate is the long-term average (over 30+ years); weather is what the atmosphere is doing right now or over the coming days.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Weather is the short-term state of the atmosphere — what it's doing now or in the next few days. Climate is the long-term average pattern of weather over 30+ years. A useful shorthand: climate is what you expect; weather is what you get.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. The west coast of NZ's South Island gets up to 8,000mm of rain per year. Canterbury (just over the Alps) gets less than 700mm. Same latitude — what causes this difference?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">The Tasman Sea is warmer than the Pacific, creating more evaporation on the west side</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">Orographic rainfall — the Alps force moist westerly air upward; it rains on the west, and dry air descends on the east</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">The Canterbury Plains absorb rainfall into the soil before it can be measured</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Ocean currents bring cold water to the east coast, preventing rainfall</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Yes — this is a perfect example of orographic rainfall. Moisture-laden westerly winds rise over the Southern Alps, cool, and dump their rain on the west coast. By the time the air descends on the Canterbury side, it's dry — creating what's called a rain shadow.</div>
+    <div class="quiz-feedback bad" id="q3-bad">This is orographic rainfall and rain shadow. Westerly winds carry moisture off the Tasman Sea. The Alps force that air upward — it cools, condenses, and rains heavily on the west coast. Dry air then descends the eastern side (the rain shadow), leaving Canterbury much drier despite being only 100km away.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. What is a climate feedback loop? Give the best example:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">When weather systems loop around a mountain range and return to their starting point</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">The annual cycle of seasons driven by Earth's orbit around the Sun</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">When climate change triggers effects that in turn cause more climate change — like melting ice exposing dark ocean, which absorbs more heat, melting more ice</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">When El Niño conditions return to the same pattern every 7 years</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Exactly. The ice-albedo feedback is the classic example: white ice reflects sunlight (high albedo). Warming melts ice, exposing dark ocean (low albedo) which absorbs heat, which warms the ocean, which melts more ice. The change amplifies itself — making it very hard to stop once it starts.</div>
+    <div class="quiz-feedback bad" id="q4-bad">A feedback loop is when the effects of climate change reinforce themselves. The clearest example: Arctic ice is white and reflective. As it melts, it exposes dark ocean water, which absorbs heat instead of reflecting it, warming the ocean more, melting more ice. The change speeds up its own cause.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. Why does the greenhouse effect exist in the first place — and why is it normally beneficial?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">It was created by industrial pollution in the 19th century</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">It keeps rain clouds in place, preventing drought</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">It's a natural process that traps solar heat in the atmosphere — without it Earth would be -18°C and uninhabitable</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">It prevents UV radiation from reaching Earth's surface</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Right. The greenhouse effect is natural and essential. Without it, Earth's average temperature would be -18°C — far too cold for liquid water or life as we know it. The problem isn't the greenhouse effect itself; it's that human activities are enhancing it beyond what natural systems can handle.</div>
+    <div class="quiz-feedback bad" id="q5-bad">The greenhouse effect is natural and vital. Without it, Earth would average -18°C. Greenhouse gases (CO₂, water vapour, methane) trap solar energy and keep the planet warm enough for life. The issue is that human activity is increasing these gases, trapping too much heat and disrupting the balance.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">Go Deeper</div>
+  <h2>For the Curious</h2>
+
+  <div class="think-deeper reveal">
+    <p><strong>The 2023 Auckland and Hawke's Bay Floods.</strong> In early 2023, New Zealand experienced its worst-ever rainfall events. Auckland received a year's worth of rain in a single day. Hawke's Bay was devastated by Cyclone Gabrielle. Scientists were clear: climate change made these events more intense, because a warmer atmosphere holds more moisture. But here's the harder question — if we know climate change increases flood risk, why do councils still allow houses to be built on floodplains? Research: <strong>"New Zealand climate adaptation policy 2023"</strong>.</p>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>New Zealand has a climate that varies dramatically in a small space. The West Coast of the South Island is one of the <strong>wettest places on Earth</strong>. The Mackenzie Basin — just over the Alps — is semi-arid. Northland is subtropical. Stewart Island is subantarctic. You can experience four radically different climate zones without leaving the country. This is largely because of orographic rainfall, ocean currents, and NZ's position in the southern hemisphere circulation system. Search Google Maps and look at the satellite imagery: you can literally see the difference in vegetation between west and east of the Southern Alps.</p>
+  </div>
+
+  <div class="challenge reveal">
+    <p><strong>Research Challenge — Your Local Climate</strong></p>
+    <ol>
+      <li>Go to <strong>niwa.co.nz/climate</strong> — New Zealand's national climate science organisation (NIWA).</li>
+      <li>Find Wellington's climate data. What is the average annual rainfall? Average temperature? Windiest month?</li>
+      <li>Compare Wellington's climate to <strong>one other NZ city</strong> of your choice. Why are they different? Use what you've learned about atmospheric circulation and orographic rainfall to explain it.</li>
+    </ol>
+  </div>
+
+  <div class="think-deeper reveal">
+    <p><strong>A question to sit with:</strong> We talk about climate change as if it's a future problem. But Wellington's sea level has risen measurably since 1900, and New Zealand's glaciers have lost most of their volume in 150 years. At the same time, some politicians argue the costs of action are too high. <strong>Who decides how much future risk is worth present cost — and how do you make that decision fairly when future generations can't vote?</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">06</span>
+  <div class="section-label">Resources</div>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://niwa.co.nz/climate" target="_blank">NIWA — National Institute of Water and Atmospheric Research</a>
+        <p>New Zealand's own climate science body. Current data, historical records, and climate projections for NZ. Authoritative and freely accessible.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://scied.ucar.edu" target="_blank">UCAR Centre for Science Education — scied.ucar.edu</a>
+        <p>The US atmospheric research centre's education portal. Excellent animations of the Coriolis effect, ocean currents, El Niño, and the water cycle.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Before+the+Flood+full+documentary+National+Geographic" target="_blank">Before the Flood (2016) — National Geographic (YouTube)</a>
+        <p>Free, ~1hr 36 mins. Visually stunning. Probably the most accessible climate documentary ever made.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">LIVE DATA</span>
+      <div>
+        <a href="https://www.metservice.com" target="_blank">MetService — metservice.com</a>
+        <p>New Zealand's official weather forecasting service. Look at the synoptic charts (the ones with circles and lines) — those show the actual pressure systems driving Wellington's weather today.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <p>GEOGRAPHY SERIES — LESSON 03 OF 06 — CLIMATE SYSTEMS & WEATHER PATTERNS<br>
+  Built for an 11-year-old in Wellington, New Zealand, who is smarter than the curriculum.</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const s=document.documentElement.scrollTop, h=document.documentElement.scrollHeight-window.innerHeight;
+    document.getElementById('progressBar').style.width=(s/h*100)+'%';
+  });
+  const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  function answer(btn,isCorrect,qId){
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+    btn.classList.add(isCorrect?'correct':'wrong');
+    document.getElementById(qId+(isCorrect?'-good':'-bad')).classList.add('show');
+    if(!isCorrect)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});
+  }
+</script>
+</body>
+</html>

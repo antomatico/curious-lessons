@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urbanisation & City Design — Geography Lesson 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --concrete: #1C1C1C;
+    --steel: #2A2A35;
+    --glass: #3A4A6B;
+    --neon: #00E5FF;
+    --amber: #FFB300;
+    --red: #FF3D00;
+    --green: #00C853;
+    --text: #C8D0E0;
+    --muted: #6A7080;
+    --light: #E8ECF4;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--concrete);color:var(--text);font-family:'Barlow',sans-serif;font-weight:300;line-height:1.75;overflow-x:hidden;}
+  .progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--neon);width:0%;transition:width 0.1s;z-index:999;}
+
+  /* City skyline hero */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:6rem 8vw;position:relative;overflow:hidden;background:linear-gradient(180deg,#080812 0%,#0F1020 40%,#1C1C28 100%);}
+
+  /* Grid overlay */
+  .hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+
+  /* Skyline SVG */
+  .skyline{position:absolute;bottom:0;left:0;right:0;pointer-events:none;opacity:0.12;}
+
+  .hero-eyebrow{font-family:'Roboto Mono',monospace;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--neon);margin-bottom:1.5rem;animation:fadeUp 0.6s ease both;position:relative;z-index:1;}
+  .hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(3.5rem,10vw,8.5rem);line-height:0.95;color:var(--light);font-weight:800;letter-spacing:0.01em;animation:fadeUp 0.6s 0.1s ease both;position:relative;z-index:1;}
+  .hero h1 span{display:block;color:var(--neon);font-weight:700;font-size:0.6em;letter-spacing:0.05em;}
+  .hero-sub{max-width:540px;margin-top:2rem;font-size:1.05rem;color:var(--muted);animation:fadeUp 0.6s 0.2s ease both;position:relative;z-index:1;}
+  .hero-sub strong{color:var(--light);font-weight:600;}
+  .start-btn{display:inline-block;margin-top:3rem;padding:1rem 2.5rem;background:var(--neon);color:#000;font-family:'Roboto Mono',monospace;font-size:0.82rem;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;font-weight:500;transition:background 0.2s,transform 0.2s;animation:fadeUp 0.6s 0.3s ease both;position:relative;z-index:1;}
+  .start-btn:hover{background:#80F0FF;transform:translateY(-2px);}
+  .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'Roboto Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;color:#2A2A3A;text-transform:uppercase;animation:bounce 2s ease infinite;z-index:1;}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+  section{padding:5rem 8vw;border-top:1px solid #2A2A35;position:relative;}
+  .section-number{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:7rem;color:#222228;position:absolute;top:2rem;right:6vw;line-height:1;pointer-events:none;user-select:none;}
+  .section-label{font-family:'Roboto Mono',monospace;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--neon);margin-bottom:1rem;}
+  h2{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(2rem,4.5vw,3.5rem);color:var(--light);margin-bottom:1.5rem;line-height:1.1;letter-spacing:0.02em;}
+  h3{font-weight:600;font-size:1.05rem;color:var(--amber);margin:2rem 0 0.75rem;}
+  p{color:var(--muted);max-width:680px;margin-bottom:1rem;}
+  p strong{color:var(--light);font-weight:600;}
+
+  .big-idea{background:linear-gradient(135deg,#0A0A18,#1C1C2A);border-left:4px solid var(--neon);padding:2rem 2.5rem;margin:2rem 0;max-width:700px;}
+  .big-idea p{font-size:1.15rem;color:var(--light);font-style:italic;max-width:none;}
+
+  .nz-callout{background:linear-gradient(135deg,#001A10,#000D08);border:1px solid var(--green);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .nz-callout::before{content:'🇳🇿 NZ CONNECTION';font-family:'Roboto Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--green);display:block;margin-bottom:0.75rem;}
+  .nz-callout p{color:#A5D6A7;max-width:none;}
+  .nz-callout strong{color:#E8F5E9;}
+
+  .challenge{background:#111118;border:1px solid var(--neon);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .challenge::before{content:'⚡ CHALLENGE';font-family:'Roboto Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--neon);display:block;margin-bottom:0.75rem;}
+  .challenge p{max-width:none;}
+  .challenge ol,.challenge ul{padding-left:1.5rem;color:var(--muted);margin-top:0.75rem;}
+  .challenge li{margin-bottom:0.5rem;}
+  .challenge li strong{color:var(--light);}
+
+  .think-deeper{background:linear-gradient(135deg,#1A0F00,#1C1C28);border-left:4px solid var(--amber);padding:2rem 2.5rem;margin:2.5rem 0;max-width:700px;}
+  .think-deeper::before{content:'🔭 THINK DEEPER';font-family:'Roboto Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;color:var(--amber);display:block;margin-bottom:0.75rem;}
+  .think-deeper p{max-width:none;color:#C8A840;}
+  .think-deeper strong{color:var(--light);}
+
+  /* City stat cards */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin:2rem 0;max-width:860px;}
+  .stat-card{background:#111118;border:1px solid #2A2A35;padding:1.5rem;text-align:center;}
+  .stat-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:2.5rem;color:var(--neon);line-height:1;}
+  .stat-label{font-family:'Roboto Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;color:var(--muted);margin-top:0.4rem;text-transform:uppercase;}
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:2rem 0;max-width:900px;}
+  .vocab-card{background:#111118;border:1px solid #2A2A35;padding:1.25rem 1.5rem;cursor:pointer;transition:border-color 0.2s;position:relative;}
+  .vocab-card:hover{border-color:var(--neon);}
+  .vocab-term{font-family:'Roboto Mono',monospace;font-size:0.82rem;color:var(--amber);margin-bottom:0.5rem;}
+  .vocab-def{font-size:0.875rem;color:var(--muted);display:none;}
+  .vocab-card.open .vocab-def{display:block;}
+  .vocab-card.open{border-color:var(--neon);}
+  .vocab-hint{font-family:'Roboto Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;color:#2A2A35;position:absolute;bottom:0.6rem;right:0.75rem;}
+
+  .quiz-wrap{max-width:700px;margin:2rem 0;}
+  .quiz-q{font-size:1rem;color:var(--light);font-weight:600;margin-bottom:1rem;}
+  .quiz-options{display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem;}
+  .quiz-opt{background:#111118;border:1px solid #2A2A35;color:var(--muted);padding:0.85rem 1.25rem;text-align:left;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.9rem;transition:all 0.15s;}
+  .quiz-opt:hover{border-color:var(--neon);color:var(--light);}
+  .quiz-opt.correct{border-color:var(--green);color:#A5D6A7;background:#001500;}
+  .quiz-opt.wrong{border-color:var(--red);color:#FF8A80;background:#1A0500;}
+  .quiz-feedback{font-size:0.875rem;padding:1rem 1.25rem;margin-top:0.5rem;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.good{background:#001500;border-left:3px solid var(--green);color:#A5D6A7;}
+  .quiz-feedback.bad{background:#1A0500;border-left:3px solid var(--red);color:#FF8A80;}
+
+  .resource-list{list-style:none;max-width:700px;margin:1.5rem 0;}
+  .resource-list li{border-bottom:1px solid #222228;padding:1rem 0;display:flex;gap:1rem;align-items:flex-start;}
+  .resource-type{font-family:'Roboto Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;background:#111118;color:var(--muted);padding:0.25rem 0.5rem;flex-shrink:0;margin-top:0.1rem;}
+  .resource-list a{color:var(--neon);text-decoration:none;font-size:0.95rem;}
+  .resource-list a:hover{color:var(--amber);}
+  .resource-list p{margin:0.25rem 0 0;font-size:0.8rem;max-width:none;}
+
+  footer{padding:4rem 8vw;border-top:1px solid #222228;text-align:center;}
+  footer p{font-family:'Roboto Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;color:#2A2A35;max-width:none;text-align:center;}
+  .divider{height:1px;background:linear-gradient(to right,transparent,var(--neon),transparent);opacity:0.15;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="hero">
+  <svg class="skyline" viewBox="0 0 1440 300" preserveAspectRatio="none">
+    <rect x="0" y="150" width="60" height="150" fill="#00E5FF"/>
+    <rect x="80" y="80" width="80" height="220" fill="#00E5FF"/>
+    <rect x="180" y="120" width="50" height="180" fill="#00E5FF"/>
+    <rect x="250" y="50" width="100" height="250" fill="#00E5FF"/>
+    <rect x="370" y="160" width="70" height="140" fill="#00E5FF"/>
+    <rect x="460" y="90" width="60" height="210" fill="#00E5FF"/>
+    <rect x="540" y="130" width="90" height="170" fill="#00E5FF"/>
+    <rect x="650" y="60" width="80" height="240" fill="#00E5FF"/>
+    <rect x="750" y="140" width="55" height="160" fill="#00E5FF"/>
+    <rect x="825" y="100" width="70" height="200" fill="#00E5FF"/>
+    <rect x="915" y="70" width="110" height="230" fill="#00E5FF"/>
+    <rect x="1045" y="150" width="65" height="150" fill="#00E5FF"/>
+    <rect x="1130" y="90" width="80" height="210" fill="#00E5FF"/>
+    <rect x="1230" y="120" width="60" height="180" fill="#00E5FF"/>
+    <rect x="1310" y="60" width="130" height="240" fill="#00E5FF"/>
+  </svg>
+
+  <div class="hero-eyebrow">Geography · Lesson 04 of 06</div>
+  <h1>Urbanisation<span>&amp; City Design</span></h1>
+  <p class="hero-sub">More than half the world's population now lives in cities. By 2050, it'll be 70%. <strong>Cities don't just happen — they're shaped by geography, economics, and human decisions. And those decisions determine whether cities work or fail.</strong></p>
+  <a href="#bigidea" class="start-btn">Start Learning ↓</a>
+  <div class="scroll-hint">↓ Scroll to explore</div>
+</div>
+
+<div class="divider"></div>
+
+<section id="bigidea">
+  <span class="section-number">01</span>
+  <div class="section-label">The Big Idea</div>
+  <h2>Cities Grow Where Geography Allows — and Fail Where It Doesn't</h2>
+
+  <div class="big-idea reveal">
+    <p>"No city was built randomly. Every major city on Earth sits where it does for reasons — a sheltered harbour, a river crossing, a fertile valley, a trade route. Geography didn't just influence where cities formed. It determined it."</p>
+  </div>
+
+  <p class="reveal">Urbanisation is the process by which populations move from rural areas to cities. It's the defining human geographic trend of the last 200 years — and it's still accelerating fastest in Africa and Asia, where cities like Lagos, Dhaka, and Jakarta are growing by thousands of people every day.</p>
+
+  <div class="stat-grid reveal">
+    <div class="stat-card"><div class="stat-num">55%</div><div class="stat-label">World population in cities today</div></div>
+    <div class="stat-card"><div class="stat-num">70%</div><div class="stat-label">Predicted by 2050</div></div>
+    <div class="stat-card"><div class="stat-num">37M</div><div class="stat-label">People in Tokyo — world's largest city</div></div>
+    <div class="stat-card"><div class="stat-num">87%</div><div class="stat-label">New Zealanders living in urban areas</div></div>
+  </div>
+
+  <h3>Why Do Cities Form Where They Do?</h3>
+  <p>Look at any major city and you'll find a geographic explanation:</p>
+  <p><strong>London</strong> — the lowest bridging point on the Thames river, making it the obvious crossing and trading point. <strong>New York</strong> — a natural harbour on the east coast, ideally placed for trans-Atlantic trade. <strong>Singapore</strong> — a island at the tip of the Malay Peninsula, sitting astride the world's busiest shipping lane. <strong>Wellington</strong> — a sheltered harbour at the narrow tip of the North Island, and the natural gateway between the two main islands.</p>
+
+  <div class="nz-callout reveal">
+    <p>Wellington is a fascinating city geographically. It was <strong>chosen as the capital</strong> in 1865 partly because of its central location between the North and South Islands — but it sits on unstable earthquake-prone land, on a very hilly and constrained site, and in a natural wind funnel. It's expensive to build on, hard to expand, and regularly shaken. Yet it works. Why? Because <strong>geography created the problem and the solution simultaneously</strong> — the same harbour that limits expansion also provides the port, the commercial identity, and the reason people settled there in the first place.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">Key Vocabulary</div>
+  <h2>Know the Words, Own the Subject</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Urbanisation</div>
+      <div class="vocab-def">The increasing proportion of a population living in urban (city) areas. Happens when people move from rural areas to cities seeking work, services, and opportunity. Currently fastest in sub-Saharan Africa and South/Southeast Asia.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Megacity</div>
+      <div class="vocab-def">A city with a population over 10 million. There are currently about 35 megacities globally. In 1950 there were only two: New York and Tokyo. The rapid growth of megacities — especially in developing countries — is one of the defining geographic trends of our era.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Urban Sprawl</div>
+      <div class="vocab-def">The uncontrolled spread of a city outward into surrounding rural land, typically low-density housing dependent on cars. Leads to long commutes, loss of farmland, higher infrastructure costs, and reduced community. Auckland is a classic New Zealand example.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Gentrification</div>
+      <div class="vocab-def">When wealthier residents move into a historically poorer neighbourhood, raising property values and displacing the original residents. Can improve infrastructure but often at the cost of community and affordable housing. Happening in Wellington's Newtown and Thorndon areas.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Informal Settlement</div>
+      <div class="vocab-def">Also called a slum or shantytown — areas of cities where people build housing without official permission, often lacking clean water, sanitation, and legal tenure. About 1 billion people globally live in informal settlements. They form because cities grow faster than housing can be built.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Liveability</div>
+      <div class="vocab-def">How well a city supports the quality of life of its residents — measured by access to green space, public transport, housing affordability, safety, healthcare, and culture. Wellington consistently ranks in global top-20 liveability indexes, despite (or because of?) its compact size.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">Watch</div>
+  <h2>Your Documentary Briefing</h2>
+
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=DW+Documentary+future+cities+urban+planners+creative" target="_blank">DW Documentary: Future Cities — Urban Planners Get Creative (YouTube, ~42 mins)</a>
+        <p>Search YouTube: "DW Documentary future cities urban planners." Free. Covers projects in New York, Helsinki, Copenhagen, and South Korea — real cities solving real problems with design. Accessible, well-paced, genuinely interesting.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">LONGER</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=Urbanized+Gary+Hustwit+documentary" target="_blank">Urbanized (Gary Hustwit, 2011) — YouTube</a>
+        <p>~85 mins. More in-depth. Covers Bogotá, Copenhagen, Detroit, and others. A landmark documentary on what makes cities work.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="challenge reveal">
+    <p>While watching, note answers to:</p>
+    <ol>
+      <li><strong>What is one city that redesigned itself successfully, and what did it change?</strong></li>
+      <li><strong>What's the tension between car-based and people-based city design?</strong></li>
+      <li><strong>What role do ordinary residents play in changing cities — versus governments and planners?</strong></li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">Test Yourself</div>
+  <h2>Five Questions. Read Carefully.</h2>
+
+  <div class="quiz-wrap">
+    <div class="quiz-q">1. Why did Wellington become New Zealand's capital city rather than Auckland, which is larger?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Wellington had a larger population when the decision was made</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">Its central geographic location between the two main islands made it more suitable as a national capital</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Wellington had better farmland to support a growing government workforce</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Auckland was considered too close to Australia to be trusted with government functions</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. Wellington was chosen as capital in 1865 largely because of its geography — a central location between the North and South Islands, accessible to both. Auckland was considered too far north to serve the whole country. Geography determined the political decision.</div>
+    <div class="quiz-feedback bad" id="q1-bad">Geography made the decision. Wellington's central position between the two main islands made it accessible to both — Auckland was seen as too far north. This is a clear example of how geography shapes political decisions, not just where people live.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What is urban sprawl, and why is it considered a geographic problem?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">When a city's population declines, leaving empty buildings and urban decay</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">When tall buildings block sunlight and create wind tunnels in city centres</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">Uncontrolled low-density outward expansion of cities, consuming farmland and requiring car dependency</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">When industrial areas spread into residential neighbourhoods</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. Urban sprawl typically means low-density suburbs spreading outward with no clear plan. It's a geographic problem because it destroys agricultural land, demands expensive infrastructure (roads, pipes, power) spread over a large area, and forces residents to drive everywhere — increasing emissions and commute times. Auckland is NZ's clearest example.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Urban sprawl is the outward spread of low-density suburbs, usually car-dependent. It's a geographic problem because it consumes surrounding farmland, increases infrastructure costs (pipes, roads, power lines over larger areas), and creates long commutes. Auckland sprawls significantly compared to compact Wellington.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. About 1 billion people globally live in informal settlements (slums). What is the primary geographic reason these exist?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Governments deliberately create slum areas to house low-income workers cheaply</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">People in slums prefer to live outside the formal housing market</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">Cities in developing countries are growing faster than formal housing can be built, so people build their own</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Informal settlements are only found in coastal cities where flooding prevents formal construction</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Correct. The fundamental issue is a speed mismatch: people are moving to cities — often from rural areas seeking work — faster than cities can build formal housing for them. So they build their own, on whatever land they can access. This is a geographic and economic problem, not a lifestyle choice.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Informal settlements form because rapid urbanisation outpaces the ability of cities (and governments) to build formal housing. Millions of people move to cities annually seeking economic opportunities, but formal housing isn't built fast enough or affordably enough, so people build their own on available land.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Bogotá, Colombia transformed itself in the 1990s–2000s under Mayor Enrique Peñalosa. What was the core idea behind its transformation?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Build more motorways and car parks to reduce traffic congestion</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">Prioritise people over cars — build cycle paths, bus rapid transit, and public spaces to make the city liveable for everyone</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Relocate the city centre away from the most dangerous areas</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Attract international companies by reducing city taxes and planning rules</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Yes. Peñalosa's key insight was that a city designed for cars is a city designed for the wealthy minority who own cars. By building world-class cycling infrastructure, the TransMilenio bus rapid transit system, and reclaiming roads as public space, Bogotá made mobility democratic — accessible to everyone regardless of income.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Bogotá's transformation was about putting people before cars. Peñalosa argued that a city full of cars serves only those who can afford them. He invested in cycling paths, high-quality public transit (TransMilenio), and public parks — redesigning the city around human movement rather than vehicle movement.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. Wellington consistently ranks highly in global liveability indexes despite being small. What geographic factors most likely contribute to this?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Wellington's weather is consistently warm and sunny, making outdoor living easy</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Wellington has very low crime because it is geographically isolated from the rest of NZ</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">Its compact geography means short commutes, walkable streets, and accessible green spaces — with a harbour and hills providing recreational resources</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">The government subsidises housing because it's the capital, keeping costs lower than other cities</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Correct. Wellington's hilly, compact geography — often cited as a constraint — actually supports liveability. Short distances mean people walk more. The harbour and surrounding hills provide green and recreational space. A concentrated city centre means culture, cafes, and work are close together. Constraints can create character.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Wellington's compactness is actually its liveability asset. Because the city is hemmed in by hills and water, it hasn't sprawled — so most things are close together, walkable, and accessible. The harbour and hills create natural recreational space. What seems like a geographic limitation creates a more human-scale city.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">Go Deeper</div>
+  <h2>For the Curious</h2>
+
+  <div class="think-deeper reveal">
+    <p><strong>The Auckland vs Wellington Debate.</strong> Auckland has 1.7 million people; Wellington has 440,000. Auckland sprawls across a large isthmus, car-dependent and traffic-clogged. Wellington is compact, hilly, and walkable. Yet Auckland generates more economic output. Which city model is better? This isn't a simple question. Think about: environmental impact, housing affordability, quality of life, economic productivity, cultural vitality. Research: <strong>"Auckland Wellington urban planning comparison."</strong></p>
+  </div>
+
+  <div class="nz-callout reveal">
+    <p>Wellington's Te Ara Paparārangi — the proposed cycleway and urban regeneration project along the city's waterfront and hills — is a live debate right now. Some residents want more cycling infrastructure. Others worry about disruption and cost. Meanwhile, Wellington City Council is also dealing with a housing crisis, aging earthquake-prone buildings, and the question of whether to allow taller buildings in the CBD. <strong>Look up: "Wellington spatial plan 2024"</strong> — this is real urban geography decision-making happening in your own city.</p>
+  </div>
+
+  <div class="challenge reveal">
+    <p><strong>Design Challenge — Your Ideal Neighbourhood</strong></p>
+    <p>Geographers and city planners think about neighbourhoods in terms of what they provide and for whom. Using what you've learned:</p>
+    <ol>
+      <li>Draw or describe your ideal neighbourhood in Wellington. What does it have? What is missing from your current area?</li>
+      <li>Consider: <strong>housing density, green space, public transport, shops, schools, cycle paths, community spaces.</strong></li>
+      <li>Research one city in the world that has solved one of these challenges well. What can Wellington learn from it?</li>
+    </ol>
+  </div>
+
+  <div class="think-deeper reveal">
+    <p><strong>A question to sit with:</strong> Cities are built by humans — but they shape humans in return. Children who grow up in walkable, green neighbourhoods have measurably different outcomes (health, social connections, independence) than those in car-dependent suburbs. If cities shape who we become, <strong>who should get to decide how they're designed — governments, developers, or the people who live in them?</strong> And what happens when those groups disagree?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-number">06</span>
+  <div class="section-label">Resources</div>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://ourworldindata.org/urbanization" target="_blank">Our World in Data — Urbanisation</a>
+        <p>Interactive charts showing global urbanisation trends over centuries. You can manipulate the data yourself — see which countries are urbanising fastest, and where NZ sits globally.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://wellington.govt.nz/your-council/plans-policies-and-bylaws/our-city-s-future/spatial-plan" target="_blank">Wellington City Spatial Plan</a>
+        <p>The actual plan Wellington City Council is using to guide how the city grows and changes. Real geography, real decisions, your city.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=DW+Documentary+future+cities+urban+planners" target="_blank">DW Documentary: Future Cities — Urban Planners Get Creative</a>
+        <p>~42 mins, free on YouTube. Covers how cities around the world are solving design problems with creativity and community involvement.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">EXPLORE</span>
+      <div>
+        <a href="https://www.strongtowns.org" target="_blank">Strong Towns — strongtowns.org</a>
+        <p>A US-based organisation that analyses city design, suburban sprawl, and urban finances with very accessible writing. Their articles on "what makes a good street" are excellent.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <p>GEOGRAPHY SERIES — LESSON 04 OF 06 — URBANISATION & CITY DESIGN<br>
+  Built for an 11-year-old in Wellington, New Zealand, who is smarter than the curriculum.</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('progressBar').style.width=(s/h*100)+'%';});
+  const observer=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  function answer(btn,isCorrect,qId){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(isCorrect?'correct':'wrong');document.getElementById(qId+(isCorrect?'-good':'-bad')).classList.add('show');if(!isCorrect)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>

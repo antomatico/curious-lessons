@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone — Why Is Wellington the Way It Is?</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=Epilogue:wght@300;400;500;600&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0C0F0A;
+    --surface: #131710;
+    --panel: #181C14;
+    --border: #252B1E;
+    --moss: #3A4F2A;
+    --fern: #5A7A3A;
+    --leaf: #8AB870;
+    --gold: #C8A040;
+    --cream: #E8E0C8;
+    --muted: #6A7858;
+    --text: #B8C8A0;
+
+    /* lesson accent colours */
+    --tectonic: #FF4500;
+    --rivers: #1E90FF;
+    --climate: #5BA8D4;
+    --cities: #00C9A7;
+    --migration: #C1440E;
+    --trade: #4CAF50;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--leaf); width: 0%;
+    transition: width 0.15s; z-index: 999;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 6rem 8vw 4rem;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 60% 40%, #1A2810 0%, #0C0F0A 65%);
+  }
+
+  /* Topographic line pattern */
+  .topo {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+  }
+
+  .hero-content { display: flex; flex-direction: column; justify-content: center; }
+
+  .hero-eyebrow {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--fern); margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-question {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.8rem, 8vw, 6.5rem);
+    line-height: 1.05;
+    color: var(--cream);
+    font-weight: 700;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--leaf);
+    font-weight: 300;
+  }
+
+  .hero-sub {
+    max-width: 600px;
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-sub strong { color: var(--cream); font-weight: 500; }
+
+  /* Six lesson tags */
+  .lesson-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-top: 2.5rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .tag {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid; border-radius: 2px;
+  }
+
+  .tag-1 { color: var(--tectonic); border-color: var(--tectonic); }
+  .tag-2 { color: var(--rivers); border-color: var(--rivers); }
+  .tag-3 { color: var(--climate); border-color: var(--climate); }
+  .tag-4 { color: var(--cities); border-color: var(--cities); }
+  .tag-5 { color: var(--migration); border-color: var(--migration); }
+  .tag-6 { color: var(--trade); border-color: var(--trade); }
+
+  .scroll-hint {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em; color: var(--border);
+    text-transform: uppercase; text-align: center;
+    padding-top: 3rem;
+    animation: bounce 2s ease infinite;
+  }
+
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 5rem 8vw;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+
+  .section-number {
+    font-family: 'Fraunces', serif;
+    font-size: 6rem; color: var(--surface);
+    position: absolute; top: 2rem; right: 6vw;
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+
+  .section-label {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--fern); margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--cream); font-weight: 700;
+    margin-bottom: 1.5rem; line-height: 1.2;
+  }
+
+  h3 {
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 600; font-size: 1rem;
+    color: var(--gold); margin: 2rem 0 0.75rem;
+  }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; }
+  p strong { color: var(--cream); font-weight: 500; }
+
+  /* ── INTRO PANEL ── */
+  .intro-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2.5rem 3rem;
+    margin: 2rem 0;
+    max-width: 800px;
+  }
+
+  .intro-panel p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--cream);
+    max-width: none;
+    line-height: 1.7;
+  }
+
+  /* ── CONNECTION CARDS (how lessons link) ── */
+  .connections {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin: 2rem 0;
+    max-width: 900px;
+  }
+
+  .connection-card {
+    background: var(--surface);
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .connection-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-color);
+  }
+
+  .conn-lesson {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--card-color); margin-bottom: 0.5rem;
+  }
+
+  .conn-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; color: var(--cream);
+    margin-bottom: 0.6rem; font-weight: 700;
+  }
+
+  .conn-link {
+    font-size: 0.85rem; color: var(--muted); line-height: 1.6;
+  }
+
+  /* ── CHALLENGE SECTIONS ── */
+  .challenge-block {
+    background: var(--panel);
+    border: 1px solid var(--moss);
+    padding: 2.5rem 3rem;
+    margin: 2.5rem 0;
+    max-width: 800px;
+    position: relative;
+  }
+
+  .challenge-num {
+    font-family: 'Fraunces', serif;
+    font-size: 4rem; color: var(--border);
+    position: absolute; top: 1rem; right: 1.5rem;
+    line-height: 1; user-select: none;
+  }
+
+  .challenge-label {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--leaf); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+
+  .challenge-label .lesson-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--dot-color);
+    flex-shrink: 0;
+  }
+
+  .challenge-block h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem; color: var(--cream);
+    margin: 0 0 1rem; font-weight: 700;
+    max-width: 540px; line-height: 1.3;
+  }
+
+  .challenge-block p { max-width: 640px; }
+
+  .task-list {
+    list-style: none;
+    margin-top: 1.25rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+    max-width: 640px;
+  }
+
+  .task-list li {
+    display: flex; gap: 1rem; align-items: flex-start;
+    font-size: 0.9rem; color: var(--muted);
+  }
+
+  .task-list li strong { color: var(--cream); }
+
+  .task-num {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.65rem; color: var(--fern);
+    padding-top: 0.15rem; flex-shrink: 0;
+  }
+
+  /* ── THE BIG QUESTION ── */
+  .big-question {
+    background: linear-gradient(135deg, #0A1A06, #0C0F0A);
+    border: 1px solid var(--leaf);
+    padding: 3rem;
+    margin: 3rem 0;
+    max-width: 800px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .big-question::before {
+    content: '?';
+    font-family: 'Fraunces', serif;
+    font-size: 16rem; color: rgba(138,184,112,0.04);
+    position: absolute; right: -2rem; bottom: -4rem;
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+
+  .bq-label {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--leaf); margin-bottom: 1.5rem;
+  }
+
+  .big-question h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    color: var(--cream); font-style: italic;
+    line-height: 1.25; margin-bottom: 1.5rem;
+  }
+
+  .big-question p { color: var(--fern); max-width: none; }
+
+  /* ── SCORING ── */
+  .scoring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem; margin: 2rem 0; max-width: 800px;
+  }
+
+  .score-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .score-title {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--fern); margin-bottom: 0.5rem;
+  }
+
+  .score-desc { font-size: 0.82rem; color: var(--muted); }
+
+  /* ── BACK LINK ── */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+    margin-bottom: 2rem;
+  }
+
+  .back-link:hover { color: var(--leaf); }
+
+  /* ── COMPLETE BUTTON ── */
+  .complete-section {
+    padding: 4rem 8vw;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .complete-btn {
+    display: inline-flex; align-items: center; gap: 1rem;
+    padding: 1.25rem 3rem;
+    background: var(--moss); color: var(--cream);
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+    border: 1px solid var(--fern); cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .complete-btn:hover { background: var(--fern); }
+  .complete-btn.done { background: var(--fern); }
+
+  .complete-note {
+    margin-top: 1rem;
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 3rem 8vw; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  footer p {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.12em; color: var(--border);
+  }
+
+  footer a {
+    font-family: 'Martian Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--fern); text-decoration: none;
+  }
+
+  footer a:hover { color: var(--leaf); }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--fern), transparent); opacity: 0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(18px); transition:opacity 0.6s ease,transform 0.6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Geography · Capstone Challenge · Lesson 07</div>
+    <div class="hero-question">The Big Question</div>
+    <h1>Why is<br>Wellington<br><em>the way it is?</em></h1>
+    <p class="hero-sub">You've studied six topics. Now use all of them together to explain one place — the city you actually live in. <strong>This is what geographers do.</strong> They don't study topics in isolation. They ask why a place is the way it is — and the answer always involves everything at once.</p>
+    <div class="lesson-tags">
+      <span class="tag tag-1">🌋 Tectonics</span>
+      <span class="tag tag-2">🌊 Rivers</span>
+      <span class="tag tag-3">🌬️ Climate</span>
+      <span class="tag tag-4">🏙️ Cities</span>
+      <span class="tag tag-5">🌏 Migration</span>
+      <span class="tag tag-6">🚢 Trade</span>
+    </div>
+  </div>
+  <div class="scroll-hint">↓ Read the brief, then begin</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 1: THE BRIEF -->
+<section>
+  <span class="section-number">01</span>
+  <div class="section-label">The Brief</div>
+  <h2>What You're Being Asked to Do</h2>
+
+  <div class="intro-panel reveal">
+    <p>"Wellington exists where it does, looks how it looks, and works how it works because of geology, water, wind, human decisions, waves of migration, and global economics. None of these things is separate. This challenge asks you to put them back together."</p>
+  </div>
+
+  <p class="reveal">Most school subjects teach you to think in one lane at a time. Geography's real power is that it refuses to. A city is not a planning problem. It is not a climate problem. It is not a migration problem. It is all of them, tangled together, at the same time. This challenge asks you to demonstrate that you can think that way.</p>
+
+  <p class="reveal">You will work through <strong>six investigations</strong> — one connecting each lesson to Wellington specifically. Then you will write or present one <strong>final synthesis</strong> that answers the big question. There is no single right answer. There is only a well-reasoned, evidence-based argument.</p>
+
+  <a href="index.html" class="back-link reveal">← Back to Course Index</a>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2: HOW THE LESSONS CONNECT -->
+<section>
+  <span class="section-number">02</span>
+  <div class="section-label">How the Lessons Connect to Wellington</div>
+  <h2>Everything You Learned — Applied to One Place</h2>
+  <p class="reveal">Before you start the challenges, read how each lesson's big ideas map directly onto Wellington. This is the foundation of your argument.</p>
+
+  <div class="connections reveal">
+    <div class="connection-card" style="--card-color: var(--tectonic);">
+      <div class="conn-lesson">🌋 Lesson 01 — Tectonics</div>
+      <div class="conn-title">Wellington sits on a fault</div>
+      <div class="conn-link">The Wellington Fault runs directly under the CBD. The city was built on shaky ground — literally. This shapes building codes, insurance costs, emergency planning, and the long-term question of whether Wellington is a safe place to grow.</div>
+    </div>
+    <div class="connection-card" style="--card-color: var(--rivers);">
+      <div class="conn-lesson">🌊 Lesson 02 — Rivers</div>
+      <div class="conn-title">Water shaped the land people built on</div>
+      <div class="conn-link">The Hutt River built the Lower Hutt floodplain — the flattest land near Wellington, which is why it was developed. The same geology that made it buildable makes it flood-prone. Ongoing decisions about the river directly affect tens of thousands of people.</div>
+    </div>
+    <div class="connection-card" style="--card-color: var(--climate);">
+      <div class="conn-lesson">🌬️ Lesson 03 — Climate</div>
+      <div class="conn-title">Geography made it windy</div>
+      <div class="conn-link">Wellington sits at 41°S in the Roaring Forties. Cook Strait funnels the westerly winds. There is nothing between Wellington and Argentina at this latitude to slow the air down. This is not bad luck — it is pure atmospheric geography.</div>
+    </div>
+    <div class="connection-card" style="--card-color: var(--cities);">
+      <div class="conn-lesson">🏙️ Lesson 04 — Cities</div>
+      <div class="conn-title">Compact geography made it liveable</div>
+      <div class="conn-link">Wellington's hills and harbour constrained it from sprawling outward like Auckland. The result is a dense, walkable city with a concentrated culture, short commutes, and high liveability scores — unintended consequences of geographic constraint.</div>
+    </div>
+    <div class="connection-card" style="--card-color: var(--migration);">
+      <div class="conn-lesson">🌏 Lesson 05 — Migration</div>
+      <div class="conn-title">Wellington was built by migration</div>
+      <div class="conn-link">Māori settled Te Whanganui-a-Tara for its harbour and resources. British colonists arrived in 1840. Pacific communities, Chinese migrants, and recent arrivals from South and East Asia have each shaped Wellington's neighbourhoods, food, culture, and economy.</div>
+    </div>
+    <div class="connection-card" style="--card-color: var(--trade);">
+      <div class="conn-lesson">🚢 Lesson 06 — Trade</div>
+      <div class="conn-title">The harbour is why it exists</div>
+      <div class="conn-link">Wellington's original reason for existence was its deep natural harbour — a sheltered port in the Cook Strait, ideally placed for trade between the North and South Islands and for trans-Tasman shipping. The port still anchors the city's identity and economy.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 3: THE SIX INVESTIGATIONS -->
+<section>
+  <span class="section-number">03</span>
+  <div class="section-label">The Six Investigations</div>
+  <h2>Work Through These in Order</h2>
+  <p class="reveal">Each investigation is a focused research and thinking task. Take notes as you go — you'll use them in the final synthesis. There's no set length. The goal is depth of thinking, not word count.</p>
+
+  <!-- Investigation 1 -->
+  <div class="challenge-block reveal" style="--dot-color: var(--tectonic);">
+    <div class="challenge-num">1</div>
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Connects to Lesson 01 — Plate Tectonics
+    </div>
+    <h3>The Ground Wellington Was Built On</h3>
+    <p>Wellington is one of the most earthquake-prone capital cities on Earth. The Wellington Fault runs directly under the central city. Scientists estimate a magnitude 7.5+ earthquake on this fault is likely within the next 100–500 years.</p>
+    <ul class="task-list">
+      <li><span class="task-num">→</span> <span>Go to <strong>geonet.org.nz</strong> and look at the earthquake map for the last 30 days. Where are the dots clustered relative to Wellington?</span></li>
+      <li><span class="task-num">→</span> <span>Search: <strong>"Wellington Fault earthquake risk"</strong>. Find one specific building type or area that faces the highest risk and explain why.</span></li>
+      <li><span class="task-num">→</span> <span>Write 2–3 sentences: <strong>How does Wellington's tectonic setting affect decisions people make every day</strong> — insurance, building design, emergency kits, even house prices?</span></li>
+      <li><span class="task-num">→</span> <span><strong>Harder:</strong> Find out what happened to Wellington in the 1855 Wairarapa earthquake. What did the land do, and how did that change the city's geography permanently?</span></li>
+    </ul>
+  </div>
+
+  <!-- Investigation 2 -->
+  <div class="challenge-block reveal" style="--dot-color: var(--rivers);">
+    <div class="challenge-num">2</div>
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Connects to Lesson 02 — Rivers &amp; Erosion
+    </div>
+    <h3>The River That Built the Suburbs</h3>
+    <p>The Hutt River (Te Awa Kairangi) deposited the flat land that Lower Hutt was built on. It's also flooded those suburbs multiple times — most recently and severely in 2021 and 2023.</p>
+    <ul class="task-list">
+      <li><span class="task-num">→</span> <span>Search: <strong>"Hutt River floodplain Lower Hutt"</strong>. Find a map showing where the floodplain is. Why was this area developed if it's flood-prone?</span></li>
+      <li><span class="task-num">→</span> <span>Research the 2021 Wellington floods. How much rain fell? What areas were worst affected?</span></li>
+      <li><span class="task-num">→</span> <span>Look up: <strong>"Hutt River flood management options"</strong>. Identify two different proposals engineers have suggested and the trade-offs of each.</span></li>
+      <li><span class="task-num">→</span> <span><strong>The dilemma:</strong> Thousands of people live on the floodplain. Should they be asked to move? Who pays? Write 2 sentences on the tension between geography and the decisions already made.</span></li>
+    </ul>
+  </div>
+
+  <!-- Investigation 3 -->
+  <div class="challenge-block reveal" style="--dot-color: var(--climate);">
+    <div class="challenge-num">3</div>
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Connects to Lesson 03 — Climate Systems
+    </div>
+    <h3>The Roaring Forties and Wellington's Wind</h3>
+    <p>Wellington's wind is not random. It is the direct result of its latitude (41°S), its position on Cook Strait, and the absence of any land barrier for thousands of kilometres to the west.</p>
+    <ul class="task-list">
+      <li><span class="task-num">→</span> <span>Go to <strong>metservice.com</strong> and look at today's synoptic weather chart. Find the pressure system driving Wellington's weather. Is wind coming from the west or south today?</span></li>
+      <li><span class="task-num">→</span> <span>Research: <strong>"Wellington annual wind speed"</strong>. How does Wellington compare to other cities globally? Find one city with comparable wind statistics.</span></li>
+      <li><span class="task-num">→</span> <span>How has Wellington adapted to its wind? Find two specific examples — one in architecture, one in culture or daily life.</span></li>
+      <li><span class="task-num">→</span> <span><strong>Climate change angle:</strong> Are Wellington's wind patterns changing? Search <strong>niwa.co.nz</strong> for any projections. What might change in the next 50 years?</span></li>
+    </ul>
+  </div>
+
+  <!-- Investigation 4 -->
+  <div class="challenge-block reveal" style="--dot-color: var(--cities);">
+    <div class="challenge-num">4</div>
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Connects to Lesson 04 — Urbanisation &amp; City Design
+    </div>
+    <h3>Why Wellington Works as a City</h3>
+    <p>Wellington is regularly ranked as one of the world's most liveable cities. It is also small, hilly, expensive, earthquake-prone, and windy. The liveability comes in spite of — and partly because of — its geographic constraints.</p>
+    <ul class="task-list">
+      <li><span class="task-num">→</span> <span>Search: <strong>"Wellington liveability ranking"</strong>. Find its current ranking and what criteria are used. Which categories does Wellington score highest in?</span></li>
+      <li><span class="task-num">→</span> <span>Compare Wellington to Auckland on two liveability measures: <strong>commute time</strong> and <strong>access to green space</strong>. How does geography explain the difference?</span></li>
+      <li><span class="task-num">→</span> <span>Wellington City Council is currently working on its Spatial Plan — the guide for how Wellington grows over the next 30 years. Search: <strong>"Wellington Spatial Plan housing"</strong>. What is the main challenge they're trying to solve?</span></li>
+      <li><span class="task-num">→</span> <span><strong>Your view:</strong> Walk or think about one street or neighbourhood in Wellington. What works well about its design? What would you change? Connect your answer to what you learned about city design.</span></li>
+    </ul>
+  </div>
+
+  <!-- Investigation 5 -->
+  <div class="challenge-block reveal" style="--dot-color: var(--migration);">
+    <div class="challenge-num">5</div>
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Connects to Lesson 05 — Population &amp; Migration
+    </div>
+    <h3>The People Who Made Wellington</h3>
+    <p>Wellington is one of the most ethnically diverse cities in New Zealand. Every neighbourhood carries the history of who settled it, when, and why. This is human geography made visible.</p>
+    <ul class="task-list">
+      <li><span class="task-num">→</span> <span>Go to <strong>stats.govt.nz</strong> and search for Wellington's ethnic composition from the most recent census. What are the five largest ethnic groups? How has this changed since 2001?</span></li>
+      <li><span class="task-num">→</span> <span>Research the founding of Wellington: <strong>why did the New Zealand Company choose this harbour in 1840?</strong> What did they find when they arrived — and what had been there before?</span></li>
+      <li><span class="task-num">→</span> <span>Pick one Wellington suburb — Newtown, Miramar, Porirua, or Karori — and research its migration history. Who settled there and when? What traces of that remain today?</span></li>
+      <li><span class="task-num">→</span> <span><strong>The question:</strong> Wellington's public sector (government, ministries) is a major employer. How does that shape what kind of migrants Wellington attracts — compared to Auckland, which has more manufacturing and trade? What kind of city does that create?</span></li>
+    </ul>
+  </div>
+
+  <!-- Investigation 6 -->
+  <div class="challenge-block reveal" style="--dot-color: var(--trade);">
+    <div class="challenge-num">6</div>
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Connects to Lesson 06 — Global Trade &amp; Resources
+    </div>
+    <h3>Wellington's Place in the Global Economy</h3>
+    <p>Wellington's harbour was the reason for the city's existence. Today, Wellington's economy is dominated by government, technology, and creative industries — not the commodity exports that drive much of New Zealand's GDP. That makes it an unusual city in New Zealand's economic geography.</p>
+    <ul class="task-list">
+      <li><span class="task-num">→</span> <span>Search: <strong>"Wellington port history New Zealand"</strong>. What goods moved through the port historically? How has that changed?</span></li>
+      <li><span class="task-num">→</span> <span>Wellington is home to most of New Zealand's central government agencies. How does being the capital shape Wellington's economy — differently from a port city or a manufacturing city?</span></li>
+      <li><span class="task-num">→</span> <span>Weta Workshop (Lord of the Rings, Avatar, etc.) is based in Wellington and is one of NZ's most successful creative exporters. Research: <strong>how did a small city at the bottom of the world become a global film production hub?</strong> What geographic and economic factors enabled it?</span></li>
+      <li><span class="task-num">→</span> <span><strong>Global connection:</strong> If New Zealand's trade relationship with China broke down, how would Wellington feel it — compared to a city like Dunedin or Hamilton? Why the difference?</span></li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 4: THE BIG QUESTION -->
+<section>
+  <span class="section-number">04</span>
+  <div class="section-label">The Final Synthesis</div>
+  <h2>Now Put It All Together</h2>
+
+  <p class="reveal">You've done the research. You have notes across six topics. Now the real geography starts — synthesis. Not just knowing things. Connecting them.</p>
+
+  <div class="big-question reveal">
+    <div class="bq-label">⬡ The Capstone Question</div>
+    <h2>"Why is Wellington the way it is — and what might make it different in 50 years?"</h2>
+    <p>Use evidence from all six of your investigations. Show how the physical geography created conditions that human decisions then worked with, around, and against. Then make a reasoned prediction about one thing that might change Wellington significantly by 2075.</p>
+  </div>
+
+  <h3>What a Strong Answer Looks Like</h3>
+
+  <div class="scoring-grid reveal">
+    <div class="score-card">
+      <div class="score-title">✦ Connections</div>
+      <div class="score-desc">You link at least four of the six topics together — showing how one thing caused or shaped another. Not just listed separately.</div>
+    </div>
+    <div class="score-card">
+      <div class="score-title">✦ Evidence</div>
+      <div class="score-desc">You use specific facts — names, numbers, places, events — from your research. Not just general statements.</div>
+    </div>
+    <div class="score-card">
+      <div class="score-title">✦ Your Argument</div>
+      <div class="score-desc">You take a position on what you think is the <em>most important</em> factor that shaped Wellington — and you defend it.</div>
+    </div>
+    <div class="score-card">
+      <div class="score-title">✦ The Future</div>
+      <div class="score-desc">Your 50-year prediction is specific, plausible, and connected to geography — not just a guess.</div>
+    </div>
+  </div>
+
+  <h3>How to Present Your Answer</h3>
+  <p class="reveal">Choose whichever format you find most natural:</p>
+  <ul class="task-list reveal" style="max-width:680px;">
+    <li><span class="task-num">A</span> <span><strong>Written essay</strong> — 400–700 words. Clear argument, specific evidence, a conclusion that answers the question directly.</span></li>
+    <li><span class="task-num">B</span> <span><strong>Annotated map</strong> — Draw or print a map of Wellington and annotate it with all six geographic layers. Add a written paragraph for your 50-year prediction.</span></li>
+    <li><span class="task-num">C</span> <span><strong>Presentation</strong> — Five to eight slides or speaking points, presented to a parent or anyone who'll listen. The act of explaining it out loud reveals what you actually understand.</span></li>
+    <li><span class="task-num">D</span> <span><strong>Your own format</strong> — If you have a better idea, use it. Geography is about understanding place. How you show that understanding is secondary.</span></li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 5: GOING FURTHER -->
+<section>
+  <span class="section-number">05</span>
+  <div class="section-label">If You Want to Go Further Still</div>
+  <h2>The Questions That Don't Have Easy Answers</h2>
+  <p class="reveal">These are the questions geographers actually argue about. There's no textbook answer. Sit with them.</p>
+
+  <div class="challenge-block reveal" style="border-color: var(--border); --dot-color: var(--gold);">
+    <div class="challenge-label">
+      <span class="lesson-dot"></span>
+      Open Questions
+    </div>
+    <ul class="task-list">
+      <li><span class="task-num">?</span><span>The 1855 earthquake raised parts of Wellington's harbour floor by up to two metres — creating new land that was then developed. If a major earthquake happened today, would that be an opportunity or a catastrophe? What determines which?</span></li>
+      <li><span class="task-num">?</span><span>Wellington is the capital because of its central geography — but many capitals have been moved throughout history (Brazil moved its capital to Brasília; Myanmar moved its to Naypyidaw). Could New Zealand ever move its capital? What would it take?</span></li>
+      <li><span class="task-num">?</span><span>Climate change projections suggest Wellington's sea level could rise 30–50cm by 2100. Look at a map of Wellington's waterfront. What gets flooded? Who lives there? Who decides what to do about it — and who pays?</span></li>
+      <li><span class="task-num">?</span><span>Wellington has one of the highest concentrations of creative and knowledge workers in NZ. Is that because of geography — or despite it? And what would happen to the city if remote work meant those people could live anywhere?</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- COMPLETE -->
+<div class="complete-section">
+  <button class="complete-btn" id="completeBtn" onclick="markComplete()">
+    <span id="btnText">Mark Capstone Complete</span>
+  </button>
+  <p class="complete-note">Only mark complete once you've finished your final synthesis</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Geography for the Curious · Capstone Challenge · Wellington, New Zealand</p>
+  <a href="index.html">← Back to Course Index</a>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progressBar').style.width = (s / h * 100) + '%';
+  });
+
+  // Reveal
+  const obs = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('visible'); }), { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Complete button — syncs with index localStorage
+  const STORAGE_KEY = 'geo-course-progress';
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+  function saveProgress(d) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {}
+  }
+
+  function markComplete() {
+    const data = getProgress();
+    data['capstone'] = !data['capstone'];
+    saveProgress(data);
+    renderBtn(data);
+  }
+
+  function renderBtn(data) {
+    const btn = document.getElementById('completeBtn');
+    const txt = document.getElementById('btnText');
+    if (data['capstone']) {
+      btn.classList.add('done');
+      txt.textContent = '✓ Capstone Complete';
+    } else {
+      btn.classList.remove('done');
+      txt.textContent = 'Mark Capstone Complete';
+    }
+  }
+
+  renderBtn(getProgress());
+</script>
+
+</body>
+</html>
