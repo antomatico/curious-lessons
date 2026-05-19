@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lights On — Cleo's Big Bang Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space: #050510;
+    --deep: #0A0A20;
+    --panel: #0D0D22;
+    --teal: #4ECDC4;
+    --teal-dark: #2A8A84;
+    --yellow: #FFD93D;
+    --pink: #FF6B9D;
+    --star-white: #E8F4FF;
+    --blue: #4A90E2;
+    --text: #C8E0FF;
+    --muted: #6080A0;
+    --border: #1A2040;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--space); color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.8; overflow-x: hidden; }
+
+  .starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:0.15;} 50%{opacity:1;} }
+
+  /* Big star burst */
+  .starburst { position: absolute; border-radius: 50%; animation: burst ease-in-out infinite; }
+  @keyframes burst { 0%,100%{opacity:0.03; transform:scale(1);} 50%{opacity:0.12; transform:scale(1.3);} }
+
+  .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(to right, var(--blue), var(--teal)); width: 0%; transition: width 0.15s; z-index: 999; }
+
+  .hero {
+    position: relative; z-index: 1; min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 6rem 8vw 4rem;
+    background: radial-gradient(ellipse at 50% 40%, #0A0A3A 0%, #050510 70%);
+  }
+
+  .back-link { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; transition: color 0.2s; animation: fadeUp 0.4s ease both; }
+  .back-link:hover { color: var(--teal); }
+
+  .lesson-tag { display: inline-block; background: var(--teal); color: #050510; border-radius: 999px; font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; padding: 0.35rem 1rem; margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 700; animation: fadeUp 0.4s 0.05s ease both; }
+
+  .hero h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2.8rem, 9vw, 5.5rem); line-height: 1.05; color: var(--star-white); animation: fadeUp 0.4s 0.1s ease both; }
+  .hero h1 .sub { display: block; color: var(--teal); font-size: 0.5em; }
+
+  .hero-q { margin-top: 1.25rem; font-size: 1.15rem; color: var(--yellow); font-style: italic; font-weight: 700; animation: fadeUp 0.4s 0.15s ease both; }
+  .hero-p { max-width: 540px; margin-top: 1rem; font-size: 1rem; color: var(--muted); line-height: 1.75; animation: fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color: var(--text); }
+
+  .scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--border); text-transform: uppercase; animation: bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(7px);} }
+
+  section { padding: 4rem 8vw; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; display: block; }
+
+  h2 { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--star-white); margin-bottom: 1.25rem; line-height: 1.15; }
+  h3 { font-weight: 800; font-size: 1rem; color: var(--teal); margin: 1.75rem 0 0.6rem; }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; font-size: 0.975rem; }
+  p strong { color: var(--text); }
+
+  .big-idea { background: linear-gradient(135deg, #05051A, #0A0A25); border: 2px solid var(--teal); border-radius: 16px; padding: 2rem 2.5rem; margin: 1.5rem 0; max-width: 680px; position: relative; overflow: hidden; }
+  .big-idea::before { content: '⭐'; position: absolute; top: -1rem; right: 1.5rem; font-size: 4rem; opacity: 0.15; }
+  .big-idea p { font-size: 1.1rem; font-weight: 700; color: var(--star-white); font-style: italic; max-width: none; margin: 0; }
+
+  .wonder { background: #060A10; border: 1px solid #1A2A40; border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px; }
+  .wonder::before { content: '🌌 THINK ABOUT THIS'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--teal); margin-bottom: 0.6rem; }
+  .wonder p { max-width: none; color: #80C0C8; margin: 0; }
+  .wonder p strong { color: #C0E8F0; }
+
+  .friend-box { background: linear-gradient(135deg, #05100A, #05051A); border: 2px dashed var(--yellow); border-radius: 16px; padding: 1.75rem 2rem; margin: 1.75rem 0; max-width: 680px; }
+  .friend-box::before { content: '👯 DISCUSS WITH YOUR FRIEND'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--yellow); margin-bottom: 0.75rem; }
+  .friend-box p { max-width: none; color: #C8B860; margin: 0 0 0.5rem; font-weight: 600; font-size: 0.95rem; }
+
+  /* Dark ages visual */
+  .dark-ages {
+    background: #020205; border: 1px solid #0A0A20; border-radius: 16px;
+    padding: 2.5rem; margin: 2rem 0; max-width: 680px; text-align: center;
+  }
+  .dark-ages-label { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.18em; color: #2A2A4A; text-transform: uppercase; margin-bottom: 1.5rem; }
+  .dark-timeline { display: flex; align-items: center; gap: 0; }
+  .dt-block { flex: 1; padding: 1rem 0.5rem; font-size: 0.7rem; text-align: center; }
+  .dt-block .dt-time { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .dt-block .dt-label { font-weight: 700; font-size: 0.75rem; }
+  .dt-dark { color: #2A2A4A; }
+  .dt-glow { color: var(--teal); animation: glowPulse 2s ease-in-out infinite; }
+  .dt-star { color: var(--yellow); }
+  @keyframes glowPulse { 0%,100%{opacity:0.5;} 50%{opacity:1;} }
+  .dt-arrow { color: var(--border); font-size: 1.2rem; flex-shrink: 0; }
+
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; max-width: 780px; }
+  .vocab-card { background: var(--panel); border: 2px solid var(--border); border-radius: 12px; padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; position: relative; }
+  .vocab-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+  .vocab-card.open { border-color: var(--yellow); }
+  .vocab-word { font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--teal); margin-bottom: 0.4rem; }
+  .vocab-def { font-size: 0.82rem; color: var(--muted); display: none; line-height: 1.6; }
+  .vocab-card.open .vocab-def { display: block; }
+  .vocab-hint { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--border); position: absolute; bottom: 0.5rem; right: 0.75rem; }
+
+  .quiz-wrap { max-width: 680px; margin: 1.5rem 0; }
+  .quiz-q { font-size: 1rem; font-weight: 700; color: var(--star-white); margin-bottom: 0.75rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .quiz-opt { background: var(--panel); border: 2px solid var(--border); border-radius: 10px; color: var(--muted); padding: 0.75rem 1.1rem; text-align: left; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.9rem; transition: all 0.15s; }
+  .quiz-opt:hover { border-color: var(--teal); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--teal); color: #90E0D8; background: #041A18; }
+  .quiz-opt.wrong { border-color: var(--pink); color: #FFB0C8; background: #1A0410; }
+  .quiz-feedback { font-size: 0.875rem; padding: 0.9rem 1.1rem; margin-top: 0.4rem; display: none; border-radius: 10px; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #041A18; border-left: 4px solid var(--teal); color: #90E0D8; }
+  .quiz-feedback.bad { background: #1A0410; border-left: 4px solid var(--pink); color: #FFB0C8; }
+
+  .activity { background: linear-gradient(135deg, #050A14, #050510); border: 2px solid var(--yellow); border-radius: 16px; padding: 2rem 2.5rem; margin: 2rem 0; max-width: 680px; }
+  .activity::before { content: '✏️ CREATIVE ACTIVITY'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--yellow); margin-bottom: 0.75rem; }
+  .activity h3 { color: white; margin: 0 0 0.75rem; font-size: 1.1rem; }
+  .activity p { max-width: none; color: #C8C060; margin-bottom: 0.5rem; }
+  .activity ul { padding-left: 1.5rem; color: var(--muted); }
+  .activity li { margin-bottom: 0.4rem; font-size: 0.875rem; }
+  .activity li strong { color: var(--text); }
+
+  .video-box { background: var(--deep); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px; display: flex; gap: 1.25rem; align-items: flex-start; }
+  .video-icon { font-size: 2rem; flex-shrink: 0; }
+  .video-title { font-weight: 700; color: var(--text); margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .video-desc { font-size: 0.82rem; color: var(--muted); }
+  .video-link { color: var(--teal); text-decoration: none; font-weight: 700; }
+  .video-link:hover { color: var(--yellow); }
+
+  .lesson-nav { position: relative; z-index: 1; padding: 2.5rem 8vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .nav-btn { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 0.6rem 1.25rem; border-radius: 999px; transition: all 0.2s; }
+  .nav-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .nav-btn.next { background: var(--teal); color: #050510; border-color: var(--teal); font-weight: 700; }
+  .nav-btn.next:hover { background: var(--teal-dark); color: white; }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--teal), transparent); opacity: 0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(16px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="starfield" id="sf"></div>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="cleo-index.html" class="back-link">← Back to course</a>
+  <div class="lesson-tag">Lesson 03 of 04</div>
+  <h1>Lights On ⭐<span class="sub">How the first stars switched on the universe</span></h1>
+  <p class="hero-q">"The universe was dark for 200 million years. Then — one by one — the stars turned on."</p>
+  <p class="hero-p">After the Big Bang, everything went dark. For an almost unimaginable stretch of time, <strong>there were no stars, no light, and no one to see anything</strong>. Then gravity pulled clouds of gas together — and the first stars blazed into existence.</p>
+  <div class="scroll-hint">↓ scroll to begin</div>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">⭐ The Big Idea</span>
+  <h2>First Came Darkness — Then Came Light</h2>
+
+  <div class="big-idea reveal">
+    <p>"The universe spent its first 200 million years in total darkness. No stars. No galaxies. Just clouds of hydrogen and helium drifting in the dark. Then gravity slowly pulled those clouds together — and the very first stars ignited."</p>
+  </div>
+
+  <p class="reveal">Remember from Lesson 2 — the first atoms (hydrogen and helium) formed about 380,000 years after the Big Bang. At that point, light could finally travel through space. But it wasn't starlight. It was more like a faint, even glow — a leftover warmth from the early universe. Then that glow faded, and the universe went dark.</p>
+
+  <p class="reveal">Scientists call this period <strong>the Cosmic Dark Ages</strong>. For roughly 200 million years — a stretch of time so long it makes your head spin — the universe was just clouds of gas floating in darkness. No light. No heat. No stars. Nothing to see, and nobody to see it.</p>
+
+  <div class="dark-ages reveal">
+    <div class="dark-ages-label">The journey from darkness to starlight</div>
+    <div class="dark-timeline">
+      <div class="dt-block">
+        <div class="dt-time">380,000 yrs</div>
+        <div class="dt-label dt-glow">First glow fades...</div>
+      </div>
+      <div class="dt-arrow">→</div>
+      <div class="dt-block">
+        <div class="dt-time">380,000 — 200M yrs</div>
+        <div class="dt-label dt-dark">◼ ◼ ◼ DARK AGES ◼ ◼ ◼</div>
+      </div>
+      <div class="dt-arrow">→</div>
+      <div class="dt-block">
+        <div class="dt-time">~200 million yrs</div>
+        <div class="dt-label dt-star">★ First Stars ★</div>
+      </div>
+      <div class="dt-arrow">→</div>
+      <div class="dt-block">
+        <div class="dt-time">Billions of yrs later</div>
+        <div class="dt-label dt-glow">Our Sun 🌞</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>How did stars form from gas?</h3>
+  <p class="reveal">Gravity is the key. Even though hydrogen gas was spread out across the universe, it wasn't perfectly smooth — there were tiny clumps where slightly more gas had collected. <strong>Gravity pulled those clumps together</strong>. As more and more gas fell inward, the cloud got denser. The centre got hotter. And hotter. And hotter still.</p>
+
+  <p class="reveal">When the centre of a gas cloud reaches about <strong>10 million degrees</strong>, something incredible happens — the hydrogen atoms are squeezed together so hard they <em>fuse</em> (join together) and become helium atoms. This releases an enormous amount of energy — as light and heat. <strong>The star switches on.</strong></p>
+
+  <div class="wonder reveal">
+    <p><strong>This is happening in our Sun right now.</strong> Every second, the Sun converts about 600 million tonnes of hydrogen into helium. That's where sunlight comes from — and that's where the warmth on your face on a sunny day in Wellington comes from. <strong>You are being warmed by nuclear fusion happening 150 million kilometres away.</strong> 🌞</p>
+  </div>
+
+  <h3>What's the Cosmic Microwave Background?</h3>
+  <p class="reveal">Remember when we said the universe glowed faintly after the first atoms formed? That glow — called the <strong>Cosmic Microwave Background</strong>, or CMB — is still out there. Right now. It fills all of space in every direction.</p>
+
+  <p class="reveal">It's incredibly faint — your eyes can't see it. But special telescopes can detect it. And here's the extraordinary thing: <strong>when scientists look at the CMB, they are looking at the universe as it was 380,000 years after the Big Bang.</strong> It's like a baby photo of the entire universe — and it's one of the most important pieces of evidence that the Big Bang actually happened. You'll learn more about this in Lesson 4.</p>
+
+  <div class="friend-box reveal">
+    <p>Imagine you could travel back in time to watch the first star switch on. What would you see? What would it feel like? What questions would you want to ask about it?</p>
+    <p style="margin-top:0.5rem;font-style:italic;font-size:0.85rem;">Take turns describing your imaginary view — then compare. Did you picture the same thing?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">📚 Key Words</span>
+  <h2>Words to Know</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Gravity</div>
+      <div class="vocab-def">The force that pulls things toward each other. Everything with mass has gravity — you, the Earth, the Sun, every star. The more massive something is, the stronger its gravity. Gravity is what holds planets in orbit, keeps you on the ground, pulls gas clouds into stars, and holds galaxies together. Without gravity, the universe would just be spread-out gas forever.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Nuclear Fusion</div>
+      <div class="vocab-def">When two atomic nuclei are squeezed together so hard they join (fuse) to make a new, heavier nucleus — releasing enormous energy. This is what powers stars. The Sun fuses hydrogen into helium. This is NOT the same as nuclear power stations on Earth, which split atoms apart (that's fission). Fusion is what stars do.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Galaxy</div>
+      <div class="vocab-def">A massive collection of stars, gas, dust, and dark matter, all held together by gravity. Our galaxy is called the Milky Way and contains about 200-400 billion stars. The universe contains more than 2 trillion galaxies. That's 2,000,000,000,000 galaxies — each with hundreds of billions of stars.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Cosmic Dark Ages</div>
+      <div class="vocab-def">The period between when the universe's first glow faded (about 380,000 years after the Big Bang) and when the first stars switched on (about 200 million years). For almost 200 million years, the universe was completely dark — no stars, no light, just clouds of hydrogen gas drifting silently in the dark.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Cosmic Microwave Background</div>
+      <div class="vocab-def">Often called the CMB — the faint afterglow of the Big Bang that still fills all of space today. It's like the universe's oldest light, released 380,000 years after the Big Bang and still travelling. Special telescopes have mapped it and it looks like a faint glow covering the entire sky in every direction. It's the universe's baby photo.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Supernova</div>
+      <div class="vocab-def">When a massive star runs out of fuel and explodes — one of the most violent events in the universe. A supernova can briefly outshine an entire galaxy. But supernovas are also how the heavier elements (carbon, oxygen, iron) get spread through space. Without supernovas, there would be no planets — and no us.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">📺 Watch</span>
+  <h2>See It Explained</h2>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🌐</div>
+    <div>
+      <div class="video-title">ESA Kids — The Universe & Stars</div>
+      <p class="video-desc">The European Space Agency's kids website has brilliant, clear articles on how stars form and what they are. <a class="video-link" href="https://www.esa.int/kids/en/learn/Our_Universe/Stars_and_galaxies/Stars" target="_blank">Visit esa.int/kids →</a></p>
+    </div>
+  </div>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🎬</div>
+    <div>
+      <div class="video-title">How Stars Are Born — Kurzgesagt</div>
+      <p class="video-desc">Kurzgesagt makes beautiful, accurate animated science videos. Search YouTube: <a class="video-link" href="https://www.youtube.com/results?search_query=kurzgesagt+how+stars+form" target="_blank">"Kurzgesagt how stars form" →</a> — about 7 minutes.</p>
+    </div>
+  </div>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🌐</div>
+    <div>
+      <div class="video-title">NASA Space Place — What Is a Star?</div>
+      <p class="video-desc">NASA's kids site explains stars, how they work, and what makes them shine. <a class="video-link" href="https://spaceplace.nasa.gov/stars/en/" target="_blank">Visit spaceplace.nasa.gov →</a></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">🧠 Quiz Time</span>
+  <h2>Test What You Know!</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. What are the Cosmic Dark Ages?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The time before the Big Bang when everything was dark</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">The 200 million years between the universe's first glow fading and the first stars switching on</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">When the universe gets dark every night</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The time inside a black hole</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">⭐ Exactly! The Cosmic Dark Ages were about 200 million years of complete darkness after the universe's first faint glow faded — before any stars existed. Just clouds of hydrogen gas drifting silently through the dark.</div>
+    <div class="quiz-feedback bad" id="q1-bad">The Cosmic Dark Ages were the period between when the universe's first glow faded (380,000 years after the Big Bang) and when the first stars switched on (about 200 million years). Nearly 200 million years of complete darkness — no stars, no light of any kind.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What force pulled clouds of gas together to make stars?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">The Big Bang was still pushing everything outward</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Wind from other stars blew the gas together</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">Gravity — even small clumps of extra gas pulled more gas toward them</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Magnetism attracted the atoms together</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">⭐ Yes! Gravity is the answer. The universe wasn't perfectly smooth — some places had slightly more gas. Gravity made those clumps pull in even more gas. Over millions of years, the clumps got denser and hotter until — STAR!</div>
+    <div class="quiz-feedback bad" id="q2-bad">Gravity did it! Even tiny differences in how much gas was in different places gave gravity something to work with. Slightly denser regions pulled in more gas. Those regions got denser still. Over millions of years, they grew hot and dense enough to ignite as stars.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What is nuclear fusion?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">When atoms split apart and release energy</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">When a star explodes at the end of its life</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">When atoms are squeezed together so hard they join — releasing enormous energy</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">When gravity pulls planets into orbit</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">⭐ Correct! Nuclear fusion is when atoms get squished together so hard they join into a new heavier atom — and the leftover energy bursts out as light and heat. This is what the Sun is doing right now, every second. It's fusing about 600 million tonnes of hydrogen into helium per second!</div>
+    <div class="quiz-feedback bad" id="q3-bad">Nuclear fusion is when atoms are squeezed together so hard they join (fuse) into a new heavier atom. The leftover energy comes out as light and heat — that's starlight! It's what powers every star. Splitting atoms is called fission — that's how nuclear power stations work on Earth.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. What is the Cosmic Microwave Background (CMB)?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">The light coming from the very centre of the Milky Way</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Background music played by scientists while they work</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">The faint leftover glow from the early universe that still fills all of space today</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">The light from the first stars that reaches us millions of years later</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">⭐ Yes! The CMB is the leftover glow from when the universe was 380,000 years old — released when the first atoms formed and light could travel freely. It still fills all of space in every direction today. It's one of the most important pieces of evidence for the Big Bang.</div>
+    <div class="quiz-feedback bad" id="q4-bad">The CMB is the faint leftover glow from the early universe — released 380,000 years after the Big Bang when the universe cooled enough for light to travel freely. It's still all around us, filling all of space in every direction. Telescopes can detect it, even though our eyes can't see it.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. Why are supernovas important for life on Earth?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">They provide the light that plants need to grow</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">They create the gravity that holds planets in orbit</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">They spread heavier elements like carbon and oxygen through space — the building blocks for planets and life</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">They destroy dangerous asteroids before they hit Earth</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">⭐ Brilliant! Stars create heavier elements (carbon, oxygen, iron, gold) through fusion. When a massive star explodes as a supernova, it scatters those elements through space. Those elements formed the planets — and us. Without supernovas, the universe would only have hydrogen and helium. No planets. No life.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Supernovas spread the heavier elements through space! Stars are element factories — they fuse hydrogen into helium, then helium into carbon, then carbon into heavier elements, all the way up to iron. When the star explodes, all those atoms get flung into space — where they eventually become planets and living things.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">✏️ Create</span>
+  <h2>Write Your Story</h2>
+
+  <div class="activity reveal">
+    <h3>"I Was There When the First Star Switched On"</h3>
+    <p>Imagine you could be there — floating in the dark universe, watching the very first star ignite. Use what you've learned to write a short story (5–10 sentences) from that point of view.</p>
+    <ul>
+      <li><strong>Start with the darkness:</strong> What is it like? Is it silent? Does it feel cold? What can you sense?</li>
+      <li><strong>The star appears:</strong> What do you see first? How does it grow? What does the light feel like?</li>
+      <li><strong>What you know:</strong> Try to include at least one real science word you learned today — gravity, fusion, hydrogen, etc.</li>
+      <li><strong>End with a question:</strong> What would you want to know next?</li>
+    </ul>
+    <p style="margin-top:1rem;">Read your stories to each other. Whose story made the first star feel most real?</p>
+  </div>
+</section>
+
+<div class="lesson-nav">
+  <a href="cleo-lesson-2.html" class="nav-btn">← Lesson 2: The First Three Minutes</a>
+  <a href="cleo-lesson-4.html" class="nav-btn next">Next: How Do We Know? →</a>
+</div>
+
+<script>
+  const sf = document.getElementById('sf');
+  for (let i = 0; i < 150; i++) {
+    const s = document.createElement('div'); s.className = 'star';
+    const size = Math.random() * 2 + 0.3;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*6}s;animation-duration:${2+Math.random()*5}s;`;
+    sf.appendChild(s);
+  }
+  // A few larger glowing stars
+  for (let i = 0; i < 8; i++) {
+    const b = document.createElement('div'); b.className = 'starburst';
+    const size = Math.random() * 60 + 20;
+    s.style.cssText = '';
+    b.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:radial-gradient(circle,rgba(78,205,196,0.3),transparent);animation-delay:${Math.random()*4}s;animation-duration:${4+Math.random()*4}s;`;
+    sf.appendChild(b);
+  }
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop, h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('pb').style.width = (s/h*100) + '%';
+  });
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  function answer(btn, ok, id) {
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    document.getElementById(id + (ok ? '-good' : '-bad')).classList.add('show');
+    if (!ok) btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => { if(b.onclick.toString().includes('true')) b.classList.add('correct'); });
+  }
+</script>
+</body>
+</html>

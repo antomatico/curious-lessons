@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before the Bang — Cleo's Big Bang Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space: #0B0B1F;
+    --deep: #12123A;
+    --panel: #16163A;
+    --pink: #FF6B9D;
+    --pink-dark: #CC3366;
+    --yellow: #FFD93D;
+    --teal: #4ECDC4;
+    --cream: #FFF8F0;
+    --text: #E8E0FF;
+    --muted: #8888BB;
+    --border: #2A2A5A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--space); color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.8; overflow-x: hidden; }
+
+  /* Stars */
+  .starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:0.2;} 50%{opacity:0.9;} }
+
+  .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(to right, var(--pink), var(--yellow)); width: 0%; transition: width 0.15s; z-index: 999; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 6rem 8vw 4rem;
+    background: radial-gradient(ellipse at 70% 50%, #2A0A3A 0%, #0B0B1F 70%);
+  }
+
+  .back-link {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted); text-decoration: none;
+    display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem;
+    transition: color 0.2s; animation: fadeUp 0.4s ease both;
+  }
+  .back-link:hover { color: var(--pink); }
+
+  .lesson-tag {
+    display: inline-block; background: var(--pink); color: white; border-radius: 999px;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em;
+    padding: 0.35rem 1rem; margin-bottom: 1.5rem; text-transform: uppercase;
+    animation: fadeUp 0.4s 0.05s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(3rem, 9vw, 6rem);
+    line-height: 1.05; color: white;
+    animation: fadeUp 0.4s 0.1s ease both;
+  }
+
+  .hero h1 .sub { display: block; color: var(--pink); font-size: 0.55em; }
+
+  .hero-q {
+    margin-top: 1.25rem;
+    font-size: 1.2rem; color: var(--yellow);
+    font-style: italic; font-weight: 700;
+    animation: fadeUp 0.4s 0.15s ease both;
+  }
+
+  .hero-p {
+    max-width: 540px; margin-top: 1rem; font-size: 1rem; color: var(--muted); line-height: 1.75;
+    animation: fadeUp 0.4s 0.2s ease both;
+  }
+  .hero-p strong { color: var(--text); }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+    color: var(--border); text-transform: uppercase; animation: bounce 2s ease infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(7px);} }
+
+  /* ── SECTIONS ── */
+  section { padding: 4rem 8vw; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--pink); margin-bottom: 0.75rem; display: block;
+  }
+
+  h2 {
+    font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: white; margin-bottom: 1.25rem; line-height: 1.15;
+  }
+
+  h3 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; color: var(--yellow); margin: 1.75rem 0 0.6rem; }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; font-size: 0.975rem; }
+  p strong { color: var(--text); }
+
+  /* ── BIG IDEA BOX ── */
+  .big-idea {
+    background: linear-gradient(135deg, #1E0A2E, #12123A);
+    border: 2px solid var(--pink);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin: 1.5rem 0;
+    max-width: 680px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .big-idea::before {
+    content: '💭';
+    position: absolute; top: -1rem; right: 1.5rem;
+    font-size: 4rem; opacity: 0.15;
+  }
+
+  .big-idea p {
+    font-size: 1.1rem; font-weight: 700; color: white; font-style: italic;
+    max-width: none; margin: 0;
+  }
+
+  /* ── WONDER BOX ── */
+  .wonder {
+    background: var(--deep); border: 1px solid #3A3A6A; border-radius: 12px;
+    padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px;
+  }
+  .wonder::before {
+    content: '🌌 THINK ABOUT THIS'; display: block;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+    color: var(--teal); margin-bottom: 0.6rem;
+  }
+  .wonder p { max-width: none; color: #A0C0C8; margin: 0; }
+  .wonder p strong { color: #E0F4F8; }
+
+  /* ── FRIEND BOX ── */
+  .friend-box {
+    background: linear-gradient(135deg, #1A0A2A, #0B1A2A);
+    border: 2px dashed var(--teal); border-radius: 16px;
+    padding: 1.75rem 2rem; margin: 1.75rem 0; max-width: 680px;
+  }
+  .friend-box::before {
+    content: '👯 DISCUSS WITH YOUR FRIEND'; display: block;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+    color: var(--teal); margin-bottom: 0.75rem;
+  }
+  .friend-box p { max-width: none; color: #90C8C4; margin: 0 0 0.5rem; font-weight: 600; font-size: 0.95rem; }
+
+  /* ── VOCAB ── */
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; max-width: 780px; }
+
+  .vocab-card {
+    background: var(--panel); border: 2px solid var(--border); border-radius: 12px;
+    padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .vocab-card:hover { border-color: var(--pink); transform: translateY(-2px); }
+  .vocab-card.open { border-color: var(--yellow); }
+
+  .vocab-word {
+    font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--yellow); margin-bottom: 0.4rem;
+  }
+  .vocab-def { font-size: 0.82rem; color: var(--muted); display: none; line-height: 1.6; }
+  .vocab-card.open .vocab-def { display: block; }
+  .vocab-hint { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--border); position: absolute; bottom: 0.5rem; right: 0.75rem; }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { max-width: 680px; margin: 1.5rem 0; }
+  .quiz-q { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 0.75rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+
+  .quiz-opt {
+    background: var(--panel); border: 2px solid var(--border); border-radius: 10px;
+    color: var(--muted); padding: 0.75rem 1.1rem; text-align: left; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--pink); color: white; }
+  .quiz-opt.correct { border-color: var(--teal); color: #90E0D8; background: #041A18; }
+  .quiz-opt.wrong { border-color: var(--pink); color: #FFB0C8; background: #1A0410; }
+
+  .quiz-feedback { font-size: 0.875rem; padding: 0.9rem 1.1rem; margin-top: 0.4rem; display: none; border-radius: 10px; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #041A18; border-left: 4px solid var(--teal); color: #90E0D8; }
+  .quiz-feedback.bad { background: #1A0410; border-left: 4px solid var(--pink); color: #FFB0C8; }
+
+  /* ── CREATIVE ACTIVITY ── */
+  .activity {
+    background: linear-gradient(135deg, #0A1A10, #12123A);
+    border: 2px solid var(--yellow); border-radius: 16px;
+    padding: 2rem 2.5rem; margin: 2rem 0; max-width: 680px; position: relative;
+  }
+  .activity::before {
+    content: '✏️ CREATIVE ACTIVITY'; display: block;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+    color: var(--yellow); margin-bottom: 0.75rem;
+  }
+  .activity h3 { color: white; margin: 0 0 0.75rem; font-size: 1.1rem; }
+  .activity p { max-width: none; color: #C8C060; margin-bottom: 0.5rem; }
+  .activity ul { padding-left: 1.5rem; color: var(--muted); }
+  .activity li { margin-bottom: 0.4rem; font-size: 0.875rem; }
+  .activity li strong { color: var(--text); }
+
+  /* ── VIDEO ── */
+  .video-box {
+    background: var(--deep); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px;
+    display: flex; gap: 1.25rem; align-items: flex-start;
+  }
+  .video-icon { font-size: 2rem; flex-shrink: 0; }
+  .video-title { font-weight: 700; color: white; margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .video-desc { font-size: 0.82rem; color: var(--muted); }
+  .video-link { color: var(--pink); text-decoration: none; font-weight: 700; }
+  .video-link:hover { color: var(--yellow); }
+
+  /* ── NAV ── */
+  .lesson-nav {
+    position: relative; z-index: 1;
+    padding: 2.5rem 8vw; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .nav-btn {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); text-decoration: none;
+    border: 1px solid var(--border); padding: 0.6rem 1.25rem; border-radius: 999px;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--pink); color: var(--pink); }
+  .nav-btn.next { background: var(--pink); color: white; border-color: var(--pink); }
+  .nav-btn.next:hover { background: var(--pink-dark); }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--pink), transparent); opacity: 0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(16px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="starfield" id="sf"></div>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="cleo-index.html" class="back-link">← Back to course</a>
+  <div class="lesson-tag">Lesson 01 of 04</div>
+  <h1>Before the Bang<span class="sub">What was there before everything?</span></h1>
+  <p class="hero-q">"If the universe began with a bang — what was there before it?"</p>
+  <p class="hero-p">This is one of the <strong>hardest questions in all of science</strong>. Even the world's cleverest scientists don't have a complete answer. But they have ideas — and so can you.</p>
+  <div class="scroll-hint">↓ scroll to begin</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- BIG IDEA -->
+<section>
+  <span class="section-tag">🌑 The Big Idea</span>
+  <h2>Before the Universe, There Was No Before</h2>
+
+  <div class="big-idea reveal">
+    <p>"The Big Bang didn't just create stars and planets. It created space itself. And time itself. Which means there was no 'before' the Big Bang — because time didn't exist yet."</p>
+  </div>
+
+  <p class="reveal">Imagine asking: <strong>"What is north of the North Pole?"</strong> There's no answer — because north stops at the North Pole. There's nowhere further north to go. "Before the Big Bang" is a bit like that. Time started with the Big Bang. So there was no "before."</p>
+
+  <p class="reveal">That's really hard to imagine. That's okay. Even Albert Einstein — one of the most brilliant scientists who ever lived — said that the very beginning of the universe is where our understanding runs out.</p>
+
+  <h3>So what DO we know?</h3>
+  <p class="reveal">We know that about <strong>13.8 billion years ago</strong>, everything — all the matter, all the energy, all of space — was squashed into a point <strong>smaller than the dot at the end of this sentence.</strong> Scientists call this the <em>singularity</em>. It was unimaginably hot and dense. And then... it expanded. Very, very fast.</p>
+
+  <div class="wonder reveal">
+    <p>Here's something to wonder about: scientists say the universe might have started from "nothing." But <strong>what is nothing?</strong> Right now, the empty space between stars isn't truly empty — it has particles popping in and out of existence all the time. Even "nothing" turns out to be something. 🤯</p>
+  </div>
+
+  <h3>Was it an explosion?</h3>
+  <p class="reveal">Not exactly! The name "Big Bang" is actually a bit misleading. It wasn't like a bomb going off in empty space. It was more like <strong>space itself stretching and growing</strong> — in every direction at once. Like if you drew dots on a balloon and then blew it up — every dot moves away from every other dot, but none of them is at the "centre." The universe is like that. There is no centre. It's all expanding.</p>
+
+  <div class="friend-box reveal">
+    <p>Talk about this together: Can you imagine nothing? Like, really nothing — no air, no darkness, no space, no time. Close your eyes and try. What happens in your brain when you try to picture it?</p>
+    <p style="margin-top:0.5rem; font-style:italic; font-size:0.85rem;">There's no right answer — this is a question scientists and philosophers have argued about for thousands of years.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VOCAB -->
+<section>
+  <span class="section-tag">📚 Key Words</span>
+  <h2>Words to Know</h2>
+  <p>Tap each card. Try to guess the meaning before you reveal it!</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Universe</div>
+      <div class="vocab-def">Everything that exists — every star, every planet, every galaxy, every atom, and all of space and time. The universe is all of it. Scientists think there might be other universes too, but we can't see them.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Singularity</div>
+      <div class="vocab-def">The name for the tiny, incredibly hot and dense point that the universe began from. It was smaller than an atom but contained everything that would ever become every star, planet, and galaxy. Scientists don't fully understand what it was like inside a singularity — the normal rules of physics don't apply.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">The Big Bang</div>
+      <div class="vocab-def">The moment when the singularity began expanding incredibly fast — creating space, time, energy, and eventually matter. It happened about 13.8 billion years ago. The name was actually made up by a scientist who didn't believe in it — as a joke! But the name stuck.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Expanding Universe</div>
+      <div class="vocab-def">The universe has been getting bigger ever since the Big Bang. Not because things are flying through space, but because space itself is stretching — like dots on a balloon being blown up. Every galaxy is moving away from every other galaxy right now, as you read this.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Astrophysicist</div>
+      <div class="vocab-def">A scientist who studies the universe — stars, galaxies, black holes, the Big Bang, and the laws of physics that govern them all. Astrophysicists use telescopes, maths, and computers to ask the biggest questions humans have ever asked. You want to be one of these! 🚀</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Theory</div>
+      <div class="vocab-def">In science, a theory isn't just a guess — it's an explanation that has been tested many, many times and backed up by lots of evidence. The Big Bang Theory is called a theory because scientists have found so much proof for it. It doesn't mean they're not sure!</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WATCH -->
+<section>
+  <span class="section-tag">📺 Watch</span>
+  <h2>See It Explained</h2>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🎬</div>
+    <div>
+      <div class="video-title">The Beginning of Everything — The Big Bang</div>
+      <p class="video-desc">A beautifully animated short video explaining how the universe began. Clear, friendly, and genuinely brilliant. About 7 minutes. <a class="video-link" href="https://thekidshouldseethis.com/post/big-bang-animation" target="_blank">Watch at thekidshouldseethis.com →</a></p>
+    </div>
+  </div>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🎬</div>
+    <div>
+      <div class="video-title">What Is The Big Bang Theory? — Dr. Binocs Show</div>
+      <p class="video-desc">Fun, clear, and great for your age. About 4 minutes. <a class="video-link" href="https://www.youtube.com/watch?v=GncYOf29uc4" target="_blank">Watch on YouTube →</a></p>
+    </div>
+  </div>
+
+  <div class="wonder reveal">
+    <p><strong>While you watch:</strong> Does the video explain what was there before the Big Bang? If not — why do you think they didn't answer that question?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUIZ -->
+<section>
+  <span class="section-tag">🧠 Quiz Time</span>
+  <h2>Let's See What You Know!</h2>
+  <p>Read each question carefully. There might be tricks!</p>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. What does "singularity" mean in the Big Bang?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">A very big explosion in space</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">The tiny, incredibly hot and dense point that everything started from</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The name for the first star ever made</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">A black hole at the centre of the universe</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">⭐ Yes! The singularity was the starting point — smaller than an atom but containing everything. Scientists still don't fully understand what it was like inside one.</div>
+    <div class="quiz-feedback bad" id="q1-bad">Not quite! The singularity was the tiny, incredibly hot and dense starting point — smaller than a full stop on this page, but containing all the stuff that would become every star, planet, and galaxy.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. Was the Big Bang like a bomb exploding in empty space?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Yes — it was a giant explosion shooting things outward</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">No — it was space itself stretching and growing in all directions</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Yes — it happened at the centre of the universe</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">No — the universe has always existed and never had a beginning</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">⭐ Exactly right! The Big Bang wasn't an explosion in space — it was the expansion of space itself. Think of dots on a balloon being blown up. There's no centre, and everything moves away from everything else.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Tricky one! The Big Bang wasn't really like a bomb. It was space itself stretching — like blowing up a balloon with dots on it. The dots all move away from each other, and none of them is the "centre."</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What did the Big Bang create — besides matter?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Just stars and planets</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Space, but not time</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">Space AND time — they both began with the Big Bang</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Nothing — the Big Bang only rearranged things that already existed</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">⭐ Brilliant! The Big Bang created space and time — not just the stuff in space. This is why "before the Big Bang" doesn't quite make sense. Time itself didn't exist yet.</div>
+    <div class="quiz-feedback bad" id="q3-bad">The Big Bang created space AND time. This is the really mind-bending bit — time didn't exist before the Big Bang. So asking what happened "before" it is like asking what's north of the North Pole. There isn't a before!</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. How old is the universe?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">4.5 billion years old</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">1 billion years old</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">100 million years old</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">About 13.8 billion years old</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">⭐ Yes! 13.8 billion years. For comparison — the Earth is only about 4.5 billion years old. The universe existed for over 9 billion years before our planet even formed!</div>
+    <div class="quiz-feedback bad" id="q4-bad">The universe is about 13.8 billion years old. Our Earth is only 4.5 billion years old — which means the universe existed for over 9 billion years before Earth even formed. That's a very long time to wait for us to show up!</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. In science, what is a "theory"?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Just a guess that hasn't been tested yet</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">An idea that scientists are pretty sure is wrong</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">An explanation backed up by lots of evidence and testing</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">A story that explains something, like a myth</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">⭐ Exactly! In everyday language, "theory" can mean a guess. But in science, a theory is a well-tested explanation with lots of evidence. The Big Bang Theory has mountains of evidence supporting it — you'll learn about that in Lesson 4!</div>
+    <div class="quiz-feedback bad" id="q5-bad">In everyday life, "theory" can mean a guess — but in science it means something much stronger. A scientific theory is backed up by lots and lots of evidence and has been tested many times. The Big Bang Theory has enormous amounts of evidence supporting it.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CREATIVE ACTIVITY -->
+<section>
+  <span class="section-tag">✏️ Create</span>
+  <h2>Your Turn to Imagine</h2>
+
+  <div class="activity reveal">
+    <h3>Write or Draw: "What Is Nothing?"</h3>
+    <p>This is the question that has stumped scientists, philosophers, and thinkers for thousands of years. Now it's your turn.</p>
+    <ul>
+      <li><strong>Option A — Write:</strong> In 3–5 sentences, describe what you think "nothing" is like. Is it dark? Cold? Silent? Or is it something else entirely? There's no wrong answer.</li>
+      <li><strong>Option B — Draw:</strong> Draw what "nothing" looks like to you. This is harder than it sounds! How do you draw something that isn't there?</li>
+      <li><strong>Option C — Both:</strong> Draw it AND write a caption explaining your picture.</li>
+    </ul>
+    <p style="margin-top:1rem;">When you're done — show it to your friend and see if they drew or wrote something different. Then discuss: whose "nothing" is more nothing?</p>
+  </div>
+
+  <div class="wonder reveal">
+    <p><strong>A question to sit with:</strong> If the universe began from nothing... where did the nothing come from? Scientists genuinely don't know. <strong>This is a real open question in astrophysics.</strong> One day, someone will figure it out. Maybe it'll be you. 🌟</p>
+  </div>
+</section>
+
+<!-- NAV -->
+<div class="lesson-nav">
+  <a href="cleo-index.html" class="nav-btn">← Course Home</a>
+  <a href="cleo-lesson-2.html" class="nav-btn next">Next: The First Three Minutes →</a>
+</div>
+
+<script>
+  // Stars
+  const sf = document.getElementById('sf');
+  for (let i = 0; i < 100; i++) {
+    const s = document.createElement('div'); s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*5}s;animation-duration:${2+Math.random()*4}s;`;
+    sf.appendChild(s);
+  }
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop, h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('pb').style.width = (s/h*100) + '%';
+  });
+  // Reveal
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  // Quiz
+  function answer(btn, ok, id) {
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    document.getElementById(id + (ok ? '-good' : '-bad')).classList.add('show');
+    if (!ok) btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => { if(b.onclick.toString().includes('true')) b.classList.add('correct'); });
+  }
+</script>
+</body>
+</html>

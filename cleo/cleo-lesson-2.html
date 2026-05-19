@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The First Three Minutes — Cleo's Big Bang Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space: #0B0B1F;
+    --deep: #1A1200;
+    --panel: #1A1408;
+    --yellow: #FFD93D;
+    --yellow-dark: #CC9900;
+    --pink: #FF6B9D;
+    --teal: #4ECDC4;
+    --orange: #FF8C42;
+    --cream: #FFF8F0;
+    --text: #FFE8C0;
+    --muted: #A09060;
+    --border: #3A2A08;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: #0A0800; color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.8; overflow-x: hidden; }
+
+  /* Animated ember stars */
+  .starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .ember { position: absolute; border-radius: 50%; animation: emberGlow ease-in-out infinite; }
+  @keyframes emberGlow { 0%,100%{opacity:0.1;} 50%{opacity:0.8;} }
+
+  .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(to right, var(--orange), var(--yellow)); width: 0%; transition: width 0.15s; z-index: 999; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1; min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 6rem 8vw 4rem;
+    background: radial-gradient(ellipse at 60% 40%, #3A1A00 0%, #1A0800 50%, #0A0800 100%);
+  }
+
+  .back-link { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; transition: color 0.2s; animation: fadeUp 0.4s ease both; }
+  .back-link:hover { color: var(--yellow); }
+
+  .lesson-tag { display: inline-block; background: var(--yellow); color: #0A0800; border-radius: 999px; font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; padding: 0.35rem 1rem; margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 700; animation: fadeUp 0.4s 0.05s ease both; }
+
+  .hero h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2.8rem, 9vw, 5.5rem); line-height: 1.05; color: var(--yellow); animation: fadeUp 0.4s 0.1s ease both; }
+  .hero h1 .sub { display: block; color: var(--orange); font-size: 0.5em; }
+
+  .hero-q { margin-top: 1.25rem; font-size: 1.15rem; color: white; font-style: italic; font-weight: 700; animation: fadeUp 0.4s 0.15s ease both; }
+
+  .hero-p { max-width: 540px; margin-top: 1rem; font-size: 1rem; color: var(--muted); line-height: 1.75; animation: fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color: var(--text); }
+
+  .scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: #3A2A08; text-transform: uppercase; animation: bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(7px);} }
+
+  section { padding: 4rem 8vw; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--yellow); margin-bottom: 0.75rem; display: block; }
+
+  h2 { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--yellow); margin-bottom: 1.25rem; line-height: 1.15; }
+
+  h3 { font-weight: 800; font-size: 1rem; color: var(--orange); margin: 1.75rem 0 0.6rem; }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; font-size: 0.975rem; }
+  p strong { color: var(--text); }
+
+  /* ── TIMELINE ── */
+  .timeline { max-width: 680px; margin: 2rem 0; }
+
+  .tl-item {
+    display: grid; grid-template-columns: 120px 1fr;
+    gap: 1.5rem; padding: 1.25rem 0; border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .tl-item:last-child { border-bottom: none; }
+
+  .tl-time {
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--yellow);
+    font-weight: 700; line-height: 1.4; padding-top: 0.1rem;
+  }
+
+  .tl-event { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+  .tl-event strong { color: var(--text); font-size: 0.95rem; display: block; margin-bottom: 0.25rem; }
+
+  .big-idea { background: linear-gradient(135deg, #2A1500, #1A0800); border: 2px solid var(--yellow); border-radius: 16px; padding: 2rem 2.5rem; margin: 1.5rem 0; max-width: 680px; position: relative; overflow: hidden; }
+  .big-idea::before { content: '💥'; position: absolute; top: -1rem; right: 1.5rem; font-size: 4rem; opacity: 0.12; }
+  .big-idea p { font-size: 1.1rem; font-weight: 700; color: var(--text); font-style: italic; max-width: none; margin: 0; }
+
+  .wonder { background: #0A1A10; border: 1px solid #1A4030; border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px; }
+  .wonder::before { content: '🌌 THINK ABOUT THIS'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--teal); margin-bottom: 0.6rem; }
+  .wonder p { max-width: none; color: #80C0A8; margin: 0; }
+  .wonder p strong { color: #C0E8D0; }
+
+  .friend-box { background: linear-gradient(135deg, #0A1A10, #0A0A1A); border: 2px dashed var(--teal); border-radius: 16px; padding: 1.75rem 2rem; margin: 1.75rem 0; max-width: 680px; }
+  .friend-box::before { content: '👯 DISCUSS WITH YOUR FRIEND'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--teal); margin-bottom: 0.75rem; }
+  .friend-box p { max-width: none; color: #90C8C4; margin: 0 0 0.5rem; font-weight: 600; font-size: 0.95rem; }
+
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; max-width: 780px; }
+  .vocab-card { background: var(--panel); border: 2px solid var(--border); border-radius: 12px; padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; position: relative; }
+  .vocab-card:hover { border-color: var(--yellow); transform: translateY(-2px); }
+  .vocab-card.open { border-color: var(--orange); }
+  .vocab-word { font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--yellow); margin-bottom: 0.4rem; }
+  .vocab-def { font-size: 0.82rem; color: var(--muted); display: none; line-height: 1.6; }
+  .vocab-card.open .vocab-def { display: block; }
+  .vocab-hint { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--border); position: absolute; bottom: 0.5rem; right: 0.75rem; }
+
+  .quiz-wrap { max-width: 680px; margin: 1.5rem 0; }
+  .quiz-q { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .quiz-opt { background: var(--panel); border: 2px solid var(--border); border-radius: 10px; color: var(--muted); padding: 0.75rem 1.1rem; text-align: left; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.9rem; transition: all 0.15s; }
+  .quiz-opt:hover { border-color: var(--yellow); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--teal); color: #90E0D8; background: #041A18; }
+  .quiz-opt.wrong { border-color: var(--pink); color: #FFB0C8; background: #1A0410; }
+  .quiz-feedback { font-size: 0.875rem; padding: 0.9rem 1.1rem; margin-top: 0.4rem; display: none; border-radius: 10px; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #041A18; border-left: 4px solid var(--teal); color: #90E0D8; }
+  .quiz-feedback.bad { background: #1A0410; border-left: 4px solid var(--pink); color: #FFB0C8; }
+
+  .activity { background: linear-gradient(135deg, #0A1A10, #1A1200); border: 2px solid var(--yellow); border-radius: 16px; padding: 2rem 2.5rem; margin: 2rem 0; max-width: 680px; }
+  .activity::before { content: '✏️ CREATIVE ACTIVITY'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--yellow); margin-bottom: 0.75rem; }
+  .activity h3 { color: white; margin: 0 0 0.75rem; font-size: 1.1rem; }
+  .activity p { max-width: none; color: #C0B040; margin-bottom: 0.5rem; }
+  .activity ul { padding-left: 1.5rem; color: var(--muted); }
+  .activity li { margin-bottom: 0.4rem; font-size: 0.875rem; }
+  .activity li strong { color: var(--text); }
+
+  .video-box { background: #120E00; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px; display: flex; gap: 1.25rem; align-items: flex-start; }
+  .video-icon { font-size: 2rem; flex-shrink: 0; }
+  .video-title { font-weight: 700; color: var(--text); margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .video-desc { font-size: 0.82rem; color: var(--muted); }
+  .video-link { color: var(--yellow); text-decoration: none; font-weight: 700; }
+  .video-link:hover { color: var(--orange); }
+
+  .lesson-nav { position: relative; z-index: 1; padding: 2.5rem 8vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .nav-btn { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 0.6rem 1.25rem; border-radius: 999px; transition: all 0.2s; }
+  .nav-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .nav-btn.next { background: var(--yellow); color: #0A0800; border-color: var(--yellow); font-weight: 700; }
+  .nav-btn.next:hover { background: var(--yellow-dark); }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--yellow), transparent); opacity: 0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(16px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="starfield" id="sf"></div>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="cleo-index.html" class="back-link">← Back to course</a>
+  <div class="lesson-tag">Lesson 02 of 04</div>
+  <h1>The First Three Minutes<span class="sub">The most dramatic three minutes in the history of everything</span></h1>
+  <p class="hero-q">"In less time than it takes to brush your teeth — the universe was born."</p>
+  <p class="hero-p">In the first three minutes after the Big Bang, <strong>everything that matter is made of came into existence.</strong> No stars yet. No planets. But the building blocks for all of it — created in a flash of unimaginable heat.</p>
+  <div class="scroll-hint">↓ scroll to begin</div>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">💥 The Big Idea</span>
+  <h2>The Universe Went From Nothing to Something in a Flash</h2>
+
+  <div class="big-idea reveal">
+    <p>"In the first second, the universe went from a point smaller than an atom to bigger than a galaxy. And it was so hot that normal matter couldn't even exist yet — just raw, wild energy."</p>
+  </div>
+
+  <p class="reveal">Here's what happened, step by step. It all sounds impossible — but every piece of this has been tested by scientists and matched by real evidence found in the universe today.</p>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-time">Time: 0<br>(The Bang)</div>
+      <div class="tl-event"><strong>The singularity begins expanding</strong>The universe is smaller than an atom. Temperature: over 1,000 trillion trillion degrees. There is no matter yet — only pure, blazing energy. Space itself is expanding faster than the speed of light.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">0.000001 seconds</div>
+      <div class="tl-event"><strong>First particles appear</strong>As the universe expands and cools (just a little), tiny particles called <em>quarks</em> form from the energy. These are the smallest building blocks we know of. They can't stay alone — they immediately start sticking together.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">1 second</div>
+      <div class="tl-event"><strong>Protons and neutrons form</strong>Quarks stick together to make protons and neutrons — the parts at the centre of every atom in your body. It's still far too hot for atoms to exist. Temperature is now "only" about 10 billion degrees.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">3 minutes</div>
+      <div class="tl-event"><strong>First atomic nuclei!</strong>Protons and neutrons combine to form the very first atomic nuclei — the cores of the first atoms. Mostly hydrogen (the simplest atom), with some helium. These are the two most common elements in the universe today.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">380,000 years</div>
+      <div class="tl-event"><strong>First complete atoms</strong>After hundreds of thousands of years of cooling, electrons finally join the nuclei — making the universe's first complete atoms. Light can now travel freely for the first time. The universe lights up! (Well — dimly glows. Stars come later.)</div>
+    </div>
+  </div>
+
+  <div class="wonder reveal">
+    <p><strong>Here's something wild:</strong> Every atom in your body was forged in stars — stars that were born from the hydrogen and helium made in those first three minutes. The carbon in your bones, the oxygen you breathe, the iron in your blood — all of it traces back to that first explosion. <strong>You are made of stardust from the Big Bang.</strong> 🌟</p>
+  </div>
+
+  <h3>How hot was it?</h3>
+  <p class="reveal">The temperature at the start of the Big Bang was about <strong>1,800 trillion trillion degrees</strong>. To put that in perspective: the surface of the sun is about 5,500 degrees. The Big Bang was roughly 300 thousand trillion trillion times hotter than that. Numbers like this don't really fit in our brains — which is part of what makes astrophysics so exciting.</p>
+
+  <div class="friend-box reveal">
+    <p>Here's a question to discuss: We said "you are made of stardust." What do you think that means? Does knowing that change how you feel about yourself — or about stars? Is there a difference between "you" and "stardust"?</p>
+    <p style="margin-top:0.5rem;font-style:italic;font-size:0.85rem;">Astrophysicist Neil deGrasse Tyson says this is the thing that makes him feel most connected to the universe. What do you think?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">📚 Key Words</span>
+  <h2>Words to Know</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Atom</div>
+      <div class="vocab-def">The basic building block of all matter. Everything you can touch — your hand, a rock, water, air — is made of atoms. Atoms are incredibly tiny. A single human hair is about a million atoms wide. Atoms are made of even tinier parts: a nucleus in the middle (protons + neutrons) and electrons zipping around the outside.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Proton</div>
+      <div class="vocab-def">A tiny particle found in the nucleus (centre) of every atom. Protons have a positive electric charge. The number of protons in an atom determines what element it is — hydrogen has 1 proton, helium has 2, carbon has 6. You have billions of billions of billions of protons in your body right now.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Hydrogen</div>
+      <div class="vocab-def">The simplest and most common element in the universe — one proton, one electron. About 75% of all normal matter in the universe is hydrogen. The sun is mostly hydrogen. Stars work by squishing hydrogen atoms together to make helium, and that releases enormous amounts of energy — that's why stars shine!</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Helium</div>
+      <div class="vocab-def">The second simplest element — two protons, two neutrons, two electrons. About 25% of normal matter in the universe is helium (made in the first few minutes of the Big Bang). Helium is also what makes balloons float! It's lighter than air. Your birthday balloons contain atoms that were made 13.8 billion years ago.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Matter</div>
+      <div class="vocab-def">Anything that has mass and takes up space. You are matter. This screen is matter. Air is matter. Matter is made of atoms. In the very first fraction of a second after the Big Bang, there was no matter — only energy. Matter formed as the universe cooled down. Everything you can see and touch came from that cooling.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Energy</div>
+      <div class="vocab-def">The ability to do work or cause change. Heat is energy. Light is energy. Movement is energy. One of the most important discoveries in science (by Einstein!) is that matter and energy are actually two forms of the same thing — you can convert one into the other. E = mc² is the equation that describes this.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">📺 Watch</span>
+  <h2>See It Explained</h2>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🎬</div>
+    <div>
+      <div class="video-title">The Big Bang Theory for Kids — What Actually Happened</div>
+      <p class="video-desc">A clear, friendly explanation of the first moments of the universe — including the first particles and atoms. About 5 minutes. <a class="video-link" href="https://www.youtube.com/watch?v=rXER39AEE9k" target="_blank">Watch on YouTube →</a></p>
+    </div>
+  </div>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🌐</div>
+    <div>
+      <div class="video-title">NASA Space Place — How Old Is the Universe?</div>
+      <p class="video-desc">NASA's kids site with clear explanations of the early universe, atoms, and the Big Bang timeline. <a class="video-link" href="https://spaceplace.nasa.gov/big-bang/en/" target="_blank">Visit spaceplace.nasa.gov →</a></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">🧠 Quiz Time</span>
+  <h2>Test What You Know!</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. What two elements were made in the first three minutes of the Big Bang?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Carbon and oxygen</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">Hydrogen and helium</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Iron and gold</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Nitrogen and neon</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">⭐ Yes! Hydrogen and helium — the two simplest elements — were made in the first few minutes. Everything else (carbon, oxygen, iron...) was made later inside stars. Fun fact: the helium in birthday balloons was made in the Big Bang!</div>
+    <div class="quiz-feedback bad" id="q1-bad">The first two elements made were hydrogen and helium — the simplest ones. Carbon, oxygen, and everything else were made much later, inside stars. You need a star to forge heavier elements!</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What is an atom made of?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Just protons, all by themselves</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Miniature planets and moons</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">A nucleus (protons + neutrons) in the middle, with electrons around the outside</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">Hydrogen and helium squished together</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">⭐ Perfect! A nucleus in the middle made of protons and neutrons, with electrons zipping around the outside. Every single thing in the universe — including you — is made of atoms built this way.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Atoms have a nucleus in the middle (made of protons and neutrons) with electrons moving around the outside. They're unimaginably tiny — a million atoms would fit across a single human hair.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What was the temperature at the very start of the Big Bang?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">About the same as the sun — very hot!</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">A billion degrees</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">A trillion degrees</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">About 1,800 trillion trillion degrees — far beyond anything we can imagine</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">⭐ Yes — 1,800 trillion trillion degrees! The surface of the sun is about 5,500 degrees. The Big Bang was hundreds of trillions of trillions of times hotter. Numbers like this break our brains — which is why astrophysicists use special maths.</div>
+    <div class="quiz-feedback bad" id="q3-bad">The temperature was about 1,800 trillion trillion degrees — completely unimaginable. The sun's surface is around 5,500 degrees. The Big Bang was incomprehensibly hotter than that. This is why normal matter couldn't exist at first — it would have been instantly destroyed.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. When was the very first complete atom formed?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">In the first second</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">After 3 minutes</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">About 380,000 years after the Big Bang</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">About 1 billion years after the Big Bang</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">⭐ Exactly right! Even though protons and neutrons formed in the first few minutes, it took 380,000 years for the universe to cool down enough for electrons to join them and make complete atoms. Before that, light couldn't even travel freely — the universe was like a thick glowing fog.</div>
+    <div class="quiz-feedback bad" id="q4-bad">It took 380,000 years! Protons and neutrons formed in the first minutes, but the universe was still too hot for electrons to attach to them. For nearly 400,000 years, the universe was a thick, hot fog. Then things cooled enough for atoms to form — and light could finally travel.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. What does it mean to say "you are made of stardust"?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">It's just a poetic way of saying we came from space — not literally true</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Humans are descended from aliens who came from other stars</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">The atoms in your body were forged in ancient stars — those stars exploded and the material eventually became you</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">Our bodies produce stardust energy when we eat food</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">⭐ Yes! The atoms in your body — carbon, oxygen, nitrogen — were made inside stars that lived and died billions of years before our solar system formed. When those stars exploded (as supernovas), they spread those atoms into space. Eventually that material became part of Earth — and part of you. It's literally true, not just poetic!</div>
+    <div class="quiz-feedback bad" id="q5-bad">It's literally true! The heavy atoms in your body — carbon in your bones, oxygen in your breath, iron in your blood — were forged inside ancient stars. Those stars exploded, spreading atoms through space. Eventually that material became part of our solar system, Earth, and you. You really are made of stardust.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">✏️ Create</span>
+  <h2>Draw the Universe at One Second Old</h2>
+
+  <div class="activity reveal">
+    <h3>What did the universe look like one second after the Big Bang?</h3>
+    <p>It was smaller than our solar system. It was unimaginably hot and bright. No atoms yet — just quarks, protons, and neutrons zipping around in a blazing ball of energy.</p>
+    <ul>
+      <li><strong>Draw it:</strong> What colours would it be? What shapes? Is it round? Jagged? Swirling? There are no wrong answers — nobody has a photograph of it!</li>
+      <li><strong>Label it:</strong> Add labels for the things you've learned: protons, neutrons, quarks, energy, heat.</li>
+      <li><strong>Write a caption:</strong> One sentence describing what you drew. Example: "This is the universe at one second old — a blazing ball of energy the size of our solar system..."</li>
+    </ul>
+    <p style="margin-top:1rem;">Show your drawing to your friend. Did they draw something different? Compare and discuss — whose version do you like better and why?</p>
+  </div>
+</section>
+
+<!-- NAV -->
+<div class="lesson-nav">
+  <a href="cleo-lesson-1.html" class="nav-btn">← Lesson 1: Before the Bang</a>
+  <a href="cleo-lesson-3.html" class="nav-btn next">Next: Lights On →</a>
+</div>
+
+<script>
+  const sf = document.getElementById('sf');
+  const colours = ['#FF6600','#FFD93D','#FF8C42','#FFAA00'];
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div'); s.className = 'ember';
+    const size = Math.random() * 3 + 0.5;
+    const col = colours[Math.floor(Math.random()*colours.length)];
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-delay:${Math.random()*6}s;animation-duration:${2+Math.random()*5}s;`;
+    sf.appendChild(s);
+  }
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop, h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('pb').style.width = (s/h*100) + '%';
+  });
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  function answer(btn, ok, id) {
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    document.getElementById(id + (ok ? '-good' : '-bad')).classList.add('show');
+    if (!ok) btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => { if(b.onclick.toString().includes('true')) b.classList.add('correct'); });
+  }
+</script>
+</body>
+</html>

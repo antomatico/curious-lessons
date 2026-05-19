@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Do We Know? — Cleo's Big Bang Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space: #080818;
+    --deep: #100820;
+    --panel: #130A22;
+    --purple: #9B59B6;
+    --violet: #7D3CBF;
+    --pink: #FF6B9D;
+    --yellow: #FFD93D;
+    --teal: #4ECDC4;
+    --orange: #FF8C42;
+    --star-white: #F0EAFF;
+    --text: #D8C8FF;
+    --muted: #7060A0;
+    --border: #2A1A4A;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--space); color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.8; overflow-x: hidden; }
+
+  .starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:0.15;} 50%{opacity:1;} }
+
+  .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(to right, var(--purple), var(--pink)); width: 0%; transition: width 0.15s; z-index: 999; }
+
+  .hero {
+    position: relative; z-index: 1; min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 6rem 8vw 4rem;
+    background: radial-gradient(ellipse at 40% 50%, #1A0830 0%, #080818 70%);
+  }
+
+  .back-link { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; transition: color 0.2s; animation: fadeUp 0.4s ease both; }
+  .back-link:hover { color: var(--purple); }
+
+  .lesson-tag { display: inline-block; background: var(--purple); color: white; border-radius: 999px; font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; padding: 0.35rem 1rem; margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 700; animation: fadeUp 0.4s 0.05s ease both; }
+
+  .hero h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2.8rem, 9vw, 5.5rem); line-height: 1.05; color: var(--star-white); animation: fadeUp 0.4s 0.1s ease both; }
+  .hero h1 .sub { display: block; color: var(--purple); font-size: 0.5em; }
+
+  .hero-q { margin-top: 1.25rem; font-size: 1.15rem; color: var(--yellow); font-style: italic; font-weight: 700; animation: fadeUp 0.4s 0.15s ease both; }
+  .hero-p { max-width: 540px; margin-top: 1rem; font-size: 1rem; color: var(--muted); line-height: 1.75; animation: fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color: var(--text); }
+
+  .scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--border); text-transform: uppercase; animation: bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(7px);} }
+
+  section { padding: 4rem 8vw; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+  .section-tag { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple); margin-bottom: 0.75rem; display: block; }
+
+  h2 { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--star-white); margin-bottom: 1.25rem; line-height: 1.15; }
+  h3 { font-weight: 800; font-size: 1rem; color: var(--pink); margin: 1.75rem 0 0.6rem; }
+
+  p { color: var(--muted); max-width: 680px; margin-bottom: 1rem; font-size: 0.975rem; }
+  p strong { color: var(--text); }
+
+  .big-idea { background: linear-gradient(135deg, #0F0520, #080818); border: 2px solid var(--purple); border-radius: 16px; padding: 2rem 2.5rem; margin: 1.5rem 0; max-width: 680px; position: relative; overflow: hidden; }
+  .big-idea::before { content: '🔭'; position: absolute; top: -1rem; right: 1.5rem; font-size: 4rem; opacity: 0.12; }
+  .big-idea p { font-size: 1.1rem; font-weight: 700; color: var(--star-white); font-style: italic; max-width: none; margin: 0; }
+
+  .wonder { background: #080A18; border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px; }
+  .wonder::before { content: '🌌 THINK ABOUT THIS'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--teal); margin-bottom: 0.6rem; }
+  .wonder p { max-width: none; color: #80C0C8; margin: 0; }
+  .wonder p strong { color: #C0E8F0; }
+
+  /* Evidence cards */
+  .evidence-cards { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 2rem 0; max-width: 680px; }
+
+  .evidence-card { background: var(--panel); padding: 1.5rem 1.75rem; display: grid; grid-template-columns: 3rem 1fr; gap: 1.25rem; align-items: start; }
+  .ev-num { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--purple); line-height: 1; padding-top: 0.1rem; }
+  .ev-title { font-weight: 800; color: var(--star-white); font-size: 1rem; margin-bottom: 0.35rem; }
+  .ev-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+  .ev-desc strong { color: var(--text); }
+
+  /* Scientist profiles */
+  .scientists { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin: 2rem 0; max-width: 780px; }
+
+  .scientist-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden; }
+  .scientist-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--card-color); }
+  .sci-emoji { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+  .sci-name { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--star-white); margin-bottom: 0.25rem; }
+  .sci-title { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; color: var(--card-color); text-transform: uppercase; margin-bottom: 0.6rem; }
+  .sci-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+  .sci-desc strong { color: var(--text); }
+
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; max-width: 780px; }
+  .vocab-card { background: var(--panel); border: 2px solid var(--border); border-radius: 12px; padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; position: relative; }
+  .vocab-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+  .vocab-card.open { border-color: var(--yellow); }
+  .vocab-word { font-family: 'Fredoka One', cursive; font-size: 1.05rem; color: var(--purple); margin-bottom: 0.4rem; }
+  .vocab-def { font-size: 0.82rem; color: var(--muted); display: none; line-height: 1.6; }
+  .vocab-card.open .vocab-def { display: block; }
+  .vocab-hint { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--border); position: absolute; bottom: 0.5rem; right: 0.75rem; }
+
+  .quiz-wrap { max-width: 680px; margin: 1.5rem 0; }
+  .quiz-q { font-size: 1rem; font-weight: 700; color: var(--star-white); margin-bottom: 0.75rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .quiz-opt { background: var(--panel); border: 2px solid var(--border); border-radius: 10px; color: var(--muted); padding: 0.75rem 1.1rem; text-align: left; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 0.9rem; transition: all 0.15s; }
+  .quiz-opt:hover { border-color: var(--purple); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--teal); color: #90E0D8; background: #041A18; }
+  .quiz-opt.wrong { border-color: var(--pink); color: #FFB0C8; background: #1A0410; }
+  .quiz-feedback { font-size: 0.875rem; padding: 0.9rem 1.1rem; margin-top: 0.4rem; display: none; border-radius: 10px; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.good { background: #041A18; border-left: 4px solid var(--teal); color: #90E0D8; }
+  .quiz-feedback.bad { background: #1A0410; border-left: 4px solid var(--pink); color: #FFB0C8; }
+
+  .activity { background: linear-gradient(135deg, #100818, #080818); border: 2px solid var(--yellow); border-radius: 16px; padding: 2rem 2.5rem; margin: 2rem 0; max-width: 680px; }
+  .activity::before { content: '✏️ RESEARCH ACTIVITY'; display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--yellow); margin-bottom: 0.75rem; }
+  .activity h3 { color: white; margin: 0 0 0.75rem; font-size: 1.1rem; }
+  .activity p { max-width: none; color: #C8C060; margin-bottom: 0.5rem; }
+  .activity ul { padding-left: 1.5rem; color: var(--muted); }
+  .activity li { margin-bottom: 0.4rem; font-size: 0.875rem; }
+  .activity li strong { color: var(--text); }
+
+  /* Course complete box */
+  .complete-box { background: linear-gradient(135deg, #0A1A08, #080818); border: 2px solid var(--yellow); border-radius: 20px; padding: 2.5rem; margin: 2rem 0; max-width: 680px; text-align: center; }
+  .complete-emoji { font-size: 3.5rem; display: block; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  .complete-title { font-family: 'Fredoka One', cursive; font-size: 1.8rem; color: var(--yellow); margin-bottom: 0.75rem; }
+  .complete-text { font-size: 0.95rem; color: var(--muted); line-height: 1.7; }
+  .complete-text strong { color: var(--text); }
+
+  .video-box { background: var(--deep); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0; max-width: 680px; display: flex; gap: 1.25rem; align-items: flex-start; }
+  .video-icon { font-size: 2rem; flex-shrink: 0; }
+  .video-title { font-weight: 700; color: var(--text); margin-bottom: 0.25rem; font-size: 0.95rem; }
+  .video-desc { font-size: 0.82rem; color: var(--muted); }
+  .video-link { color: var(--purple); text-decoration: none; font-weight: 700; }
+  .video-link:hover { color: var(--yellow); }
+
+  .lesson-nav { position: relative; z-index: 1; padding: 2.5rem 8vw; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .nav-btn { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 0.6rem 1.25rem; border-radius: 999px; transition: all 0.2s; }
+  .nav-btn:hover { border-color: var(--purple); color: var(--purple); }
+  .nav-btn.home { background: var(--purple); color: white; border-color: var(--purple); font-weight: 700; }
+  .nav-btn.home:hover { background: var(--violet); }
+
+  .divider { height: 1px; background: linear-gradient(to right, transparent, var(--purple), transparent); opacity: 0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(16px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="starfield" id="sf"></div>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="cleo-index.html" class="back-link">← Back to course</a>
+  <div class="lesson-tag">Lesson 04 of 04</div>
+  <h1>How Do We Know? 🔭<span class="sub">The detective work of astrophysics</span></h1>
+  <p class="hero-q">"Nobody was there. No cameras. No notes. So how do we know the Big Bang happened?"</p>
+  <p class="hero-p">Scientists are the world's greatest detectives. They look at clues the universe left behind — and <strong>work backwards</strong> to figure out what happened 13.8 billion years ago. This lesson is about how they did it — and who did it.</p>
+  <div class="scroll-hint">↓ scroll to begin</div>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">🔭 The Big Idea</span>
+  <h2>Scientists Look Backwards Through Time</h2>
+
+  <div class="big-idea reveal">
+    <p>"When you look at a star, you're not seeing it as it is now. You're seeing it as it was years, or thousands of years, ago — because it took that long for the light to reach you. The further away something is, the further back in time you're looking."</p>
+  </div>
+
+  <p class="reveal">Light travels very fast — 300,000 kilometres per second. But space is so enormous that even at that speed, light from distant galaxies takes billions of years to reach us. This means that when astronomers look through powerful telescopes, <strong>they're literally looking back in time.</strong></p>
+
+  <p class="reveal">The James Webb Space Telescope — launched in 2021 — can see galaxies so far away that their light left them <strong>over 13 billion years ago</strong>. It can see the universe when it was a baby — just a few hundred million years old. This is how we know what the early universe looked like.</p>
+
+  <h3>Three Big Clues</h3>
+  <p class="reveal">Scientists found three major pieces of evidence that all point to the Big Bang. Together, they're so powerful that almost every scientist in the world agrees: the Big Bang happened.</p>
+
+  <div class="evidence-cards reveal">
+    <div class="evidence-card">
+      <div class="ev-num">1</div>
+      <div>
+        <div class="ev-title">The Universe Is Expanding</div>
+        <div class="ev-desc">In the 1920s, astronomer <strong>Edwin Hubble</strong> discovered that every galaxy in the universe is moving away from every other galaxy. The further away, the faster it's moving. If you run this backwards — like rewinding a film — everything comes together at one point. That point is the Big Bang.</div>
+      </div>
+    </div>
+    <div class="evidence-card">
+      <div class="ev-num">2</div>
+      <div>
+        <div class="ev-title">The Cosmic Microwave Background (CMB)</div>
+        <div class="ev-desc">In 1965, scientists accidentally discovered a faint glow coming equally from every direction in space. At first they thought their telescope was broken. It wasn't — they had found the <strong>leftover heat from the Big Bang</strong> itself. It still fills all of space, 13.8 billion years later. This is one of the strongest pieces of evidence for the Big Bang.</div>
+      </div>
+    </div>
+    <div class="evidence-card">
+      <div class="ev-num">3</div>
+      <div>
+        <div class="ev-title">The Amounts of Hydrogen and Helium</div>
+        <div class="ev-desc">The Big Bang theory predicted exactly how much hydrogen and helium the universe should contain. Scientists measured the real amounts — and they <strong>matched the prediction almost perfectly</strong>. About 75% hydrogen, 25% helium. No other explanation can account for these exact amounts.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wonder reveal">
+    <p><strong>Here's something to think about:</strong> When scientists found the CMB in 1965, they weren't even looking for it. They stumbled across the leftover glow of the Big Bang completely by accident, while trying to fix what they thought was a broken antenna. <strong>Some of the greatest discoveries in science happened by surprise.</strong> Does that change how you think about exploring and experimenting?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">🌟 The Scientists Who Did It</span>
+  <h2>Women Who Unlocked the Universe</h2>
+  <p class="reveal">Astrophysics has been shaped by extraordinary women. Here are four of them — each one discovered or proved something that changed what we know about the universe.</p>
+
+  <div class="scientists reveal">
+    <div class="scientist-card" style="--card-color: var(--pink);">
+      <span class="sci-emoji">🌌</span>
+      <div class="sci-name">Cecilia Payne-Gaposchkin</div>
+      <div class="sci-title">Astrophysicist · 1900–1979</div>
+      <div class="sci-desc">Discovered that stars are made mostly of <strong>hydrogen and helium</strong> — not the same stuff as Earth, as everyone assumed. Her male supervisor told her she was wrong and made her remove the finding from her thesis. Twenty years later, he published the same discovery and got the credit. She is now recognised as one of the most important astrophysicists of the 20th century.</div>
+    </div>
+    <div class="scientist-card" style="--card-color: var(--teal);">
+      <span class="sci-emoji">🌀</span>
+      <div class="sci-name">Vera Rubin</div>
+      <div class="sci-title">Astronomer · 1928–2016</div>
+      <div class="sci-desc">Discovered the first strong evidence for <strong>dark matter</strong> — the mysterious invisible substance that makes up most of the mass of the universe. She noticed that galaxies were spinning in a way that only made sense if there was far more matter in them than we could see. Her work transformed cosmology. She was nominated for a Nobel Prize many times but never received one.</div>
+    </div>
+    <div class="scientist-card" style="--card-color: var(--yellow);">
+      <span class="sci-emoji">⭐</span>
+      <div class="sci-name">Henrietta Swan Leavitt</div>
+      <div class="sci-title">Astronomer · 1868–1921</div>
+      <div class="sci-desc">Discovered how to <strong>measure distances to stars</strong> — something nobody knew how to do before. By studying certain types of stars called Cepheid variables, she worked out a way to calculate how far away they are. This made it possible for Edwin Hubble to discover that other galaxies existed and that the universe was expanding. Her method is still used today.</div>
+    </div>
+    <div class="scientist-card" style="--card-color: var(--orange);">
+      <span class="sci-emoji">🔭</span>
+      <div class="sci-name">Jocelyn Bell Burnell</div>
+      <div class="sci-title">Astrophysicist · Born 1943</div>
+      <div class="sci-desc">Discovered <strong>pulsars</strong> — incredibly dense, rapidly spinning dead stars that send out regular pulses of radio waves, like cosmic lighthouses. She found the first one as a graduate student in 1967. The Nobel Prize for the discovery was awarded to her male supervisor — not her. She took this with extraordinary grace and has spent her career inspiring young scientists, especially women.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">📚 Key Words</span>
+  <h2>Words to Know</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Telescope</div>
+      <div class="vocab-def">An instrument for collecting and focusing light (or other types of radiation) from distant objects. Space telescopes like Hubble and James Webb are above Earth's atmosphere, which lets them see much further and more clearly. The James Webb Space Telescope can see galaxies over 13 billion light years away.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Light Year</div>
+      <div class="vocab-def">The distance light travels in one year — about 9.46 trillion kilometres. Not a measure of time — a measure of distance! The nearest star to our Sun (Proxima Centauri) is 4.2 light years away. The Milky Way is about 100,000 light years across. The observable universe is about 93 billion light years across.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Dark Matter</div>
+      <div class="vocab-def">A mysterious substance that doesn't emit, absorb, or reflect light — so we can't see it. But we know it exists because of its gravitational effects on galaxies. About 27% of the universe is dark matter. Nobody knows what it's made of — it's one of the biggest unsolved mysteries in astrophysics. Maybe one day you'll figure it out!</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Redshift</div>
+      <div class="vocab-def">When something moves away from you, the light it emits gets stretched to longer, redder wavelengths. This is called redshift. Edwin Hubble noticed that light from distant galaxies was redshifted — meaning they were moving away. The further away the galaxy, the more redshifted — the faster it was moving away. This proved the universe is expanding.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Cosmology</div>
+      <div class="vocab-def">The scientific study of the origin, evolution, and eventual fate of the universe. Cosmologists ask the biggest questions imaginable: How did the universe begin? What is it made of? How will it end? Astrophysicists and cosmologists work closely together. If you become an astrophysicist, this is likely part of what you'll study.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-word">Observable Universe</div>
+      <div class="vocab-def">The part of the universe we can see — limited by how far light has had time to travel since the Big Bang. About 93 billion light years across. But the universe may be much, much larger than this — possibly infinite. We just can't see beyond the observable edge because light from there hasn't reached us yet. We may never know how big the whole universe truly is.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">📺 Watch</span>
+  <h2>See It Explained</h2>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🌐</div>
+    <div>
+      <div class="video-title">NASA Space Place — Big Bang</div>
+      <p class="video-desc">NASA's explanation of the Big Bang and the evidence for it — simple, accurate, and great for your age. <a class="video-link" href="https://spaceplace.nasa.gov/big-bang/en/" target="_blank">Visit spaceplace.nasa.gov →</a></p>
+    </div>
+  </div>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🎬</div>
+    <div>
+      <div class="video-title">James Webb Space Telescope — What It Found</div>
+      <p class="video-desc">Search YouTube: <a class="video-link" href="https://www.youtube.com/results?search_query=James+Webb+telescope+what+it+found+explained+kids" target="_blank">"James Webb telescope what it found explained kids" →</a> — see the actual images from the most powerful telescope ever built.</p>
+    </div>
+  </div>
+
+  <div class="video-box reveal">
+    <div class="video-icon">🌐</div>
+    <div>
+      <div class="video-title">ESA Kids — Our Universe</div>
+      <p class="video-desc">The European Space Agency's kids site has brilliant resources on the Big Bang, stars, and galaxies. <a class="video-link" href="https://www.esa.int/kids/en/learn/Our_Universe" target="_blank">Visit esa.int/kids →</a></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">🧠 Quiz Time</span>
+  <h2>The Final Quiz — You've Got This!</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. When you look at a star that is 100 light years away, what are you actually seeing?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">The star as it looks right now</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q1')">The star as it looked 100 years ago — because that's how long the light took to reach us</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">A reflection of the star off our atmosphere</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q1')">Light from the Big Bang passing through the star</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">⭐ Exactly right! Light from a star 100 light years away took 100 years to reach your eyes. So you're seeing it as it was a century ago. Some stars we see in the night sky might not even exist anymore — they just haven't had time to tell us yet!</div>
+    <div class="quiz-feedback bad" id="q1-bad">When you look at a star 100 light years away, you're seeing it as it was 100 years ago! The light took that long to reach us. Some of the stars in our night sky might have already died — we just won't find out for thousands of years.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What did Edwin Hubble discover that helped prove the Big Bang?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">He discovered the Cosmic Microwave Background</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">He built the first space telescope</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q2')">He discovered that every galaxy is moving away from every other galaxy — proving the universe is expanding</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q2')">He calculated the exact temperature of the Big Bang</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">⭐ Yes! Hubble noticed that light from distant galaxies was redshifted — stretched toward the red end of the spectrum, which happens when something moves away from you. Every galaxy was doing this. Rewinding that motion leads back to a single starting point — the Big Bang.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Hubble discovered that galaxies are all moving away from each other — and the further away they are, the faster they're moving. This means the universe is expanding. Run it backwards, and everything comes together at one point. That's the Big Bang.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What is the Cosmic Microwave Background (CMB) evidence for?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Evidence that the universe will one day stop expanding</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Evidence that other universes exist beyond ours</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q3')">Evidence that the Big Bang happened — it's the leftover heat from the early universe</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q3')">Evidence that dark matter is the most common material in the universe</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">⭐ Correct! The CMB is the leftover warmth from when the universe was young and glowing. It fills all of space today as a very faint, even glow. It was found accidentally in 1965 and is one of the strongest pieces of evidence that the Big Bang really happened.</div>
+    <div class="quiz-feedback bad" id="q3-bad">The CMB is the leftover heat from the Big Bang — released 380,000 years after it happened, when the universe cooled enough for light to travel freely. It's been travelling through space ever since, getting fainter and fainter. Finding it was one of the most important moments in the history of science.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Cecilia Payne-Gaposchkin discovered that stars are made mostly of:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">The same rock and metal as the Earth</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Pure energy with no atoms at all</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q4')">Mostly hydrogen and helium</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q4')">Dark matter and dark energy</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">⭐ Yes! Cecilia Payne-Gaposchkin proved that stars are mostly hydrogen and helium — not the iron and rock people assumed. This was a revolutionary discovery. Sadly, her supervisor told her she was wrong at first. She was right. This is why it matters to trust your evidence even when powerful people disagree with you.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Cecilia Payne-Gaposchkin discovered that stars are made mostly of hydrogen and helium — not the same stuff as Earth. At the time, people assumed stars were made of the same materials as planets. She proved them wrong. Her supervisor initially told her she was wrong too — but she was right!</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. What is a light year?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">The amount of time light takes to reach us from the Sun</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">A year when there is more daylight than usual</button>
+      <button class="quiz-opt" onclick="answer(this,true,'q5')">The distance light travels in one year — about 9.46 trillion kilometres</button>
+      <button class="quiz-opt" onclick="answer(this,false,'q5')">How long it takes for a star to use up its hydrogen fuel</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">⭐ Exactly! A light year is a distance — about 9.46 trillion kilometres. It's the distance light travels in one year. The nearest star to our Sun is 4.2 light years away. The Milky Way is 100,000 light years across. These distances are so huge that kilometres stop being useful — so we switch to light years!</div>
+    <div class="quiz-feedback bad" id="q5-bad">A light year is a distance, not a time! It's how far light travels in one year — about 9.46 trillion kilometres. Space is so vast that normal units like kilometres become hard to work with. The nearest star is 4.2 light years away. The edge of the observable universe is 46.5 billion light years away.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="section-tag">✏️ Research</span>
+  <h2>Find Your Own Role Model</h2>
+
+  <div class="activity reveal">
+    <h3>Research a Woman Astrophysicist</h3>
+    <p>You've met four amazing women scientists in this lesson. Now find one more on your own — someone who discovered or studied something that interests you.</p>
+    <ul>
+      <li><strong>Search:</strong> Try "women astrophysicists discoveries" or "female space scientists" on a search engine or ask a parent to help.</li>
+      <li><strong>Find out:</strong> What did she discover or study? When did she live? What obstacles did she face?</li>
+      <li><strong>Write:</strong> 3–5 sentences about her — who she is, what she discovered, and why it matters.</li>
+      <li><strong>Share:</strong> Tell your friend about your scientist. Does she inspire you? Why?</li>
+    </ul>
+    <p style="margin-top:1rem;">Some ideas to start: <strong>Katherine Johnson, Sandra Faber, Margaret Burbidge, Sara Seager, Priyamvada Natarajan.</strong></p>
+  </div>
+
+  <div class="complete-box reveal">
+    <span class="complete-emoji">🌟</span>
+    <div class="complete-title">Course Complete, Cleo! 🎉</div>
+    <p class="complete-text">
+      You've learned how the universe began from nothing, what happened in the first three minutes, how the first stars switched on, and how scientists figured all of this out. <br><br>
+      <strong>That's 13.8 billion years of history — in four lessons.</strong><br><br>
+      Not bad for a Year 4 student from Worser Bay School. Now go use that knowledge in your enquiry project — and keep asking why. That's what astrophysicists do. 🚀
+    </p>
+  </div>
+</section>
+
+<!-- NAV -->
+<div class="lesson-nav">
+  <a href="cleo-lesson-3.html" class="nav-btn">← Lesson 3: Lights On</a>
+  <a href="cleo-index.html" class="nav-btn home">Back to Course Home ★</a>
+</div>
+
+<script>
+  const sf = document.getElementById('sf');
+  const purples = ['#FFFFFF','#D8C8FF','#B090FF','#9B59B6'];
+  for (let i = 0; i < 150; i++) {
+    const s = document.createElement('div'); s.className = 'star';
+    const size = Math.random() * 2.5 + 0.3;
+    const col = purples[Math.floor(Math.random()*purples.length)];
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-delay:${Math.random()*6}s;animation-duration:${2+Math.random()*5}s;`;
+    sf.appendChild(s);
+  }
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop, h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('pb').style.width = (s/h*100) + '%';
+  });
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  function answer(btn, ok, id) {
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    document.getElementById(id + (ok ? '-good' : '-bad')).classList.add('show');
+    if (!ok) btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => { if(b.onclick.toString().includes('true')) b.classList.add('correct'); });
+  }
+</script>
+</body>
+</html>
