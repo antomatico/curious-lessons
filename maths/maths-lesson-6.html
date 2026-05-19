@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codes & Cryptography · Maths for the Curious</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Raleway:wght@300;400;600;800&family=Crimson+Pro:ital,wght@0,300;0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020A02;
+    --surface: #050F05;
+    --panel: #081208;
+    --green: #00C840;
+    --green-dim: #007820;
+    --green-faint: #003010;
+    --amber: #C8A000;
+    --white: #D8F0D8;
+    --text: #80C080;
+    --muted: #408040;
+    --border: #0A1E0A;
+    --red: #C04040;
+    --cursor: #00FF50;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Share Tech Mono', monospace;
+    line-height:1.8;
+    overflow-x:hidden;
+  }
+
+  /* Scanline effect */
+  body::after {
+    content:'';
+    position:fixed; inset:0;
+    background:repeating-linear-gradient(
+      transparent, transparent 2px,
+      rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+    );
+    pointer-events:none; z-index:1000;
+  }
+
+  /* Matrix-style falling chars in background */
+  canvas#matrix {
+    position:fixed; inset:0; z-index:0;
+    opacity:0.04; pointer-events:none;
+  }
+
+  .progress-bar {
+    position:fixed; top:0; left:0; height:2px;
+    background:var(--green); width:0%;
+    transition:width 0.15s; z-index:999;
+    box-shadow:0 0 8px var(--green);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position:relative; z-index:1;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:5rem 8vw 4rem;
+  }
+
+  .back-link {
+    font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none;
+    display:inline-flex; align-items:center; gap:0.5rem;
+    margin-bottom:2rem; transition:color 0.2s;
+    animation:fadeUp 0.4s ease both;
+  }
+  .back-link:hover { color:var(--green); }
+
+  .lesson-badge {
+    display:inline-block;
+    border:1px solid var(--green-dim); color:var(--green);
+    font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase;
+    padding:0.3rem 0.9rem; margin-bottom:1.5rem;
+    animation:fadeUp 0.4s 0.05s ease both;
+  }
+
+  .hero h1 {
+    font-family:'Raleway',sans-serif; font-weight:800;
+    font-size:clamp(2.8rem,8vw,6rem); line-height:1.0;
+    color:var(--white); animation:fadeUp 0.4s 0.1s ease both;
+  }
+  .hero h1 .acc { color:var(--green); text-shadow:0 0 20px rgba(0,200,64,0.4); }
+
+  .hero-q {
+    margin-top:1.25rem; font-family:'Crimson Pro',serif;
+    font-style:italic; font-size:1.1rem; color:var(--amber);
+    animation:fadeUp 0.4s 0.15s ease both;
+  }
+
+  .hero-p {
+    max-width:520px; margin-top:1rem;
+    font-family:'Crimson Pro',serif; font-size:1rem;
+    color:var(--muted); line-height:1.75;
+    animation:fadeUp 0.4s 0.2s ease both;
+  }
+  .hero-p strong { color:var(--text); }
+
+  /* Live cipher demo */
+  .cipher-demo {
+    margin-top:2rem; max-width:560px;
+    animation:fadeUp 0.4s 0.25s ease both;
+  }
+
+  .cipher-label {
+    font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:0.5rem; display:block;
+  }
+
+  .cipher-row {
+    display:flex; gap:1rem; align-items:center; margin-bottom:0.6rem;
+  }
+
+  .cipher-tag {
+    font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); width:70px; flex-shrink:0;
+  }
+
+  .cipher-text {
+    font-size:0.85rem; color:var(--green);
+    letter-spacing:0.18em; word-break:break-all;
+  }
+
+  .cipher-text.plain { color:var(--white); }
+  .cipher-text.key { color:var(--amber); }
+
+  .cursor-blink {
+    display:inline-block; width:8px; height:1em;
+    background:var(--cursor); vertical-align:text-bottom;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink { 50%{opacity:0;} }
+
+  .scroll-hint {
+    display:block; margin-top:3rem;
+    font-size:0.58rem; letter-spacing:0.18em; color:var(--border);
+    text-transform:uppercase; animation:bounce 2s ease infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  /* ── SECTIONS ── */
+  section {
+    padding:4.5rem 8vw; border-top:1px solid var(--border);
+    position:relative; z-index:1;
+  }
+
+  .sec-label {
+    font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--green); margin-bottom:0.75rem; display:block;
+  }
+
+  h2 {
+    font-family:'Raleway',sans-serif; font-weight:800;
+    font-size:clamp(1.8rem,4vw,3rem); color:var(--white);
+    margin-bottom:1.25rem; line-height:1.2;
+  }
+
+  h3 {
+    font-family:'Raleway',sans-serif; font-weight:600;
+    font-size:1rem; color:var(--amber); margin:2rem 0 0.6rem;
+  }
+
+  p {
+    font-family:'Crimson Pro',serif; color:var(--muted);
+    max-width:680px; margin-bottom:1rem; font-size:1rem;
+  }
+  p strong { color:var(--text); }
+
+  .big-idea {
+    background:var(--green-faint); border-left:3px solid var(--green);
+    padding:2rem 2.5rem; margin:1.5rem 0; max-width:700px;
+    box-shadow:inset 0 0 30px rgba(0,200,64,0.03);
+  }
+  .big-idea p {
+    font-family:'Crimson Pro',serif; font-style:italic;
+    font-size:1.1rem; color:var(--white); max-width:none; margin:0;
+  }
+
+  /* Cipher box */
+  .cipher-box {
+    background:var(--surface); border:1px solid var(--border);
+    padding:2rem; margin:1.5rem 0; max-width:700px;
+    font-family:'Share Tech Mono',monospace;
+  }
+  .cipher-box h4 {
+    font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--green); margin-bottom:1rem;
+  }
+  .cipher-line {
+    display:grid; grid-template-columns:80px 1fr;
+    gap:1rem; margin-bottom:0.4rem; font-size:0.82rem;
+    align-items:baseline;
+  }
+  .cl-label { color:var(--muted); font-size:0.7rem; }
+  .cl-val { color:var(--green); letter-spacing:0.1em; word-break:break-all; }
+  .cl-val.plain { color:var(--white); }
+  .cl-val.key { color:var(--amber); }
+  .cl-val.explain { color:var(--muted); font-size:0.75rem; font-family:'Crimson Pro',serif; letter-spacing:0; }
+
+  /* Timeline */
+  .timeline { max-width:700px; margin:2rem 0; }
+  .tl-item {
+    display:grid; grid-template-columns:110px 1fr;
+    gap:1.5rem; padding:1.25rem 0;
+    border-bottom:1px solid var(--border); align-items:start;
+  }
+  .tl-item:last-child { border:none; }
+  .tl-date {
+    font-size:0.68rem; color:var(--amber); font-weight:700;
+    line-height:1.4;
+  }
+  .tl-content { font-family:'Crimson Pro',serif; font-size:0.95rem; color:var(--muted); line-height:1.65; }
+  .tl-content strong { color:var(--text); display:block; margin-bottom:0.2rem; font-family:'Share Tech Mono',monospace; font-size:0.85rem; }
+
+  /* NZ box */
+  .nz-box {
+    background:var(--surface); border:1px solid #0A2A0A;
+    padding:1.75rem 2rem; margin:2rem 0; max-width:700px;
+  }
+  .nz-box::before {
+    content:'🇳🇿 REAL WORLD CONNECTION';
+    display:block; font-size:0.58rem; letter-spacing:0.18em;
+    color:var(--green-dim); margin-bottom:0.6rem;
+  }
+  .nz-box p { color:var(--muted); max-width:none; }
+  .nz-box strong { color:var(--text); }
+
+  /* Go deeper */
+  .deeper {
+    background:var(--surface); border-left:3px solid var(--green-dim);
+    padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px;
+  }
+  .deeper::before {
+    content:'> GO DEEPER';
+    display:block; font-size:0.58rem; letter-spacing:0.18em;
+    color:var(--green); margin-bottom:0.75rem;
+  }
+  .deeper p { max-width:none; }
+  .deeper strong { color:var(--text); }
+  .deeper ol { padding-left:1.5rem; color:var(--muted); margin-top:0.75rem; }
+  .deeper li { margin-bottom:0.4rem; font-family:'Crimson Pro',serif; font-size:0.95rem; }
+  .deeper li strong { color:var(--text); font-family:'Share Tech Mono',monospace; font-size:0.8rem; }
+
+  /* Vocab */
+  .vocab-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:0.75rem; margin:1.5rem 0; max-width:860px;
+  }
+  .vocab-card {
+    background:var(--panel); border:1px solid var(--border);
+    padding:1.1rem 1.25rem; cursor:pointer;
+    transition:border-color 0.2s,transform 0.15s; position:relative;
+  }
+  .vocab-card:hover { border-color:var(--green-dim); transform:translateY(-2px); }
+  .vocab-card.open { border-color:var(--amber); }
+  .vocab-term {
+    font-size:0.88rem; color:var(--green); margin-bottom:0.35rem; font-weight:700;
+  }
+  .vocab-def {
+    font-family:'Crimson Pro',serif; font-size:0.9rem;
+    color:var(--muted); display:none; line-height:1.6;
+  }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-hint { font-size:0.52rem; color:var(--border); position:absolute; bottom:0.5rem; right:0.7rem; }
+
+  /* Quiz */
+  .quiz-wrap { max-width:700px; margin:1.5rem 0; }
+  .quiz-q {
+    font-family:'Raleway',sans-serif; font-weight:600;
+    font-size:1rem; color:var(--white); margin-bottom:0.75rem;
+  }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem; }
+  .quiz-opt {
+    background:var(--panel); border:1px solid var(--border);
+    color:var(--muted); padding:0.75rem 1.1rem; text-align:left;
+    cursor:pointer; font-family:'Crimson Pro',serif; font-size:0.95rem;
+    transition:all 0.15s;
+  }
+  .quiz-opt:hover { border-color:var(--green-dim); color:var(--text); }
+  .quiz-opt.correct { border-color:var(--green); color:#90F090; background:#020A02; }
+  .quiz-opt.wrong { border-color:var(--red); color:#FF9090; background:#1A0808; }
+  .quiz-feedback { font-family:'Crimson Pro',serif; font-size:0.95rem; padding:0.9rem 1.1rem; margin-top:0.4rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#020A02; border-left:3px solid var(--green); color:#90F090; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid var(--red); color:#FF9090; }
+
+  /* Resources */
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid var(--border); padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type {
+    font-size:0.6rem; letter-spacing:0.1em; background:var(--surface);
+    color:var(--muted); padding:0.22rem 0.5rem; flex-shrink:0; margin-top:0.1rem;
+  }
+  .resource-list a { color:var(--green); text-decoration:none; font-size:0.88rem; font-weight:700; }
+  .resource-list a:hover { color:var(--amber); }
+  .resource-list p { margin:0.2rem 0 0; font-size:0.85rem; max-width:none; }
+
+  /* Nav */
+  .lesson-nav {
+    position:relative; z-index:1;
+    padding:2.5rem 8vw; border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:1rem;
+  }
+  .nav-btn {
+    font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); text-decoration:none; border:1px solid var(--border);
+    padding:0.55rem 1.1rem; transition:all 0.2s;
+  }
+  .nav-btn:hover { border-color:var(--green); color:var(--green); }
+  .nav-btn.done {
+    background:var(--green); color:var(--bg);
+    border-color:var(--green); font-weight:700;
+  }
+  .nav-btn.done:hover { background:#00FF50; }
+
+  /* Completion banner */
+  .completion {
+    position:relative; z-index:1;
+    background:var(--green-faint); border:1px solid var(--green-dim);
+    padding:2.5rem 8vw; text-align:center;
+    border-top:1px solid var(--green-dim);
+  }
+  .completion h3 {
+    font-family:'Raleway',sans-serif; font-weight:800; font-size:1.75rem;
+    color:var(--green); text-shadow:0 0 20px rgba(0,200,64,0.3);
+    margin-bottom:0.75rem;
+  }
+  .completion p {
+    max-width:500px; margin:0 auto;
+    font-family:'Crimson Pro',serif; color:var(--muted); font-size:1rem;
+  }
+  .completion strong { color:var(--text); }
+
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--green),transparent); opacity:0.15; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+<div class="progress-bar" id="pb"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <a href="maths-index.html" class="back-link">← Course Index</a>
+  <div class="lesson-badge">Lesson 06 · Cryptography</div>
+  <h1>Codes &amp;<br><span class="acc">Cryptography</span></h1>
+  <p class="hero-q">"Breaking a code shortened World War II by two years. A mathematician did it with pencil and paper."</p>
+  <p class="hero-p">Every message you send is encrypted. Every website you visit uses mathematics to protect your data. <strong>And the whole history of secret communication</strong> — from Julius Caesar to Alan Turing to your iPhone — is a story of mathematical ideas outwitting each other across centuries.</p>
+
+  <div class="cipher-demo">
+    <span class="cipher-label">&gt; Caesar cipher — shift 13 (ROT13)</span>
+    <div class="cipher-row">
+      <span class="cipher-tag">PLAINTEXT</span>
+      <span class="cipher-text plain">HELLO WORLD</span>
+    </div>
+    <div class="cipher-row">
+      <span class="cipher-tag">KEY</span>
+      <span class="cipher-text key">SHIFT +13</span>
+    </div>
+    <div class="cipher-row">
+      <span class="cipher-tag">CIPHERTEXT</span>
+      <span class="cipher-text">URYYB JBEYQ</span><span class="cursor-blink"></span>
+    </div>
+  </div>
+
+  <span class="scroll-hint">↓ scroll to begin</span>
+</div>
+
+<div class="divider"></div>
+
+<!-- BIG IDEA -->
+<section>
+  <span class="sec-label">&gt; The Big Idea</span>
+  <h2>Cryptography Is Applied Mathematics</h2>
+
+  <div class="big-idea reveal">
+    <p>"Encryption takes information and scrambles it using a mathematical rule, so only someone who knows the rule (the key) can unscramble it. The strength of encryption is never secrecy about the method — it's the mathematical difficulty of reversing it without the key."</p>
+  </div>
+
+  <p class="reveal">The principle is called <strong>Kerckhoffs's principle</strong> (1883): assume the enemy knows the method. Security must come entirely from the key. Modern encryption systems — including RSA and AES — are published openly. The algorithms are public knowledge. Breaking them is still computationally infeasible because the underlying mathematics is hard to reverse.</p>
+
+  <h3>The Caesar Cipher — Where It All Started</h3>
+
+  <div class="cipher-box reveal">
+    <h4>&gt; How a Caesar Cipher Works</h4>
+    <div class="cipher-line"><span class="cl-label">METHOD</span><span class="cl-val plain">Shift each letter by a fixed number</span></div>
+    <div class="cipher-line"><span class="cl-label">EXAMPLE</span><span class="cl-val key">Shift = 3</span></div>
+    <div class="cipher-line"><span class="cl-label">A → D</span><span class="cl-val explain">Each letter moves 3 places forward in the alphabet</span></div>
+    <div class="cipher-line"><span class="cl-label">PLAIN</span><span class="cl-val plain">ATTACK AT DAWN</span></div>
+    <div class="cipher-line"><span class="cl-label">CIPHER</span><span class="cl-val">DWWDFN DW GDZQ</span></div>
+    <div class="cipher-line"><span class="cl-label">WEAKNESS</span><span class="cl-val explain">Only 25 possible shifts. Try them all — one will be readable. This is called a "brute force" attack.</span></div>
+  </div>
+
+  <p class="reveal">Julius Caesar used shift-3 to communicate with his generals. It was effective — because most of his enemies were illiterate. The cipher itself is trivially weak: there are only 25 possible keys. Any modern computer breaks it in microseconds. But it demonstrates the core idea: <strong>a mathematical transformation using a shared key.</strong></p>
+
+  <h3>Frequency Analysis — How Arab Mathematicians Broke Ancient Ciphers</h3>
+  <p class="reveal">In the 9th century, Arab polymath Al-Kindi noticed that in any language, some letters appear far more often than others. In English, 'E' appears about 13% of the time, followed by 'T', 'A', 'O'. If you count letter frequencies in a ciphertext, the most common cipher-letter is probably 'E'. This technique — frequency analysis — broke every substitution cipher for 600 years, until the Renaissance produced more sophisticated methods.</p>
+
+  <h3>The Enigma Machine and Alan Turing</h3>
+  <p class="reveal">Nazi Germany's Enigma machine used a series of rotating mechanical wheels to perform a much more complex substitution — one that changed with every keypress. With three wheels, each with 26 positions, plus a plugboard, the number of possible settings was <strong>158 quintillion</strong>. Brute force was impossible.</p>
+
+  <p class="reveal">Alan Turing — a Cambridge mathematician — didn't try to break it by brute force. He found a mathematical weakness in how Enigma was used: operators often ended messages with predictable phrases ("HEIL HITLER", weather reports). By exploiting these "cribs" — known plaintext fragments — Turing designed the Bombe machine, which narrowed the possible settings to a manageable search space. He didn't compute all possibilities; he eliminated most of them mathematically.</p>
+
+  <p class="reveal"><strong>Historians estimate Turing's work shortened World War II by two to four years and saved between 14 and 21 million lives.</strong> He was prosecuted by the British government for being gay in 1952, subjected to chemical castration, and died at 41. He was given a royal pardon in 2013 — 61 years after his death.</p>
+
+  <h3>Modern Encryption: RSA and the Prime Connection</h3>
+  <p class="reveal">In 1977, three MIT mathematicians — Rivest, Shamir, and Adleman — published the RSA algorithm. You met prime numbers in Lesson 2. Here's how they protect your data:</p>
+
+  <div class="cipher-box reveal">
+    <h4>&gt; RSA — How Prime Numbers Protect Messages</h4>
+    <div class="cipher-line"><span class="cl-label">STEP 1</span><span class="cl-val explain">Pick two enormous prime numbers: p and q. (In real RSA, these are 1,024+ digits each)</span></div>
+    <div class="cipher-line"><span class="cl-label">STEP 2</span><span class="cl-val explain">Multiply them: n = p × q. This is your PUBLIC key — you publish it.</span></div>
+    <div class="cipher-line"><span class="cl-label">STEP 3</span><span class="cl-val explain">Anyone can encrypt a message using n. To decrypt, you need p and q separately.</span></div>
+    <div class="cipher-line"><span class="cl-label">SECURITY</span><span class="cl-val explain">Factoring n back into p × q is computationally infeasible for large n. The fastest known algorithm would take the world's best supercomputer longer than the age of the universe.</span></div>
+    <div class="cipher-line"><span class="cl-label">REAL USE</span><span class="cl-val plain">Every https:// padlock. All banking. Your messages.</span></div>
+  </div>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">~100 BCE</div>
+      <div class="tl-content"><strong>Caesar Cipher</strong>Julius Caesar uses shift-3 to communicate with his generals. The first documented military encryption system. Weak by modern standards, but effective when most enemies couldn't read at all.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~850 CE</div>
+      <div class="tl-content"><strong>Al-Kindi invents frequency analysis</strong>Arab mathematician Al-Kindi publishes "A Manuscript on Deciphering Cryptographic Messages" — the first systematic method for breaking ciphers. Uses statistical properties of language. This technique broke most ciphers for the next 600 years.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1553</div>
+      <div class="tl-content"><strong>Vigenère Cipher</strong>Giovan Battista Bellaso (often misattributed to Vigenère) invents a polyalphabetic cipher using a keyword. Instead of one shift, different letters use different shifts — defeating frequency analysis. Called "le chiffre indéchiffrable" (the indecipherable cipher) for 300 years.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1863</div>
+      <div class="tl-content"><strong>Kasiski breaks the Vigenère cipher</strong>Friedrich Kasiski shows that repeated words in plaintext create repeated patterns in ciphertext, revealing the key length. Once the key length is known, frequency analysis works on each shift. The "indecipherable" cipher falls.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1939–1945</div>
+      <div class="tl-content"><strong>Bletchley Park and Alan Turing</strong>The British Government Code and Cypher School assembles mathematicians, linguists, and crossword champions at Bletchley Park, Buckinghamshire. Turing leads the mathematical attack on Enigma. Codebreaking intelligence — codenamed ULTRA — is kept secret until 1974.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1977</div>
+      <div class="tl-content"><strong>RSA published</strong>Rivest, Shamir, and Adleman publish their algorithm in an MIT technical memo. They offer $100 to anyone who factors a 129-digit number they call RSA-129. It's cracked in 1994 — by a distributed computing project using 1,600 computers over 8 months.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Today</div>
+      <div class="tl-content"><strong>Post-quantum cryptography</strong>Quantum computers — if they reach sufficient scale — could break RSA by factoring large numbers quickly. NIST (the US standards body) finalised the first post-quantum cryptography standards in 2024. The arms race continues.</div>
+    </div>
+  </div>
+
+  <div class="nz-box reveal">
+    <p>New Zealand's <strong>Government Communications Security Bureau (GCSB)</strong> employs mathematicians to both protect government communications and — as part of the Five Eyes intelligence alliance — intercept and decode adversaries' signals. When you connect to <strong>govt.nz</strong> or access your <strong>IRD account</strong>, the encryption protecting that connection uses mathematics descended directly from Turing's work. New Zealand also hosts submarine cables connecting Australia to the Pacific — securing those cables' traffic is a national security concern involving the same cryptographic mathematics you're studying here.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VOCAB -->
+<section>
+  <span class="sec-label">&gt; Key Vocabulary</span>
+  <h2>Know the Words</h2>
+  <p>Tap to reveal. Try to define them yourself first.</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Plaintext / Ciphertext</div>
+      <div class="vocab-def">Plaintext is the original readable message. Ciphertext is the encrypted, scrambled version. Encryption converts plaintext to ciphertext. Decryption reverses it. The key controls how the conversion happens.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Symmetric Encryption</div>
+      <div class="vocab-def">Both sender and receiver use the same key to encrypt and decrypt. Fast and efficient. Problem: how do you securely share the key without someone intercepting it? The "key exchange problem" was unsolved until the 1970s. AES (Advanced Encryption Standard) is symmetric — used to encrypt data at rest.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Asymmetric / Public-Key Encryption</div>
+      <div class="vocab-def">Two different but mathematically related keys: a public key (for encrypting) and a private key (for decrypting). Anyone can encrypt with your public key; only you can decrypt with your private key. RSA is asymmetric. Solved the key exchange problem. Powers HTTPS.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">One-Way Function</div>
+      <div class="vocab-def">A mathematical function that's easy to compute in one direction but computationally infeasible to reverse. Multiplying two large primes is easy. Factoring their product back is (currently) infeasible. One-way functions are the foundation of modern cryptography — the security depends entirely on the asymmetry between these two operations.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Brute Force Attack</div>
+      <div class="vocab-def">Trying every possible key until one works. Against a Caesar cipher (25 keys): trivial. Against AES-256 (2^256 possible keys): would take longer than the age of the universe even on the fastest possible computer. Security is measured by how long brute force takes — modern encryption makes it astronomical.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Hash Function</div>
+      <div class="vocab-def">A one-way function that converts any input into a fixed-length output (the hash). The same input always produces the same hash; different inputs produce wildly different hashes. Used to store passwords (websites store your hash, not your password), verify file integrity, and underpin cryptocurrencies. Cannot (in practice) be reversed.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WATCH -->
+<section>
+  <span class="sec-label">&gt; Watch</span>
+  <h2>See It Explained</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=alan+turing+enigma+imitation+game+explained" target="_blank">How Turing broke Enigma — explained (YouTube)</a>
+        <p>Several excellent explainers available. Search "Alan Turing Enigma explained Numberphile." Also consider watching The Imitation Game (film, 2014) — it's dramatised but broadly accurate about Turing's method.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=public+key+cryptography+explained+simply" target="_blank">Public Key Cryptography Explained — Art of the Problem (YouTube)</a>
+        <p>The "Art of the Problem" channel has the clearest visual explanations of RSA and public key cryptography. Search "public key cryptography explained simply." About 10 minutes.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">INTERACTIVE</span>
+      <div>
+        <a href="https://www.cryptoclub.org" target="_blank">CryptoClub — cryptoclub.org</a>
+        <p>Interactive cipher activities for students. Build and break Caesar ciphers, Vigenère ciphers, and more. Developed by the University of Illinois with NSF funding.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUIZ -->
+<section>
+  <span class="sec-label">&gt; Test Yourself</span>
+  <h2>Five Questions.</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. What is the fundamental weakness of the Caesar cipher?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">It only works in Latin, making it useless for other languages</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q1')">There are only 25 possible keys — brute force tries every shift in seconds</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Letters at the end of the alphabet can't be shifted forward</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">The cipher requires too much calculation to be practical</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. With only 25 possible shifts (shift by 1 through 25), a brute force attack tries every option in order. The first readable result reveals the message. No mathematics needed beyond reading. Modern encryption has key spaces of 2^128 or 2^256 — making brute force computationally impossible.</div>
+    <div class="quiz-feedback bad" id="q1-bad">The Caesar cipher has only 25 possible keys (shifts 1 through 25). A brute force attacker simply tries all 25 — one will produce readable plaintext. In modern cryptography, security requires key spaces so large that trying all possible keys would take longer than the universe has existed.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. Al-Kindi's frequency analysis works because:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">All languages use the same letters in the same frequencies</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q2')">In any language, some letters appear much more often than others — and a simple substitution cipher preserves this pattern</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">Common words like "the" always appear at the start of sentences</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">Ancient ciphers always used the same key, making patterns predictable</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. In English, 'E' appears ~13% of the time, 'T' ~9%, 'A' ~8%... In a Caesar or simple substitution cipher, each plaintext letter maps to the same ciphertext letter every time. So the most common ciphertext letter is almost certainly 'E'. Statistical patterns in language survive simple substitution — making them detectable.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Frequency analysis works because languages have consistent statistical patterns. 'E' appears ~13% of the time in English. Any simple substitution cipher maps E to one symbol — which will appear most often in the ciphertext. The pattern survives because each letter maps to the same symbol each time. Polyalphabetic ciphers (like Vigenère) defeat this by using multiple substitution alphabets.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What was Alan Turing's key insight in breaking Enigma?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">He built a computer fast enough to try all 158 quintillion settings</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">He found a defect in the physical design of the Enigma machine</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q3')">He exploited known plaintext — predictable phrases in messages — to mathematically eliminate most possible settings, reducing the search to a manageable size</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">He bribed German officers to reveal the daily key settings</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Exactly. Turing didn't brute force 158 quintillion settings. He used "cribs" — known or guessed plaintext fragments — to construct logical constraints that eliminated vast swathes of the key space. The Bombe machine mechanically tested which remaining settings were consistent with those constraints. This is the key insight: using mathematical structure to reduce an infeasible problem to a feasible one.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Turing's approach was mathematical, not computational. Operators used predictable phrases ("WEATHER REPORT", "HEIL HITLER"). If you guess the plaintext for part of a message, you can construct logical constraints ruling out most key settings. The Bombe machine systematically eliminated inconsistent settings. Turing reduced 158 quintillion possibilities to a manageable search — without a digital computer.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Why is RSA encryption secure, even though the algorithm is publicly known?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Because only the intended recipient knows the algorithm exists</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Because the algorithm is too complex for most computers to run</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q4')">Because the security depends on the difficulty of factoring a large number — not the secrecy of the algorithm. Factoring is computationally infeasible for sufficiently large keys.</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Because quantum computers haven't been invented yet</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Yes. This is Kerckhoffs's principle: security must come from the key, not the algorithm. RSA's public key is the product of two large primes. To decrypt, you need to factor it — and no algorithm can do this efficiently for keys of sufficient size. The mathematical hardness of factoring is the security foundation. Publishing the algorithm doesn't weaken it.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Kerckhoffs's principle: assume the enemy knows the algorithm. Security comes from the key. RSA's security rests on the computational difficulty of factoring large numbers. Even knowing the algorithm perfectly, an attacker who can't factor your public key cannot decrypt your messages. The algorithm's strength is mathematical, not secret.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. What threat do quantum computers pose to current encryption?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">Quantum computers are louder and produce electromagnetic interference</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">They make encryption algorithms run more slowly</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q5')">Shor's algorithm — running on a sufficiently powerful quantum computer — could factor large numbers exponentially faster, breaking RSA</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">Quantum computers can read encrypted data without keys using quantum entanglement</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Yes. In 1994, mathematician Peter Shor published an algorithm that, on a quantum computer, could factor a large number in polynomial time — rather than the exponential time classical computers need. This would break RSA. Sufficiently powerful quantum computers don't yet exist for this purpose. NIST published post-quantum cryptography standards in 2024 to replace RSA before they do. The mathematical arms race continues.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Shor's algorithm (1994) is a quantum algorithm for prime factorisation that runs exponentially faster than any classical algorithm. On a sufficiently large quantum computer, it would break RSA by factoring the public key in reasonable time. Current quantum computers are too small and error-prone for this. The cryptography community is proactively developing post-quantum algorithms — NIST released standards in 2024.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- GO DEEPER -->
+<section>
+  <span class="sec-label">&gt; Go Deeper</span>
+  <h2>For the Obsessive</h2>
+
+  <div class="deeper reveal">
+    <p><strong>Break a Caesar Cipher by Hand</strong></p>
+    <ol>
+      <li>Here is an encrypted message: <strong>WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ</strong></li>
+      <li>Count the frequency of each letter. Which appears most often? Guess it's 'E'. What shift does that suggest?</li>
+      <li>Try that shift. Does it produce readable English?</li>
+      <li><strong>Extension:</strong> Write your own encrypted message with a shift of your choice. Give it to someone else and see if they can break it using frequency analysis.</li>
+    </ol>
+  </div>
+
+  <div class="deeper reveal">
+    <p><strong>The Diffie-Hellman Key Exchange</strong></p>
+    <p>Before RSA, the biggest problem in cryptography was this: how do two people share a secret key over an insecure channel without anyone intercepting it? In 1976, Whitfield Diffie and Martin Hellman published a solution using a mathematical concept called the discrete logarithm — as hard to reverse as prime factorisation.</p>
+    <ol>
+      <li>Search <strong>"Diffie-Hellman key exchange colours analogy"</strong> — there's a brilliant visual explanation using paint mixing.</li>
+      <li>The analogy: it's easy to mix two colours together; hard to unmix them. The maths does the same thing with numbers.</li>
+      <li><strong>Think:</strong> Why does it matter that two people can agree on a shared secret without ever meeting or communicating privately? What does this enable?</li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESOURCES -->
+<section>
+  <span class="sec-label">&gt; Resources</span>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.khanacademy.org/computing/computer-science/cryptography" target="_blank">Khan Academy — Cryptography</a>
+        <p>Full free course covering ancient ciphers through modern public-key cryptography. Self-paced, interactive, excellent.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.cryptomuseum.com" target="_blank">Crypto Museum — cryptomuseum.com</a>
+        <p>Extraordinary digital museum of cipher machines including detailed Enigma pages. Photographs, working descriptions, history. Could lose hours here.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=computerphile+cryptography" target="_blank">Computerphile — Cryptography (YouTube)</a>
+        <p>Computer science companion channel to Numberphile. Multiple excellent videos on password hashing, RSA, Diffie-Hellman, and modern encryption. All feature University of Nottingham professors.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">BOOK</span>
+      <div>
+        <a href="https://www.goodreads.com/book/show/585880.The_Code_Book" target="_blank">The Code Book — Simon Singh</a>
+        <p>The definitive popular history of cryptography from Caesar to quantum computers. Accessible, gripping, mathematically honest. One of the best popular science books ever written.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- COMPLETION BANNER -->
+<div class="completion reveal">
+  <h3>&gt; COURSE COMPLETE_</h3>
+  <p>Six lessons. Six ideas that go far beyond the school curriculum. <strong>From a number that never ends, to infinities of different sizes, to the mathematics protecting every message you'll ever send.</strong> This is what real mathematics looks like.</p>
+</div>
+
+<!-- NAV -->
+<div class="lesson-nav">
+  <a href="maths-lesson-5.html" class="nav-btn">← Probability & Chance</a>
+  <a href="maths-index.html" class="nav-btn done">✓ Back to Course Index</a>
+</div>
+
+<script>
+  // Matrix rain
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ+/=ABCπφ∑∞≡'.split('');
+  const cols = Math.floor(canvas.width / 16);
+  const drops = Array(cols).fill(1);
+  function draw() {
+    ctx.fillStyle = 'rgba(2,10,2,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00C840';
+    ctx.font = '13px Share Tech Mono';
+    drops.forEach((y, i) => {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * 16, y * 16);
+      if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  }
+  setInterval(draw, 50);
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('pb').style.width = (s / h * 100) + '%';
+  });
+
+  // Reveal
+  const obs = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('visible'); }), { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Quiz
+  function ans(btn, ok, id) {
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    document.getElementById(id + (ok ? '-good' : '-bad')).classList.add('show');
+    if (!ok) {
+      btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => {
+        if (b.onclick.toString().includes('true')) b.classList.add('correct');
+      });
+    }
+  }
+</script>
+</body>
+</html>

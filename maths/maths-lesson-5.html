@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probability & Chance · Maths for the Curious</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Literata:ital,wght@0,300;0,400;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080F0A;
+    --surface: #0C160E;
+    --panel: #101A12;
+    --felt: #1A4A28;
+    --green: #2A8A4A;
+    --green-bright: #35AA5A;
+    --gold: #D4A843;
+    --white: #F0F8F0;
+    --text: #A8C8A8;
+    --muted: #507050;
+    --border: #1A3020;
+    --red: #C04040;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Literata',serif; font-weight:300; line-height:1.8; overflow-x:hidden; }
+
+  /* Felt texture */
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(to right,var(--green),var(--gold)); width:0%; transition:width 0.15s; z-index:999; }
+
+  .hero {
+    position:relative; z-index:1; min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center; padding:6rem 8vw 4rem;
+    background:radial-gradient(ellipse at 40% 60%, #0A2010 0%, #080F0A 70%);
+  }
+
+  .back-link { font-family:'Roboto Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:2rem; transition:color 0.2s; animation:fadeUp 0.4s ease both; }
+  .back-link:hover { color:var(--green-bright); }
+
+  .lesson-badge { display:inline-block; border:1px solid var(--green); color:var(--green-bright); font-family:'Roboto Mono',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.3rem 0.9rem; margin-bottom:1.5rem; animation:fadeUp 0.4s 0.05s ease both; }
+
+  .hero h1 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.8rem,8vw,6rem); line-height:1.0; color:var(--white); animation:fadeUp 0.4s 0.1s ease both; }
+  .hero h1 em { color:var(--gold); font-style:normal; font-weight:400; }
+
+  .hero-q { margin-top:1.25rem; font-family:'Literata',serif; font-style:italic; font-size:1.05rem; color:var(--gold); animation:fadeUp 0.4s 0.15s ease both; }
+  .hero-p { max-width:520px; margin-top:1rem; font-size:0.975rem; color:var(--muted); line-height:1.75; animation:fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color:var(--text); }
+
+  /* Probability bar */
+  .prob-demo { margin-top:2rem; max-width:480px; animation:fadeUp 0.4s 0.25s ease both; }
+  .prob-bar-wrap { display:flex; align-items:center; gap:1rem; margin:0.5rem 0; }
+  .prob-label { font-family:'Roboto Mono',monospace; font-size:0.62rem; color:var(--muted); width:140px; flex-shrink:0; }
+  .prob-track { flex:1; height:6px; background:var(--border); border-radius:0; }
+  .prob-fill { height:100%; border-radius:0; }
+  .prob-value { font-family:'Roboto Mono',monospace; font-size:0.65rem; color:var(--gold); width:40px; text-align:right; }
+
+  .scroll-hint { display:block; margin-top:3rem; font-family:'Roboto Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--border); text-transform:uppercase; animation:bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  section { padding:4.5rem 8vw; border-top:1px solid var(--border); position:relative; z-index:1; }
+  .sec-label { font-family:'Roboto Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--green-bright); margin-bottom:0.75rem; display:block; }
+  h2 { font-family:'Syne',sans-serif; font-weight:700; font-size:clamp(1.8rem,4vw,3rem); color:var(--white); margin-bottom:1.25rem; line-height:1.2; }
+  h3 { font-weight:600; font-size:1rem; color:var(--gold); margin:2rem 0 0.6rem; font-family:'Syne',sans-serif; }
+  p { color:var(--muted); max-width:680px; margin-bottom:1rem; font-size:0.975rem; }
+  p strong { color:var(--text); }
+
+  .big-idea { background:linear-gradient(135deg,#0A1E0E,#080F0A); border-left:3px solid var(--gold); padding:2rem 2.5rem; margin:1.5rem 0; max-width:700px; }
+  .big-idea p { font-family:'Literata',serif; font-style:italic; font-size:1.1rem; color:var(--white); max-width:none; margin:0; }
+
+  /* Problem boxes */
+  .problem-box { background:var(--surface); border:1px solid var(--felt); padding:2rem 2.5rem; margin:2rem 0; max-width:700px; position:relative; }
+  .prob-num { position:absolute; top:1rem; right:1.5rem; font-family:'Syne',sans-serif; font-weight:800; font-size:3rem; color:var(--border); line-height:1; }
+  .prob-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; color:var(--white); margin-bottom:0.75rem; }
+  .problem-box p { max-width:none; }
+  .problem-box .answer { margin-top:1rem; background:var(--panel); border-left:3px solid var(--green); padding:0.75rem 1rem; }
+  .problem-box .answer .ans-label { font-family:'Roboto Mono',monospace; font-size:0.58rem; letter-spacing:0.15em; color:var(--green-bright); text-transform:uppercase; margin-bottom:0.4rem; }
+  .problem-box .answer p { margin:0; font-size:0.875rem; }
+
+  .timeline { max-width:700px; margin:2rem 0; }
+  .tl-item { display:grid; grid-template-columns:110px 1fr; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--border); align-items:start; }
+  .tl-item:last-child { border:none; }
+  .tl-date { font-family:'Roboto Mono',monospace; font-size:0.68rem; color:var(--gold); font-weight:500; line-height:1.4; }
+  .tl-content { font-size:0.875rem; color:var(--muted); line-height:1.65; }
+  .tl-content strong { color:var(--text); display:block; margin-bottom:0.2rem; }
+
+  .nz-box { background:var(--surface); border:1px solid #2A3A20; padding:1.75rem 2rem; margin:2rem 0; max-width:700px; }
+  .nz-box::before { content:'🇳🇿 REAL WORLD CONNECTION'; display:block; font-family:'Roboto Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--green); margin-bottom:0.6rem; }
+  .nz-box p { color:#608050; max-width:none; }
+  .nz-box strong { color:#90B070; }
+
+  .deeper { background:linear-gradient(135deg,#0A1A08,#080F0A); border-left:3px solid var(--green); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .deeper::before { content:'⬡ GO DEEPER'; display:block; font-family:'Roboto Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--green-bright); margin-bottom:0.75rem; }
+  .deeper p { max-width:none; color:var(--muted); }
+  .deeper strong { color:var(--text); }
+  .deeper ol { padding-left:1.5rem; color:var(--muted); margin-top:0.75rem; }
+  .deeper li { margin-bottom:0.4rem; font-size:0.875rem; }
+
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:0.75rem; margin:1.5rem 0; max-width:860px; }
+  .vocab-card { background:var(--panel); border:1px solid var(--border); padding:1.1rem 1.25rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; }
+  .vocab-card:hover { border-color:var(--green); transform:translateY(-2px); }
+  .vocab-card.open { border-color:var(--gold); }
+  .vocab-term { font-family:'Syne',sans-serif; font-weight:600; font-size:0.95rem; color:var(--gold); margin-bottom:0.35rem; }
+  .vocab-def { font-size:0.82rem; color:var(--muted); display:none; line-height:1.6; }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-hint { font-family:'Roboto Mono',monospace; font-size:0.52rem; color:var(--border); position:absolute; bottom:0.5rem; right:0.7rem; }
+
+  .quiz-wrap { max-width:700px; margin:1.5rem 0; }
+  .quiz-q { font-size:1rem; font-weight:400; color:var(--white); margin-bottom:0.75rem; font-family:'Syne',sans-serif; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem; }
+  .quiz-opt { background:var(--panel); border:1px solid var(--border); color:var(--muted); padding:0.75rem 1.1rem; text-align:left; cursor:pointer; font-family:'Literata',serif; font-size:0.9rem; transition:all 0.15s; }
+  .quiz-opt:hover { border-color:var(--green); color:var(--text); }
+  .quiz-opt.correct { border-color:var(--green-bright); color:#90E0A0; background:#041408; }
+  .quiz-opt.wrong { border-color:var(--red); color:#FF9090; background:#1A0808; }
+  .quiz-feedback { font-size:0.875rem; padding:0.9rem 1.1rem; margin-top:0.4rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#041408; border-left:3px solid var(--green-bright); color:#90E0A0; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid var(--red); color:#FF9090; }
+
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid var(--border); padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type { font-family:'Roboto Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; background:var(--surface); color:var(--muted); padding:0.22rem 0.5rem; flex-shrink:0; margin-top:0.1rem; }
+  .resource-list a { color:var(--green-bright); text-decoration:none; font-size:0.9rem; font-weight:600; }
+  .resource-list a:hover { color:var(--gold); }
+  .resource-list p { margin:0.2rem 0 0; font-size:0.78rem; max-width:none; }
+
+  .lesson-nav { position:relative; z-index:1; padding:2.5rem 8vw; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .nav-btn { font-family:'Roboto Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.55rem 1.1rem; transition:all 0.2s; }
+  .nav-btn:hover { border-color:var(--green); color:var(--green-bright); }
+  .nav-btn.next { background:var(--green); color:white; border-color:var(--green); }
+  .nav-btn.next:hover { background:var(--green-bright); }
+
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--green),transparent); opacity:0.2; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="maths-index.html" class="back-link">← Course Index</a>
+  <div class="lesson-badge">Lesson 05 · Probability</div>
+  <h1>Probability<br>&amp; <em>Chance</em></h1>
+  <p class="hero-q">"Our instincts about probability are almost always wrong. Mathematics corrects them."</p>
+  <p class="hero-p">You will be given a problem in a moment that seems impossible. <strong>Your brain will be certain of the answer. Your brain will be wrong.</strong> This happens because human intuition evolved for social situations, not statistical ones — and the gap between instinct and reality is where probability lives.</p>
+
+  <div class="prob-demo">
+    <div class="prob-bar-wrap">
+      <span class="prob-label">23 people: shared birthday</span>
+      <div class="prob-track"><div class="prob-fill" style="width:50.7%;background:#D4A843;"></div></div>
+      <span class="prob-value">50.7%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <span class="prob-label">30 people: shared birthday</span>
+      <div class="prob-track"><div class="prob-fill" style="width:70.6%;background:#2A8A4A;"></div></div>
+      <span class="prob-value">70.6%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <span class="prob-label">50 people: shared birthday</span>
+      <div class="prob-track"><div class="prob-fill" style="width:97%;background:#35AA5A;"></div></div>
+      <span class="prob-value">97%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <span class="prob-label">70 people: shared birthday</span>
+      <div class="prob-track"><div class="prob-fill" style="width:99.9%;background:#5ACA7A;"></div></div>
+      <span class="prob-value">99.9%</span>
+    </div>
+  </div>
+
+  <span class="scroll-hint">↓ scroll to find out why</span>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">The Big Idea</span>
+  <h2>Probability Measures Uncertainty — Not Randomness</h2>
+
+  <div class="big-idea reveal">
+    <p>"Probability doesn't tell you what will happen. It tells you how likely different outcomes are across many trials. The mistake people make is applying long-run statistics to single events — and then being surprised when their intuition fails."</p>
+  </div>
+
+  <p class="reveal">Probability is expressed as a number between 0 (impossible) and 1 (certain). A fair coin flip is 0.5. Rolling a 6 on a die is 1/6 ≈ 0.167. The sum of all possible outcomes always equals 1.</p>
+
+  <p class="reveal">What makes probability counterintuitive is how probabilities combine. Your brain is not naturally equipped to multiply small fractions together, or to account for the number of possible pairs in a group, or to update beliefs when new information arrives. <strong>Mathematics is.</strong></p>
+
+  <h3>The Birthday Problem</h3>
+
+  <div class="problem-box reveal">
+    <div class="prob-num">1</div>
+    <div class="prob-title">How many people do you need for a 50% chance of a shared birthday?</div>
+    <p style="color:var(--muted);">Most people guess 182 or 183 — about half of 365. That's the wrong question. The correct answer is <strong>just 23 people.</strong></p>
+    <p style="color:var(--muted);">Why? Because you're not asking "what's the chance that someone shares MY birthday?" You're asking "what's the chance that ANY two people in the group share a birthday?" With 23 people, there are 23×22/2 = 253 possible pairs. Each pair has a 1/365 chance of sharing a birthday. The probability that NO pair shares is (364/365)^253 ≈ 49.95%. So the probability that at least one pair DOES share is about 50.05%.</p>
+    <div class="answer">
+      <div class="ans-label">Key insight</div>
+      <p style="color:var(--muted);">The number of pairs grows much faster than the number of people. 23 people → 253 pairs. 50 people → 1,225 pairs. The probability is driven by the number of chances, not just the number of people.</p>
+    </div>
+  </div>
+
+  <h3>The Monty Hall Problem</h3>
+
+  <div class="problem-box reveal">
+    <div class="prob-num">2</div>
+    <div class="prob-title">Should you switch doors?</div>
+    <p style="color:var(--muted);">You're on a game show. Three doors: behind one is a car, behind two are goats. You pick door 1. The host (who knows what's behind each door) opens door 3, revealing a goat. He asks: do you want to switch to door 2?</p>
+    <p style="color:var(--muted);">Most people say it doesn't matter — there are two doors left, so it's 50/50. <strong>This is wrong.</strong> You should always switch. Switching wins 2/3 of the time.</p>
+    <div class="answer">
+      <div class="ans-label">Why switching wins 2/3 of the time</div>
+      <p style="color:var(--muted);">When you first pick, you have a 1/3 chance of being right. The host's action doesn't change your original probability — your door still has 1/3. But the other remaining door now carries all the remaining 2/3 probability. The host's knowledge is the key — if he opened randomly and might reveal the car, it would be 50/50. But he always reveals a goat, which transfers probability to the other door.</p>
+    </div>
+  </div>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">1654</div>
+      <div class="tl-content"><strong>Pascal and Fermat invent probability theory</strong>French mathematician Blaise Pascal and Pierre de Fermat exchanged letters solving a gambling problem: how should unfinished winnings be divided fairly? Their correspondence founded mathematical probability theory.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1763</div>
+      <div class="tl-content"><strong>Bayes' Theorem published</strong>Thomas Bayes showed how to update the probability of a hypothesis when new evidence arrives. "Bayesian reasoning" now underpins medical diagnosis, machine learning, spam filters, and scientific inference.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1933</div>
+      <div class="tl-content"><strong>Kolmogorov axioms</strong>Andrei Kolmogorov placed probability theory on rigorous mathematical foundations, defining the axioms it obeys. This unified probability with measure theory and made the subject mathematically rigorous.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1975</div>
+      <div class="tl-content"><strong>Daniel Kahneman and Amos Tversky — Cognitive Biases</strong>The psychologists systematically documented how human probability intuition fails. Their work became the foundation of behavioural economics. Kahneman won the Nobel Prize in Economics in 2002. It changed how medicine, finance, and public policy think about human decision-making.</div>
+    </div>
+  </div>
+
+  <div class="nz-box reveal">
+    <p>New Zealand's <strong>Covid-19 response</strong> in 2020 used probabilistic modelling at the heart of every decision. Teams at Te Pūnaha Matatini (a NZ complexity and data science institute) built models estimating infection rates, hospital capacity, and the probability that different interventions would work. Every alert level decision involved explicitly accepting uncertainty — betting that the probability of certain outcomes was high enough to justify specific actions. <strong>This is applied probability: using mathematics to make decisions under uncertainty with real consequences.</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Key Vocabulary</span>
+  <h2>Know the Words</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Probability</div>
+      <div class="vocab-def">A number between 0 and 1 measuring the likelihood of an event. P=0 means impossible; P=1 means certain; P=0.5 means equally likely to happen or not. All possible outcomes must sum to 1. Can also be expressed as a fraction, decimal, or percentage.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Independent Events</div>
+      <div class="vocab-def">Two events are independent if the outcome of one doesn't affect the probability of the other. Coin flips are independent — getting heads doesn't change the next flip's probability. The probability of both happening is P(A) × P(B). Many probability mistakes come from assuming dependence or independence incorrectly.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Conditional Probability</div>
+      <div class="vocab-def">The probability of event A given that event B has already occurred. Written P(A|B). The Monty Hall problem involves conditional probability — the probability of the car being behind door 2, given that the host opened door 3. Bayes' Theorem is the tool for calculating conditional probabilities.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Expected Value</div>
+      <div class="vocab-def">The average outcome you'd expect over many trials. Roll a die many times: expected value = (1+2+3+4+5+6)/6 = 3.5. You'll never roll 3.5 — but your average over many rolls will converge to it. Expected value tells you whether a bet or decision is worthwhile in the long run.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Bayes' Theorem</div>
+      <div class="vocab-def">A formula for updating probabilities when new evidence arrives: P(A|B) = P(B|A) × P(A) / P(B). Used in medical testing (what's the chance you have a disease given a positive test?), spam filtering, and machine learning. Arguably the most practically useful formula in applied mathematics.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Law of Large Numbers</div>
+      <div class="vocab-def">As the number of trials increases, the observed average gets closer to the expected value. Flip a coin 10 times — you might get 8 heads. Flip 10,000 times — you'll be very close to 50% heads. This is why casinos always win in the long run: the house edge is small, but the law of large numbers guarantees it accumulates.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Watch</span>
+  <h2>See It Explained</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=monty+hall+problem+explained+numberphile" target="_blank">Numberphile — The Monty Hall Problem (YouTube)</a>
+        <p>One of Numberphile's most-viewed videos. They actually demonstrate it with physical cards, then explain the mathematics. The intuition-vs-reality gap is shown clearly.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=birthday+problem+explained+ted+ed" target="_blank">TED-Ed — The Birthday Problem (YouTube)</a>
+        <p>Clean, animated explanation of why 23 people give a 50% chance of a shared birthday. About 4 minutes.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">INTERACTIVE</span>
+      <div>
+        <a href="https://www.mathsisfun.com/data/probability.html" target="_blank">Maths Is Fun — Probability</a>
+        <p>Interactive tools, clear explanations, and worked examples. Start with the basics and work through to conditional probability.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Test Yourself</span>
+  <h2>Five Questions. Trust the Maths, Not Your Gut.</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. You flip a fair coin 9 times and get heads every time. What is the probability of heads on the 10th flip?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Less than 50% — it's "due" to be tails</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">More than 50% — heads has momentum</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q1')">Exactly 50% — each flip is independent; past results don't affect it</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Impossible to say — we need more information</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. Coin flips are independent events. The coin has no memory. The probability of heads is always 50%, regardless of previous results. The belief that it's "due" to be tails is called the Gambler's Fallacy — one of the most common and costly probability errors humans make.</div>
+    <div class="quiz-feedback bad" id="q1-bad">Each coin flip is independent. The coin has no memory of past results. The probability is always exactly 50%. The belief that tails is "overdue" is the Gambler's Fallacy — and it has cost gamblers and investors enormous amounts of money throughout history. Past results don't change future probabilities for independent events.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. In the Monty Hall problem, you should switch because:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">The host accidentally gives away information about where the car is</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q2')">Your original door has probability 1/3; the host's knowledge transfers the remaining 2/3 probability to the other door</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">After one goat is revealed, the remaining doors have equal probability, making it slightly better to switch</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">It doesn't matter — both remaining doors have equal probability after the host reveals a goat</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. Your original pick is 1/3 probability. The host always reveals a goat (using his knowledge). This action doesn't change your door's 1/3, but it concentrates all the remaining 2/3 probability onto the one other remaining door. So switching gives 2/3 probability of winning. This was rigorously proved — and famously contested by thousands of academics who wrote angry letters before being shown simulations proving it.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Your door was chosen before any information — it stays at 1/3. The host's action (always revealing a goat using his knowledge) doesn't change your door's probability, but it forces the remaining 2/3 probability onto the other door. Switching gives 2/3 chance of winning vs staying which gives 1/3. The key is the host's knowledge — he doesn't open doors randomly.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. Why does the Birthday Problem give a result so much lower than most people expect?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">Because there are only 365 days and we're looking at exactly half</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q3')">Because the number of possible pairs grows much faster than the number of people — 23 people create 253 pairs, each of which is a chance for a match</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">Because February 29 birthdays are excluded from the calculation</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">Because some birthdays are more common than others</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Yes. Most people think about one person's birthday matching the group. But the question is whether ANY two people share a birthday. With 23 people there are 23 × 22 / 2 = 253 distinct pairs — 253 chances for a match. The probability grows with pairs, not people, which is why the number is so much lower than expected.</div>
+    <div class="quiz-feedback bad" id="q3-bad">The key is pairs, not people. 23 people → 253 pairs. Each pair has a 1/365 ≈ 0.27% chance of sharing a birthday. But with 253 chances, these small probabilities accumulate. People expect ~183 (half of 365) because they're thinking about one person vs 365 days — not pair-wise comparisons. The combinatorial explosion is what drives the result.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. What is "expected value" and why does it matter for decision-making?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">The most likely single outcome of a random event</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q4')">The average outcome over many repetitions, calculated by multiplying each outcome by its probability and summing — the "fair" price of a bet in the long run</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">The outcome you should expect from a single trial</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">The probability of the most common outcome</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Yes. Expected value = sum of (outcome × probability) for each outcome. It's the long-run average. A lottery ticket with 1/1,000,000 chance of winning $500,000 has EV = 500,000 × 0.000001 = $0.50. If it costs $2, it's a bad bet in expected value terms — even though someone wins. Casinos survive because every game has a negative expected value for players.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Expected value is the long-run average: sum of (each outcome × its probability). For a fair die: (1+2+3+4+5+6)/6 = 3.5. You'll never roll 3.5, but your average over thousands of rolls converges to it. For decision-making: a bet is "worth taking" if its expected value is positive. This underpins insurance, gambling, investing, and medical treatment decisions.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. A medical test is 99% accurate. A disease affects 1% of the population. You test positive. What is the probability you actually have the disease?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">99% — the test is 99% accurate</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">About 50%</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q5')">About 50% — because false positives from the large healthy population overwhelm true positives</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">1% — the base rate of the disease</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">This is Bayes' Theorem in action. In 10,000 people: 100 have the disease (1%), 9,900 don't. The test correctly identifies 99 of the 100 sick people (99% accurate). But it also gives 99 false positives (1% of 9,900). So of 198 positive tests, only 99 are real — about 50%. A 99% accurate test sounds near-perfect, but with a rare disease, half of positives are false. This is why confirmatory tests exist.</div>
+    <div class="quiz-feedback bad" id="q5-bad">This is the base rate neglect fallacy, solved by Bayes' Theorem. In 10,000 people: 100 are sick, 9,900 healthy. Test catches 99 sick people correctly. Test gives 99 false positives (1% of 9,900). Total positives: 198. True positives: 99. Probability you're sick given positive test: 99/198 = 50%. The rare disease means false positives swamp true positives, despite the high accuracy.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Go Deeper</span>
+  <h2>For the Obsessive</h2>
+
+  <div class="deeper reveal">
+    <p><strong>Simulate the Birthday Problem</strong></p>
+    <ol>
+      <li>Get a group of people (family, class) and check for shared birthdays. Does it match the prediction?</li>
+      <li>Search "Birthday Problem calculator" online — find a tool that lets you see the exact probability for any group size.</li>
+      <li><strong>Extend it:</strong> What if there are only 30 possible birthdays? How does the calculation change? What does this tell you about how group size and sample space interact?</li>
+    </ol>
+  </div>
+
+  <div class="deeper reveal">
+    <p><strong>The Simpson's Paradox</strong></p>
+    <p>A statistical phenomenon where a trend appears in several groups of data but disappears (or reverses) when the groups are combined. It's appeared in studies of university admissions, medical treatments, and cricket batting averages.</p>
+    <ol>
+      <li>Search "Simpson's Paradox batting average" for a cricket example.</li>
+      <li>Then search "Simpson's Paradox UC Berkeley admissions" for a famous real-world case that changed how universities handle discrimination claims.</li>
+      <li><strong>Think:</strong> What does Simpson's Paradox suggest about how we should present and interpret statistics? Who might benefit from presenting data in a misleading way?</li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Resources</span>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.mathsisfun.com/data/probability.html" target="_blank">Maths Is Fun — Probability</a>
+        <p>Comprehensive, clearly written, interactive. The best free probability resource for this level.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=3blue1brown+bayes+theorem" target="_blank">3Blue1Brown — Bayes Theorem (YouTube)</a>
+        <p>The best visual explanation of Bayes' Theorem available. About 15 minutes. Changes how you think about updating beliefs.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">BOOK</span>
+      <div>
+        <a href="https://www.goodreads.com/book/show/38315.The_Drunkard_s_Walk" target="_blank">The Drunkard's Walk — Leonard Mlodinow</a>
+        <p>Accessible, fascinating book about randomness and probability in real life. Perfect for an 11-year-old who finds probability interesting.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="lesson-nav">
+  <a href="maths-lesson-4.html" class="nav-btn">← Infinity</a>
+  <a href="maths-lesson-6.html" class="nav-btn next">Next: Codes & Cryptography →</a>
+</div>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/h*100)+'%';});
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  function ans(btn,ok,id){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(ok?'correct':'wrong');document.getElementById(id+(ok?'-good':'-bad')).classList.add('show');if(!ok)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>

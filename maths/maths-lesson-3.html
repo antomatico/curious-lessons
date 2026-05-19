@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fibonacci & the Golden Ratio · Maths for the Curious</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Karla:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0F08;
+    --surface: #0F1A0C;
+    --panel: #131F10;
+    --green: #4A8C5C;
+    --green-bright: #5AAA6C;
+    --gold: #C8A040;
+    --cream: #E8F0D8;
+    --text: #B8D0A8;
+    --muted: #608050;
+    --border: #1E3018;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Karla',sans-serif; font-weight:300; line-height:1.8; overflow-x:hidden; }
+
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(to right,var(--green),var(--gold)); width:0%; transition:width 0.15s; z-index:999; }
+
+  /* Spiral SVG background */
+  .spiral-bg { position:fixed; bottom:-20vh; right:-10vw; width:60vmin; height:60vmin; pointer-events:none; z-index:0; opacity:0.04; }
+
+  .hero {
+    position:relative; z-index:1; min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center; padding:6rem 8vw 4rem;
+    background:radial-gradient(ellipse at 30% 60%, #0A1E0A 0%, #0A0F08 70%);
+  }
+
+  .back-link { font-family:'Fira Code',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:2rem; transition:color 0.2s; animation:fadeUp 0.4s ease both; }
+  .back-link:hover { color:var(--green-bright); }
+
+  .lesson-badge { display:inline-block; border:1px solid var(--green); color:var(--green); font-family:'Fira Code',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.3rem 0.9rem; margin-bottom:1.5rem; animation:fadeUp 0.4s 0.05s ease both; }
+
+  .hero h1 { font-family:'Lora',serif; font-weight:700; font-size:clamp(2.8rem,8vw,5.5rem); line-height:1.05; color:var(--cream); animation:fadeUp 0.4s 0.1s ease both; }
+  .hero h1 em { font-style:italic; color:var(--gold); }
+
+  /* Fibonacci sequence display */
+  .fib-sequence { margin-top:1.75rem; display:flex; gap:0.6rem; flex-wrap:wrap; animation:fadeUp 0.4s 0.2s ease both; }
+  .fib-num { font-family:'Fira Code',monospace; font-size:1rem; color:var(--green); border:1px solid var(--border); padding:0.3rem 0.7rem; transition:all 0.3s; }
+  .fib-num.highlight { border-color:var(--gold); color:var(--gold); }
+
+  .hero-p { max-width:540px; margin-top:1.5rem; font-size:1rem; color:var(--muted); line-height:1.75; animation:fadeUp 0.4s 0.25s ease both; }
+  .hero-p strong { color:var(--text); }
+
+  .scroll-hint { display:block; margin-top:3rem; font-family:'Fira Code',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--border); text-transform:uppercase; animation:bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  section { padding:4.5rem 8vw; border-top:1px solid var(--border); position:relative; z-index:1; }
+  .sec-label { font-family:'Fira Code',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--green); margin-bottom:0.75rem; display:block; }
+  h2 { font-family:'Lora',serif; font-weight:700; font-size:clamp(1.8rem,4vw,3rem); color:var(--cream); margin-bottom:1.25rem; line-height:1.2; }
+  h3 { font-weight:700; font-size:1rem; color:var(--gold); margin:2rem 0 0.6rem; font-family:'Karla',sans-serif; }
+  p { color:var(--muted); max-width:680px; margin-bottom:1rem; font-size:0.975rem; }
+  p strong { color:var(--text); }
+
+  .big-idea { background:linear-gradient(135deg,#0A1A08,#0A0F08); border-left:3px solid var(--gold); padding:2rem 2.5rem; margin:1.5rem 0; max-width:700px; }
+  .big-idea p { font-family:'Lora',serif; font-style:italic; font-size:1.1rem; color:var(--cream); max-width:none; margin:0; }
+
+  /* Nature grid */
+  .nature-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin:2rem 0; max-width:860px; }
+  .nature-card { background:var(--surface); border:1px solid var(--border); padding:1.25rem 1.5rem; }
+  .nature-icon { font-size:1.75rem; margin-bottom:0.5rem; }
+  .nature-title { font-family:'Lora',serif; font-size:0.95rem; color:var(--cream); margin-bottom:0.4rem; }
+  .nature-desc { font-size:0.78rem; color:var(--muted); line-height:1.6; }
+
+  .timeline { max-width:700px; margin:2rem 0; }
+  .tl-item { display:grid; grid-template-columns:110px 1fr; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--border); align-items:start; }
+  .tl-item:last-child { border:none; }
+  .tl-date { font-family:'Fira Code',monospace; font-size:0.68rem; color:var(--gold); font-weight:500; line-height:1.4; }
+  .tl-content { font-size:0.875rem; color:var(--muted); line-height:1.65; }
+  .tl-content strong { color:var(--text); display:block; margin-bottom:0.2rem; }
+
+  .nz-box { background:var(--surface); border:1px solid #2A4A20; padding:1.75rem 2rem; margin:2rem 0; max-width:700px; }
+  .nz-box::before { content:'🇳🇿 REAL WORLD CONNECTION'; display:block; font-family:'Fira Code',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--green); margin-bottom:0.6rem; }
+  .nz-box p { color:#70A060; max-width:none; }
+  .nz-box strong { color:#A0C880; }
+
+  .deeper { background:linear-gradient(135deg,#0A1400,#0A0F08); border-left:3px solid var(--green); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .deeper::before { content:'⬡ GO DEEPER'; display:block; font-family:'Fira Code',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--green); margin-bottom:0.75rem; }
+  .deeper p { max-width:none; color:var(--muted); }
+  .deeper strong { color:var(--text); }
+  .deeper ol { padding-left:1.5rem; color:var(--muted); margin-top:0.75rem; }
+  .deeper li { margin-bottom:0.4rem; font-size:0.875rem; }
+
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:0.75rem; margin:1.5rem 0; max-width:860px; }
+  .vocab-card { background:var(--panel); border:1px solid var(--border); padding:1.1rem 1.25rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; }
+  .vocab-card:hover { border-color:var(--green); transform:translateY(-2px); }
+  .vocab-card.open { border-color:var(--gold); }
+  .vocab-term { font-family:'Lora',serif; font-style:italic; font-size:1rem; color:var(--gold); margin-bottom:0.35rem; }
+  .vocab-def { font-size:0.82rem; color:var(--muted); display:none; line-height:1.6; }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-hint { font-family:'Fira Code',monospace; font-size:0.52rem; color:var(--border); position:absolute; bottom:0.5rem; right:0.7rem; }
+
+  .quiz-wrap { max-width:700px; margin:1.5rem 0; }
+  .quiz-q { font-size:1rem; font-weight:700; color:var(--cream); margin-bottom:0.75rem; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem; }
+  .quiz-opt { background:var(--panel); border:1px solid var(--border); color:var(--muted); padding:0.75rem 1.1rem; text-align:left; cursor:pointer; font-family:'Karla',sans-serif; font-size:0.9rem; transition:all 0.15s; }
+  .quiz-opt:hover { border-color:var(--green); color:var(--text); }
+  .quiz-opt.correct { border-color:var(--green-bright); color:#90D0A0; background:#041408; }
+  .quiz-opt.wrong { border-color:#C04040; color:#FF9090; background:#1A0808; }
+  .quiz-feedback { font-size:0.875rem; padding:0.9rem 1.1rem; margin-top:0.4rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#041408; border-left:3px solid var(--green-bright); color:#90D0A0; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid #C04040; color:#FF9090; }
+
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid var(--border); padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type { font-family:'Fira Code',monospace; font-size:0.6rem; letter-spacing:0.1em; background:var(--surface); color:var(--muted); padding:0.22rem 0.5rem; flex-shrink:0; margin-top:0.1rem; }
+  .resource-list a { color:var(--green-bright); text-decoration:none; font-size:0.9rem; font-weight:600; }
+  .resource-list a:hover { color:var(--gold); }
+  .resource-list p { margin:0.2rem 0 0; font-size:0.78rem; max-width:none; }
+
+  .lesson-nav { position:relative; z-index:1; padding:2.5rem 8vw; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .nav-btn { font-family:'Fira Code',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.55rem 1.1rem; transition:all 0.2s; }
+  .nav-btn:hover { border-color:var(--green); color:var(--green); }
+  .nav-btn.next { background:var(--green); color:white; border-color:var(--green); }
+  .nav-btn.next:hover { background:var(--green-bright); }
+
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--green),transparent); opacity:0.2; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<svg class="spiral-bg" viewBox="0 0 400 400" fill="none">
+  <path d="M200,200 Q200,100 300,100 Q400,100 400,200 Q400,350 200,350 Q0,350 0,150 Q0,0 250,0" stroke="#4A8C5C" stroke-width="1" fill="none"/>
+  <path d="M200,200 Q200,130 270,130 Q340,130 340,200 Q340,310 200,310 Q60,310 60,170 Q60,40 230,40" stroke="#4A8C5C" stroke-width="0.7" fill="none"/>
+</svg>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="maths-index.html" class="back-link">← Course Index</a>
+  <div class="lesson-badge">Lesson 03 · Sequences</div>
+  <h1>Fibonacci &amp;<br><em>the Golden Ratio</em></h1>
+  <div class="fib-sequence">
+    <div class="fib-num">1</div><div class="fib-num">1</div><div class="fib-num">2</div>
+    <div class="fib-num">3</div><div class="fib-num">5</div><div class="fib-num">8</div>
+    <div class="fib-num highlight">13</div><div class="fib-num highlight">21</div>
+    <div class="fib-num highlight">34</div><div class="fib-num">55</div>
+    <div class="fib-num">89</div><div class="fib-num">144</div>
+    <div class="fib-num">...</div>
+  </div>
+  <p class="hero-p">A rabbit problem from 1202. A sequence where every term is the sum of the two before it. <strong>And somehow — this pattern appears in sunflowers, pine cones, nautilus shells, galaxy spirals, and the proportions of the human face.</strong> Nobody fully knows why.</p>
+  <span class="scroll-hint">↓ scroll to begin</span>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">The Big Idea</span>
+  <h2>Nature Counts in Fibonacci</h2>
+
+  <div class="big-idea reveal">
+    <p>"Divide any Fibonacci number by the one before it. As you go further along the sequence, the answer approaches 1.6180339... — the Golden Ratio. You never reach it. But you get closer forever."</p>
+  </div>
+
+  <p class="reveal">The rule is simple: start with 1, 1. Every number after is the sum of the two before. 1+1=2, 1+2=3, 2+3=5, 3+5=8... The sequence grows quickly — and it does something strange when you examine the ratios: 2/1=2, 3/2=1.5, 5/3=1.667, 8/5=1.6, 13/8=1.625, 21/13=1.615... converging toward φ = 1.6180339887...</p>
+
+  <p class="reveal">This number φ (phi) is called the <strong>Golden Ratio</strong>. It has the remarkable property that φ = 1 + 1/φ. Equivalently, a rectangle with sides in ratio φ:1 can be divided into a square and a smaller rectangle with exactly the same proportions — infinitely. This self-similar property is why it keeps appearing in nature: it's the growth ratio of many living things.</p>
+
+  <h3>Where Fibonacci Appears in Nature</h3>
+
+  <div class="nature-grid reveal">
+    <div class="nature-card">
+      <div class="nature-icon">🌻</div>
+      <div class="nature-title">Sunflower spirals</div>
+      <div class="nature-desc">The seeds spiral in two directions. Count one direction: 34. The other: 55. Both Fibonacci numbers. This packing pattern maximises seed density.</div>
+    </div>
+    <div class="nature-card">
+      <div class="nature-icon">🌲</div>
+      <div class="nature-title">Tree branches</div>
+      <div class="nature-desc">Count the branches at each level of many trees. The pattern often follows Fibonacci — each branch splitting following the sequence.</div>
+    </div>
+    <div class="nature-card">
+      <div class="nature-icon">🐚</div>
+      <div class="nature-title">Nautilus shell</div>
+      <div class="nature-desc">The shell grows in a logarithmic spiral whose growth factor approximates φ. Each chamber is geometrically similar to the last.</div>
+    </div>
+    <div class="nature-card">
+      <div class="nature-icon">🍍</div>
+      <div class="nature-title">Pineapple scales</div>
+      <div class="nature-desc">Count the spirals going left and right: typically 8 and 13 — consecutive Fibonacci numbers. Same with pine cones (5 and 8).</div>
+    </div>
+  </div>
+
+  <p class="reveal"><strong>Why does this happen?</strong> The Golden Ratio appears in plant growth because it's the most "irrational" number — meaning two quantities in the golden ratio share no common factor, so spirals based on φ never align, maximising space between leaves or seeds. Evolution discovered this packing optimisation. Maths didn't cause it — but maths describes it perfectly.</p>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">~450 BCE India</div>
+      <div class="tl-content"><strong>Pingala's Sanskrit poetry patterns</strong>Indian mathematician Pingala described the same sequence while analysing patterns of short and long syllables in Sanskrit verse. The sequence was known in India over 1,600 years before Fibonacci.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1202 Italy</div>
+      <div class="tl-content"><strong>Fibonacci's rabbit problem</strong>Leonardo of Pisa (Fibonacci) published <em>Liber Abaci</em>, containing a puzzle about breeding rabbits. The solution generated the sequence. He also used the book to introduce Hindu-Arabic numerals (0-9) to Europe, replacing Roman numerals.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1509 Italy</div>
+      <div class="tl-content"><strong>Luca Pacioli names it "Divine Proportion"</strong>The mathematician (and friend of Leonardo da Vinci) wrote a whole book on the Golden Ratio. Da Vinci provided the illustrations. They were convinced it was the mathematical secret of beauty.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1843 France</div>
+      <div class="tl-content"><strong>Binet's formula</strong>Jacques Binet derived a closed-form formula for the nth Fibonacci number using φ — proving that the sequence and the Golden Ratio are mathematically identical in a deep sense.</div>
+    </div>
+  </div>
+
+  <div class="nz-box reveal">
+    <p>New Zealand's native <strong>ponga (silver fern)</strong> — the national symbol — uncurls from a fiddlehead spiral that closely approximates the Fibonacci spiral. The unfurling pattern of many NZ ferns follows the same geometric growth that appears in nautilus shells and spiral galaxies. Next time you see the silver fern on a rugby jersey, you're looking at a Fibonacci spiral shaped by 100 million years of evolution finding the mathematically optimal growth pattern.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Key Vocabulary</span>
+  <h2>Know the Words</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Fibonacci Sequence</div>
+      <div class="vocab-def">The sequence 1, 1, 2, 3, 5, 8, 13, 21... where each term is the sum of the two preceding terms. Written as F(n) = F(n-1) + F(n-2). Appears throughout mathematics and nature. Has its own academic journal (Fibonacci Quarterly) dedicated entirely to its properties.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Golden Ratio (φ)</div>
+      <div class="vocab-def">The number φ = (1+√5)/2 ≈ 1.6180339... It satisfies φ² = φ + 1, making it uniquely self-referential. Two quantities are in the golden ratio if their ratio equals the ratio of their sum to the larger. It is irrational and appears in geometry, art, biology, and mathematics.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Convergence</div>
+      <div class="vocab-def">When a sequence of numbers gets closer and closer to a fixed value (the limit) as it continues. The ratios of consecutive Fibonacci numbers converge to φ — they approach it without ever exactly reaching it. This is a key concept in calculus and analysis.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Golden Rectangle</div>
+      <div class="vocab-def">A rectangle whose sides are in the ratio 1:φ. If you cut a square from one end, the remaining rectangle is another Golden Rectangle — smaller but with exactly the same proportions. You can repeat this infinitely. The spiral connecting the corners of these squares is the Golden Spiral, found in nature.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Phyllotaxis</div>
+      <div class="vocab-def">The arrangement of leaves, seeds, or scales in plants. Many plants use Fibonacci numbers and the golden angle (137.5°, derived from φ) to arrange their parts for maximum sunlight exposure and seed packing. It's the biological application of the mathematics you're learning.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Recurrence Relation</div>
+      <div class="vocab-def">A rule that defines each term of a sequence using previous terms. F(n) = F(n-1) + F(n-2) is a recurrence relation. So is the doubling sequence: each term = 2 × previous. Recurrence relations are used in computer science, economics, and physics to model systems that evolve in steps.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Watch</span>
+  <h2>See It Explained</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=fibonacci+nature+vi+hart" target="_blank">Vi Hart — Doodling in Math: Spirals, Fibonacci, and Plants (YouTube)</a>
+        <p>One of the most delightful mathematics videos ever made. Vi Hart hand-draws the connection between Fibonacci and plant growth in about 6 minutes. Essential viewing.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=golden+ratio+myth+math+be+smart" target="_blank">Be Smart — The Golden Ratio: Is It Myth or Math? (YouTube)</a>
+        <p>Excellent critical look at which golden ratio claims are real mathematics vs which are myths. About 10 minutes. Teaches you to think critically about popular science claims.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://r-knott.surrey.ac.uk/fibonacci/fib.html" target="_blank">Ron Knott's Fibonacci Pages — Surrey University</a>
+        <p>The oldest maths site on the web (1996). Comprehensive, beautifully detailed explorations of Fibonacci in nature, art, and pure mathematics.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Test Yourself</span>
+  <h2>Five Questions.</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. What is the next number in the sequence: 1, 1, 2, 3, 5, 8, 13, 21, ___?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">30</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">32</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q1')">34</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">42</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. 13 + 21 = 34. Each term is the sum of the two before it. The sequence continues: 34, 55, 89, 144, 233... Notice 144 = 12² — the only perfect square in the Fibonacci sequence beyond 1. That's a proved theorem.</div>
+    <div class="quiz-feedback bad" id="q1-bad">The rule: each term = the two before it added together. So 13 + 21 = 34. The next few terms are 34, 55, 89, 144... Notice each is roughly 1.618 times the previous one — that ratio converging towards φ.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. Why do consecutive Fibonacci number ratios approach — but never exactly reach — φ?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">Because the sequence runs out of room to get closer</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q2')">Because φ is irrational — it cannot be expressed as a ratio of two whole numbers, so integer ratios only approximate it</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">Because Fibonacci numbers are all integers and φ is not</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">Because the sequence adds instead of multiplies</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. φ is irrational — its decimal expansion never terminates or repeats. Any ratio of two integers (like F(n)/F(n-1)) is rational by definition. A rational number can never exactly equal an irrational one. But you can get arbitrarily close — which is what "convergence" means.</div>
+    <div class="quiz-feedback bad" id="q2-bad">φ is irrational — it can't be written as a/b where a and b are integers. Every Fibonacci ratio F(n)/F(n-1) IS a ratio of integers, so it's rational. A rational number can never equal an irrational one — they're different types of numbers. But the sequence of rationals converges toward φ, getting arbitrarily close.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. A sunflower has spiral seed rows. You count 34 going clockwise and 55 going anticlockwise. What is significant about these numbers?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">They're both square numbers</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q3')">They're consecutive Fibonacci numbers — and their ratio (55/34 ≈ 1.618) approximates the Golden Ratio</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">34 and 55 are both prime numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">They add up to 89, which is also a Fibonacci number</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">All three of the other options are interesting side-observations — but they're not the main point. 34 and 55 are consecutive Fibonacci numbers, and their ratio approximates φ. The plant achieves this because growing new seeds at the golden angle (~137.5°) produces exactly this Fibonacci spiral pattern — maximising seed packing density. (Though it's also worth noting that 34 + 55 = 89, the next Fibonacci number!)</div>
+    <div class="quiz-feedback bad" id="q3-bad">34 and 55 are consecutive Fibonacci numbers. Their ratio 55/34 ≈ 1.618 ≈ φ. The plant achieves this not by "knowing" Fibonacci — but because growing new seeds at approximately 137.5° (the golden angle, derived from φ) naturally produces spirals whose counts are Fibonacci numbers. Evolution found the optimal packing, which happens to be Fibonacci.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. The Golden Ratio φ satisfies the equation φ² = φ + 1. What makes this property remarkable?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,true,'q4')">It's self-referential — squaring φ gives you φ plus 1, meaning φ contains information about its own square. This self-similarity is why it appears in recursive, self-similar patterns in nature</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">It proves that φ is a whole number</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">It means φ is always between 1 and 2</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">It shows that φ squared equals 2.618, which is not remarkable</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Yes. The self-referential quality — φ = 1 + 1/φ — means a Golden Rectangle can be subdivided into a square and another Golden Rectangle of the same proportions, infinitely. This recursive self-similarity is exactly the kind of structure that appears in growing biological systems, which is why φ emerges in nature so consistently.</div>
+    <div class="quiz-feedback bad" id="q4-bad">The key is self-reference: φ² = φ + 1, or equivalently φ = 1 + 1/φ. A Golden Rectangle can be divided into a square and a smaller Golden Rectangle — which can be divided into a square and an even smaller Golden Rectangle — infinitely. This self-similar, recursive property is characteristic of natural growth patterns.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. Fibonacci himself was important to European mathematics for a reason beyond the sequence. What was it?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">He invented the concept of zero</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">He proved the Fundamental Theorem of Arithmetic</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q5')">He introduced Hindu-Arabic numerals (0-9) to Europe, replacing Roman numerals and enabling more advanced calculation</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">He discovered the first prime number larger than 1,000</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Yes — arguably his most important contribution. His 1202 book Liber Abaci demonstrated that the Hindu-Arabic numeral system (the 0-9 digits we use today) was far more practical than Roman numerals for calculation. Try multiplying XLVII × XXIII using Roman numerals and you'll understand why this mattered. It's one of history's most significant mathematical adoptions.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Fibonacci's most consequential contribution was introducing the Hindu-Arabic numeral system (0, 1, 2, 3, 4, 5, 6, 7, 8, 9) to European commerce and mathematics via his book Liber Abaci. Roman numerals are essentially unusable for complex arithmetic. The adoption of place-value numerals enabled the Scientific Revolution. The rabbit sequence is a footnote by comparison.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Go Deeper</span>
+  <h2>For the Obsessive</h2>
+
+  <div class="deeper reveal">
+    <p><strong>Build a Fibonacci Spiral</strong></p>
+    <ol>
+      <li>On graph paper, draw two 1×1 squares side by side.</li>
+      <li>Below them, draw a 2×2 square (filling the gap).</li>
+      <li>To the left, draw a 3×3 square. Above, a 5×5. Right, an 8×8. Below, a 13×13.</li>
+      <li>You now have a rectangle made of Fibonacci squares. Draw a quarter-circle in each square — connecting to form the Golden Spiral.</li>
+      <li><strong>Measure</strong> the width and height of your rectangle at each stage. Compute the ratio. Watch it converge toward 1.618.</li>
+    </ol>
+  </div>
+
+  <div class="deeper reveal">
+    <p><strong>Is the Golden Ratio really in the Parthenon and Mona Lisa?</strong></p>
+    <p>This claim is everywhere. But mathematician George Markowsky published a careful paper showing many "golden ratio" appearances in art and architecture are not accurate when properly measured. The Parthenon and Mona Lisa don't precisely contain φ — people find it by choosing which measurements to take.</p>
+    <ol>
+      <li>Search "Markowsky Misconceptions about the Golden Ratio" for the original paper.</li>
+      <li>Then search "golden ratio myth vs reality." What's real and what's overblown?</li>
+      <li><strong>Think:</strong> Why might people want to believe mathematical constants appear in great art? What does that desire tell us about how humans relate to mathematics?</li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Resources</span>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://r-knott.surrey.ac.uk/fibonacci/fib.html" target="_blank">Ron Knott's Fibonacci Pages</a>
+        <p>The most comprehensive Fibonacci resource on the internet. The oldest maths site on the web.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=numberphile+fibonacci" target="_blank">Numberphile — Fibonacci videos (YouTube)</a>
+        <p>Numberphile has over a dozen Fibonacci videos. "Fibonacci Numbers — Numberphile" and "The Golden Ratio — Numberphile" are both excellent starting points.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="lesson-nav">
+  <a href="maths-lesson-2.html" class="nav-btn">← Prime Numbers</a>
+  <a href="maths-lesson-4.html" class="nav-btn next">Next: Infinity →</a>
+</div>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/h*100)+'%';});
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  function ans(btn,ok,id){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(ok?'correct':'wrong');document.getElementById(id+(ok?'-good':'-bad')).classList.add('show');if(!ok)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>

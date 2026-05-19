@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maths for the Curious — A Course for Sharp Minds</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --chalk: #F4F0E8;
+    --board: #1A2418;
+    --board-light: #22301E;
+    --board-mid: #2A3A26;
+    --green: #3D5C38;
+    --dust: #C8C4B0;
+    --gold: #D4A843;
+    --red: #C0392B;
+    --muted: #8A9080;
+    --rule: #2E3E2A;
+
+    --c1: #D4A843;
+    --c2: #C0392B;
+    --c3: #4A8C5C;
+    --c4: #4A90C8;
+    --c5: #9B59B6;
+    --c6: #27AE60;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--board);
+    color: var(--chalk);
+    font-family: 'Libre Baskerville', serif;
+    line-height: 1.75;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Chalk texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.7;
+  }
+
+  /* Chalk board lines */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 1;
+    padding: 5rem 7vw 4rem;
+    border-bottom: 2px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .chalk-smear {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1.25rem;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700; line-height: 1.0;
+    color: var(--chalk); letter-spacing: 0.02em;
+    animation: fadeIn 0.5s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-family: 'Libre Baskerville', serif;
+    color: var(--gold);
+    font-size: 0.8em; font-weight: 400;
+    display: block;
+  }
+
+  .header-sub {
+    margin-top: 1.25rem; max-width: 500px;
+    font-size: 0.95rem; color: var(--muted); line-height: 1.7;
+    animation: fadeIn 0.5s 0.2s ease both;
+  }
+
+  .header-sub strong { color: var(--chalk); }
+
+  /* Big maths symbol */
+  .header-symbol {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 8rem; color: rgba(255,255,255,0.04);
+    line-height: 1; user-select: none;
+    animation: fadeIn 0.5s 0.3s ease both;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    position: relative; z-index: 1;
+    padding: 1.5rem 7vw;
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; gap: 1.5rem;
+    animation: fadeIn 0.5s 0.35s ease both;
+  }
+
+  .prog-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+
+  .prog-track {
+    flex: 1; max-width: 280px; height: 3px;
+    background: var(--rule);
+  }
+
+  .prog-fill {
+    height: 100%; background: var(--gold);
+    transition: width 0.6s ease; width: 0%;
+  }
+
+  .prog-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; color: var(--muted);
+  }
+
+  .reset-btn {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); background: none;
+    border: 1px solid var(--rule); padding: 0.3rem 0.75rem;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── INTRO ── */
+  .intro-block {
+    position: relative; z-index: 1;
+    padding: 3rem 7vw; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    animation: fadeIn 0.5s 0.4s ease both;
+  }
+
+  @media (max-width: 680px) {
+    .intro-block { grid-template-columns: 1fr; gap: 2rem; }
+    header { grid-template-columns: 1fr; }
+    .header-symbol { display: none; }
+  }
+
+  .intro-block p { font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
+  .intro-block p strong { color: var(--chalk); }
+
+  .how-it-works { border-left: 2px solid var(--rule); padding-left: 2.5rem; }
+
+  .how-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem;
+  }
+
+  .how-steps { list-style: none; }
+  .how-steps li {
+    font-size: 0.875rem; color: var(--muted);
+    padding: 0.4rem 0; border-bottom: 1px solid var(--rule);
+    display: flex; gap: 0.75rem; align-items: flex-start;
+  }
+  .how-steps li:last-child { border: none; }
+  .step-n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; color: var(--gold); padding-top: 0.2rem; flex-shrink: 0;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .cat-head {
+    position: relative; z-index: 1;
+    padding: 2rem 7vw 1.25rem;
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+
+  .cat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+
+  .cat-rule { flex: 1; height: 1px; background: var(--rule); }
+
+  /* ── LESSON GRID ── */
+  .lesson-grid {
+    position: relative; z-index: 1;
+    padding: 0 7vw 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px; background: var(--rule);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── LESSON CARD ── */
+  .lesson-card {
+    background: var(--board);
+    padding: 2rem 2rem 1.75rem;
+    text-decoration: none; color: inherit;
+    display: block; position: relative; overflow: hidden;
+    transition: background 0.2s;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  .lesson-card:hover { background: var(--board-light); }
+  .lesson-card.completed { background: var(--board-mid); }
+
+  .lesson-card::after {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--card-color);
+    transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.3s ease;
+  }
+
+  .lesson-card:hover::after,
+  .lesson-card.completed::after { transform: scaleY(1); }
+
+  .card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+
+  .lesson-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.15em; color: var(--card-color);
+  }
+
+  .lesson-type-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.1em;
+    padding: 0.18rem 0.5rem; border: 1px solid var(--card-color);
+    color: var(--card-color); text-transform: uppercase;
+  }
+
+  .card-symbol {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.5rem; color: var(--card-color);
+    opacity: 0.7; line-height: 1;
+    margin-bottom: 0.75rem; display: block;
+    font-style: italic;
+  }
+
+  .card-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.4rem; font-weight: 600;
+    color: var(--chalk); margin-bottom: 0.5rem;
+    letter-spacing: 0.03em; line-height: 1.2;
+  }
+
+  .card-hook {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.78rem; color: var(--card-color);
+    font-style: italic; margin-bottom: 0.75rem;
+  }
+
+  .card-desc {
+    font-size: 0.82rem; color: var(--muted); line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 0.75rem; border-top: 1px solid var(--rule);
+  }
+
+  .card-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--card-color); transition: letter-spacing 0.2s;
+  }
+
+  .lesson-card:hover .card-cta { letter-spacing: 0.18em; }
+
+  .complete-check {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--rule); border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+    position: relative; z-index: 2; background: var(--board);
+    flex-shrink: 0;
+  }
+  .complete-check:hover { border-color: var(--card-color); }
+  .complete-check.done { background: var(--card-color); border-color: var(--card-color); }
+  .complete-check.done::after {
+    content: '';
+    width: 8px; height: 5px;
+    border-left: 1.5px solid var(--board);
+    border-bottom: 1.5px solid var(--board);
+    transform: rotate(-45deg) translateY(-1px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    padding: 3rem 7vw; border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.1em; color: var(--rule);
+  }
+
+  .footer-eq {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic; font-size: 0.85rem; color: var(--rule);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .lesson-card:nth-child(1) { animation-delay: 0.45s; }
+  .lesson-card:nth-child(2) { animation-delay: 0.5s; }
+  .lesson-card:nth-child(3) { animation-delay: 0.55s; }
+  .lesson-card:nth-child(4) { animation-delay: 0.6s; }
+  .lesson-card:nth-child(5) { animation-delay: 0.65s; }
+  .lesson-card:nth-child(6) { animation-delay: 0.7s; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="chalk-smear">Year 7 · Self-Directed · Six Lessons</div>
+    <h1>Maths for<br>the <em>Curious</em></h1>
+    <p class="header-sub">Six topics that go far beyond what's taught in school. <strong>Real maths. Real history. Real puzzles.</strong> Each lesson explains where the ideas came from, why they matter, and why mathematicians have been losing sleep over them for centuries.</p>
+  </div>
+  <div class="header-symbol">∑</div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap">
+  <span class="prog-label">Progress</span>
+  <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+  <span class="prog-text" id="progText">0 of 6 complete</span>
+  <button class="reset-btn" onclick="resetP()">Reset</button>
+</div>
+
+<!-- INTRO -->
+<div class="intro-block">
+  <div>
+    <p>Maths isn't just calculations. It's the study of patterns, structures, and truths that hold regardless of the universe they're in. <strong>Every topic in this course reveals something surprising</strong> — a number that goes on forever, a problem that seems obvious but isn't, or a discovery that changed history.</p>
+    <br>
+    <p>Start with Lesson 1. Go at your own pace. When the quiz feels too easy, dig into the challenge sections. And when something confuses you — <strong>that's the most interesting moment.</strong> That's where real maths lives.</p>
+  </div>
+  <div class="how-it-works">
+    <div class="how-label">How each lesson works</div>
+    <ul class="how-steps">
+      <li><span class="step-n">01</span> The Big Idea — the concept and its history</li>
+      <li><span class="step-n">02</span> Key vocabulary — tap to reveal definitions</li>
+      <li><span class="step-n">03</span> Watch — a video that explains it visually</li>
+      <li><span class="step-n">04</span> Quiz — five questions with full explanations</li>
+      <li><span class="step-n">05</span> Go Deeper — harder problems and open questions</li>
+      <li><span class="step-n">06</span> Resources — where to explore further</li>
+    </ul>
+  </div>
+</div>
+
+<!-- LESSONS -->
+<div class="cat-head">
+  <span class="cat-label">✦ Six Lessons</span>
+  <div class="cat-rule"></div>
+</div>
+
+<div class="lesson-grid">
+
+  <a class="lesson-card" href="maths-lesson-1.html" style="--card-color:var(--c1);" id="card-1">
+    <div class="card-top">
+      <span class="lesson-num">Lesson 01</span>
+      <span class="lesson-type-tag">Geometry</span>
+    </div>
+    <span class="card-symbol">π</span>
+    <h2 class="card-title">Pi &amp; Circles</h2>
+    <p class="card-hook">"A number that has been calculated to 100 trillion decimal places — and never repeats."</p>
+    <p class="card-desc">Archimedes, ancient Egypt, and the impossible quest to measure a circle exactly. Why π turns up in rivers, statistics, and the fabric of the universe — not just geometry class.</p>
+    <div class="card-footer">
+      <span class="card-cta">Open Lesson →</span>
+      <div class="complete-check" id="check-1" onclick="toggleDone(event,1)"></div>
+    </div>
+  </a>
+
+  <a class="lesson-card" href="maths-lesson-2.html" style="--card-color:var(--c2);" id="card-2">
+    <div class="card-top">
+      <span class="lesson-num">Lesson 02</span>
+      <span class="lesson-type-tag">Number Theory</span>
+    </div>
+    <span class="card-symbol">∞</span>
+    <h2 class="card-title">Prime Numbers</h2>
+    <p class="card-hook">"The atoms of arithmetic — and they secretly protect every password you've ever used."</p>
+    <p class="card-desc">The Sieve of Eratosthenes. Why there are infinitely many primes but nobody can predict them. The largest known prime. And how your phone uses primes to encrypt messages right now.</p>
+    <div class="card-footer">
+      <span class="card-cta">Open Lesson →</span>
+      <div class="complete-check" id="check-2" onclick="toggleDone(event,2)"></div>
+    </div>
+  </a>
+
+  <a class="lesson-card" href="maths-lesson-3.html" style="--card-color:var(--c3);" id="card-3">
+    <div class="card-top">
+      <span class="lesson-num">Lesson 03</span>
+      <span class="lesson-type-tag">Sequences</span>
+    </div>
+    <span class="card-symbol">φ</span>
+    <h2 class="card-title">Fibonacci &amp; the Golden Ratio</h2>
+    <p class="card-hook">"A rabbit problem from 1202 that shows up in sunflowers, galaxies, and the human face."</p>
+    <p class="card-desc">1, 1, 2, 3, 5, 8, 13... The most famous sequence in maths and its hidden appearance in nature, art, and architecture. Why dividing consecutive Fibonacci numbers approaches — but never reaches — φ.</p>
+    <div class="card-footer">
+      <span class="card-cta">Open Lesson →</span>
+      <div class="complete-check" id="check-3" onclick="toggleDone(event,3)"></div>
+    </div>
+  </a>
+
+  <a class="lesson-card" href="maths-lesson-4.html" style="--card-color:var(--c4);" id="card-4">
+    <div class="card-top">
+      <span class="lesson-num">Lesson 04</span>
+      <span class="lesson-type-tag">Set Theory</span>
+    </div>
+    <span class="card-symbol">∞</span>
+    <h2 class="card-title">Infinity</h2>
+    <p class="card-hook">"Some infinities are bigger than others — and that's provably, rigorously true."</p>
+    <p class="card-desc">Hilbert's infinite hotel. Countable vs uncountable infinity. Cantor's diagonal proof — the argument that broke mathematicians' brains in the 1800s and is still argued about today.</p>
+    <div class="card-footer">
+      <span class="card-cta">Open Lesson →</span>
+      <div class="complete-check" id="check-4" onclick="toggleDone(event,4)"></div>
+    </div>
+  </a>
+
+  <a class="lesson-card" href="maths-lesson-5.html" style="--card-color:var(--c5);" id="card-5">
+    <div class="card-top">
+      <span class="lesson-num">Lesson 05</span>
+      <span class="lesson-type-tag">Probability</span>
+    </div>
+    <span class="card-symbol">?</span>
+    <h2 class="card-title">Probability &amp; Chance</h2>
+    <p class="card-hook">"In a room of 23 people, there's a 50% chance two share a birthday. Your brain says that's wrong. Your brain is wrong."</p>
+    <p class="card-desc">The Birthday Problem. The Monty Hall Problem. Why human instinct about chance is almost always broken — and how maths corrects it. Underpins medicine, weather forecasting, and every game ever made.</p>
+    <div class="card-footer">
+      <span class="card-cta">Open Lesson →</span>
+      <div class="complete-check" id="check-5" onclick="toggleDone(event,5)"></div>
+    </div>
+  </a>
+
+  <a class="lesson-card" href="maths-lesson-6.html" style="--card-color:var(--c6);" id="card-6">
+    <div class="card-top">
+      <span class="lesson-num">Lesson 06</span>
+      <span class="lesson-type-tag">Cryptography</span>
+    </div>
+    <span class="card-symbol">≡</span>
+    <h2 class="card-title">Codes &amp; Cryptography</h2>
+    <p class="card-hook">"Breaking codes shortened World War II by two years. A mathematician did it — using nothing but pencil and paper."</p>
+    <p class="card-desc">Caesar ciphers to modern encryption. Alan Turing and Bletchley Park. How your phone uses prime numbers to keep your messages private. The maths that changed history.</p>
+    <div class="card-footer">
+      <span class="card-cta">Open Lesson →</span>
+      <div class="complete-check" id="check-6" onclick="toggleDone(event,6)"></div>
+    </div>
+  </a>
+
+</div>
+
+<footer>
+  <p>Maths for the Curious · Year 7 · Wellington, New Zealand</p>
+  <span class="footer-eq">e<sup>iπ</sup> + 1 = 0</span>
+</footer>
+
+<script>
+  const KEY = 'maths-course-v1';
+  const get = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
+  const save = d => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} };
+
+  function toggleDone(e, n) {
+    e.preventDefault(); e.stopPropagation();
+    const d = get(); d[n] = !d[n]; save(d); render(d);
+  }
+
+  function render(d) {
+    let c = 0;
+    for (let i = 1; i <= 6; i++) {
+      const ch = document.getElementById('check-' + i);
+      const ca = document.getElementById('card-' + i);
+      if (d[i]) { ch.classList.add('done'); ca.classList.add('completed'); c++; }
+      else { ch.classList.remove('done'); ca.classList.remove('completed'); }
+    }
+    document.getElementById('progFill').style.width = (c / 6 * 100) + '%';
+    document.getElementById('progText').textContent = c + ' of 6 complete';
+  }
+
+  function resetP() {
+    if (confirm('Reset all progress?')) { save({}); render({}); }
+  }
+
+  render(get());
+</script>
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>π — Pi & Circles · Maths for the Curious</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Source+Sans+3:wght@300;400;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A1A1A;
+    --surface: #0F2020;
+    --panel: #122424;
+    --teal: #1A8080;
+    --teal-bright: #20A0A0;
+    --gold: #D4A843;
+    --gold-light: #E8C060;
+    --cream: #F0EAD8;
+    --text: #C8DDD8;
+    --muted: #608080;
+    --border: #1E3A3A;
+    --red: #C04040;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Source Sans 3',sans-serif; font-weight:300; line-height:1.8; overflow-x:hidden; }
+
+  /* Rotating circle background */
+  .circle-bg {
+    position:fixed; top:-30vh; right:-20vw;
+    width:80vmin; height:80vmin;
+    border:1px solid rgba(26,128,128,0.08);
+    border-radius:50%; pointer-events:none; z-index:0;
+    animation:spin 60s linear infinite;
+  }
+  .circle-bg::before {
+    content:''; position:absolute; inset:15%;
+    border:1px solid rgba(26,128,128,0.06);
+    border-radius:50%;
+  }
+  .circle-bg::after {
+    content:''; position:absolute; inset:35%;
+    border:1px solid rgba(26,128,128,0.04);
+    border-radius:50%;
+  }
+  @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(to right,var(--teal),var(--gold)); width:0%; transition:width 0.15s; z-index:999; }
+
+  /* HERO */
+  .hero {
+    position:relative; z-index:1; min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center; padding:6rem 8vw 4rem;
+    background:radial-gradient(ellipse at 80% 50%, #0A2A2A 0%, #0A1A1A 70%);
+  }
+
+  .back-link { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:2.5rem; transition:color 0.2s; animation:fadeUp 0.4s ease both; }
+  .back-link:hover { color:var(--teal-bright); }
+
+  .lesson-badge { display:inline-block; border:1px solid var(--teal); color:var(--teal); font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.3rem 0.9rem; margin-bottom:1.5rem; animation:fadeUp 0.4s 0.05s ease both; }
+
+  .hero-pi {
+    font-family:'Playfair Display',serif; font-size:clamp(6rem,18vw,14rem);
+    color:var(--teal); opacity:0.15; position:absolute;
+    right:6vw; top:50%; transform:translateY(-50%);
+    line-height:1; pointer-events:none; user-select:none;
+    animation:fadeUp 0.4s 0.1s ease both;
+  }
+
+  .hero h1 { font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(2.8rem,8vw,6rem); line-height:1.05; color:var(--cream); animation:fadeUp 0.4s 0.1s ease both; }
+  .hero h1 .accent { color:var(--gold); font-style:italic; }
+
+  .hero-sub-q { margin-top:1.25rem; font-family:'Playfair Display',serif; font-style:italic; font-size:1.1rem; color:var(--gold); animation:fadeUp 0.4s 0.15s ease both; }
+
+  .hero-p { max-width:520px; margin-top:1rem; font-size:1rem; color:var(--muted); line-height:1.75; animation:fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color:var(--text); }
+
+  /* Pi digits strip */
+  .pi-strip {
+    margin-top:2.5rem; font-family:'JetBrains Mono',monospace; font-size:0.72rem;
+    letter-spacing:0.12em; color:rgba(26,128,128,0.4); animation:fadeUp 0.4s 0.25s ease both;
+    max-width:540px; line-height:1.6; word-break:break-all;
+  }
+  .pi-strip .pi-highlight { color:var(--teal); }
+
+  .scroll-hint { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono',monospace; font-size:0.58rem; letter-spacing:0.2em; color:var(--border); text-transform:uppercase; animation:bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
+
+  /* SECTIONS */
+  section { padding:4.5rem 8vw; border-top:1px solid var(--border); position:relative; z-index:1; }
+
+  .sec-label { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--teal); margin-bottom:0.75rem; display:block; }
+
+  h2 { font-family:'Playfair Display',serif; font-weight:700; font-size:clamp(1.8rem,4vw,3rem); color:var(--cream); margin-bottom:1.25rem; line-height:1.2; }
+
+  h3 { font-family:'Source Sans 3',sans-serif; font-weight:600; font-size:1rem; color:var(--gold); margin:2rem 0 0.6rem; }
+
+  p { color:var(--muted); max-width:680px; margin-bottom:1rem; font-size:0.975rem; }
+  p strong { color:var(--text); }
+
+  /* BIG IDEA */
+  .big-idea { background:linear-gradient(135deg,#0A2A2A,#0A1A1A); border-left:3px solid var(--gold); padding:2rem 2.5rem; margin:1.5rem 0; max-width:700px; position:relative; }
+  .big-idea p { font-family:'Playfair Display',serif; font-style:italic; font-size:1.1rem; color:var(--cream); max-width:none; margin:0; }
+
+  /* HISTORY TIMELINE */
+  .timeline { max-width:700px; margin:2rem 0; }
+  .tl-item { display:grid; grid-template-columns:110px 1fr; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--border); align-items:start; }
+  .tl-item:last-child { border:none; }
+  .tl-date { font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--gold); font-weight:700; line-height:1.4; padding-top:0.15rem; }
+  .tl-content { font-size:0.875rem; color:var(--muted); line-height:1.65; }
+  .tl-content strong { color:var(--text); font-size:0.95rem; display:block; margin-bottom:0.2rem; }
+
+  /* NZ CALLOUT */
+  .nz-box { background:linear-gradient(135deg,#0A1A10,#0A1A1A); border:1px solid #2A5040; padding:1.75rem 2rem; margin:2rem 0; max-width:700px; border-radius:2px; }
+  .nz-box::before { content:'🇳🇿 REAL WORLD CONNECTION'; display:block; font-family:'JetBrains Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:#4A8C6A; margin-bottom:0.6rem; }
+  .nz-box p { color:#80B898; max-width:none; }
+  .nz-box strong { color:#B0D8C0; }
+
+  /* FORMULA BOX */
+  .formula { background:var(--surface); border:1px solid var(--border); padding:1.5rem 2rem; margin:1.5rem 0; max-width:700px; font-family:'JetBrains Mono',monospace; }
+  .formula .f-row { display:flex; align-items:center; gap:1.5rem; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+  .formula .f-row:last-child { border:none; }
+  .formula .f-eq { font-size:1.1rem; color:var(--gold); font-weight:700; min-width:160px; }
+  .formula .f-note { font-size:0.75rem; color:var(--muted); }
+
+  /* DEEPER */
+  .deeper { background:linear-gradient(135deg,#1A1200,#0A1A1A); border-left:3px solid var(--teal); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .deeper::before { content:'⬡ GO DEEPER'; display:block; font-family:'JetBrains Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--teal); margin-bottom:0.75rem; }
+  .deeper p { max-width:none; color:#70A0A0; }
+  .deeper strong { color:var(--cream); }
+  .deeper ol,.deeper ul { padding-left:1.5rem; color:var(--muted); margin-top:0.75rem; }
+  .deeper li { margin-bottom:0.4rem; font-size:0.875rem; }
+  .deeper li strong { color:var(--text); }
+
+  /* VOCAB */
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:0.75rem; margin:1.5rem 0; max-width:860px; }
+  .vocab-card { background:var(--panel); border:1px solid var(--border); padding:1.1rem 1.25rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; }
+  .vocab-card:hover { border-color:var(--teal); transform:translateY(-2px); }
+  .vocab-card.open { border-color:var(--gold); }
+  .vocab-term { font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:var(--gold); margin-bottom:0.35rem; }
+  .vocab-def { font-size:0.82rem; color:var(--muted); display:none; line-height:1.6; }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-hint { font-family:'JetBrains Mono',monospace; font-size:0.52rem; color:var(--border); position:absolute; bottom:0.5rem; right:0.7rem; }
+
+  /* QUIZ */
+  .quiz-wrap { max-width:700px; margin:1.5rem 0; }
+  .quiz-q { font-size:1rem; font-weight:600; color:var(--cream); margin-bottom:0.75rem; font-family:'Source Sans 3',sans-serif; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem; }
+  .quiz-opt { background:var(--panel); border:1px solid var(--border); color:var(--muted); padding:0.75rem 1.1rem; text-align:left; cursor:pointer; font-family:'Source Sans 3',sans-serif; font-size:0.9rem; transition:all 0.15s; }
+  .quiz-opt:hover { border-color:var(--teal); color:var(--text); }
+  .quiz-opt.correct { border-color:var(--teal-bright); color:#80D0D0; background:#041818; }
+  .quiz-opt.wrong { border-color:var(--red); color:#FF9090; background:#1A0808; }
+  .quiz-feedback { font-size:0.875rem; padding:0.9rem 1.1rem; margin-top:0.4rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#041818; border-left:3px solid var(--teal-bright); color:#80D0D0; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid var(--red); color:#FF9090; }
+
+  /* RESOURCES */
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid var(--border); padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; background:var(--surface); color:var(--muted); padding:0.22rem 0.5rem; flex-shrink:0; margin-top:0.1rem; }
+  .resource-list a { color:var(--teal-bright); text-decoration:none; font-size:0.9rem; font-weight:600; }
+  .resource-list a:hover { color:var(--gold); }
+  .resource-list p { margin:0.2rem 0 0; font-size:0.78rem; max-width:none; }
+
+  /* NAV */
+  .lesson-nav { position:relative; z-index:1; padding:2.5rem 8vw; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .nav-btn { font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.55rem 1.1rem; transition:all 0.2s; }
+  .nav-btn:hover { border-color:var(--teal); color:var(--teal); }
+  .nav-btn.next { background:var(--teal); color:white; border-color:var(--teal); }
+  .nav-btn.next:hover { background:var(--teal-bright); }
+
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--teal),transparent); opacity:0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="circle-bg"></div>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <a href="maths-index.html" class="back-link">← Course Index</a>
+  <div class="lesson-badge">Lesson 01 · Geometry</div>
+  <div class="hero-pi">π</div>
+  <h1>Pi &amp; <span class="accent">Circles</span></h1>
+  <p class="hero-sub-q">"The most famous number in mathematics — and it hides everywhere."</p>
+  <p class="hero-p">You've memorised some of its digits. <strong>Archimedes spent his life trying to pin it down.</strong> Ancient Egyptians used a rough version of it to build the pyramids. And today it's been calculated to over 100 trillion decimal places — and still nobody's found the end.</p>
+  <div class="pi-strip">3.<span class="pi-highlight">14159</span>26535 89793 23846 26433 83279 50288 41971 69399 37510 58209 74944 59230 78164 06286 20899 86280 34825 34211 70679...</div>
+  <div class="scroll-hint">↓ scroll to begin</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- BIG IDEA -->
+<section>
+  <span class="sec-label">The Big Idea</span>
+  <h2>A Number That Cannot Be Tamed</h2>
+
+  <div class="big-idea reveal">
+    <p>"π is the ratio of a circle's circumference to its diameter. Always. For every circle that has ever existed or will ever exist. It cannot be written as a fraction. It never repeats. And it appears in places that have nothing to do with circles."</p>
+  </div>
+
+  <p class="reveal">Draw any circle. Measure around the outside (the circumference). Divide by the distance straight across the middle (the diameter). You will always get the same answer: <strong>3.14159265...</strong> It doesn't matter if the circle is the size of a coin or the size of the Earth. The ratio is always π.</p>
+
+  <p class="reveal">This is remarkable. It means something deep about the geometry of space itself. And it gets stranger: π is <strong>irrational</strong> — it cannot be written as a fraction of two whole numbers. And it's <strong>transcendental</strong> — it cannot be the solution to any algebraic equation with whole-number coefficients. It exists outside the neat world of everyday arithmetic.</p>
+
+  <h3>The Circle Formulas</h3>
+
+  <div class="formula reveal">
+    <div class="f-row">
+      <div class="f-eq">C = πd = 2πr</div>
+      <div class="f-note">Circumference: the distance around the circle. d = diameter, r = radius (half the diameter)</div>
+    </div>
+    <div class="f-row">
+      <div class="f-eq">A = πr²</div>
+      <div class="f-note">Area: the space inside the circle. Why r²? Because area scales with the square of the size.</div>
+    </div>
+    <div class="f-row">
+      <div class="f-eq">V = (4/3)πr³</div>
+      <div class="f-note">Volume of a sphere. Notice π appears again — because spheres are built from circles.</div>
+    </div>
+  </div>
+
+  <h3>The History: How Humans Chased π</h3>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">~1650 BCE<br>Egypt</div>
+      <div class="tl-content"><strong>The Rhind Papyrus</strong>Ancient Egyptians used a value of about 3.16 — close but not exact. Good enough to build the pyramids. They didn't know it was irrational; they were just solving practical problems.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~250 BCE<br>Syracuse</div>
+      <div class="tl-content"><strong>Archimedes and the Polygon Method</strong>The breakthrough. Archimedes drew a circle, then drew polygons inside and outside it — the more sides, the closer they squeezed to the circle's true circumference. Using a 96-sided polygon, he proved π lay between 3 10/71 and 3 1/7. No calculator. Pure geometry and thought.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~480 CE<br>China</div>
+      <div class="tl-content"><strong>Zu Chongzhi</strong>The Chinese mathematician calculated π to 7 decimal places (3.1415926) — more accurate than any European would achieve for the next 900 years. He used a polygon with 24,576 sides.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1706<br>England</div>
+      <div class="tl-content"><strong>The symbol π is born</strong>Welsh mathematician William Jones first used the Greek letter π for this ratio. Euler popularised it in 1737, and it stuck forever.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1882<br>Germany</div>
+      <div class="tl-content"><strong>Proven transcendental</strong>Ferdinand von Lindemann proved π is transcendental — settling once and for all that you cannot "square the circle" (an ancient geometric challenge). Some mathematical quests are genuinely impossible.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2022<br>Google</div>
+      <div class="tl-content"><strong>100 trillion digits</strong>A Google engineer calculated π to 100 trillion decimal places. The computation took 157 days. Nobody expects to find anything new — it's partly a demonstration of computing power, partly pure mathematical obsession.</div>
+    </div>
+  </div>
+
+  <div class="nz-box reveal">
+    <p>The <strong>meander ratio</strong> of rivers — how winding a river is compared to the straight-line distance from source to mouth — averages π worldwide. Geomorphologist Hans-Henrik Stølum discovered this in 1996. A straight river has a ratio of 1. A wildly winding one might reach π. This isn't a coincidence — it emerges from the physics of how water erodes bends. Wellington's Hutt River, which you learned about in Geography, has its own meander ratio — and it's governed by the same mathematics.</p>
+  </div>
+
+  <h3>Where Else Does π Appear?</h3>
+  <p class="reveal">This is where it gets strange. π shows up far outside geometry:</p>
+  <p class="reveal"><strong>Probability:</strong> If you drop a needle randomly on a floor with parallel lines spaced the same distance as the needle's length, the probability of it crossing a line is 2/π. This is Buffon's Needle — discovered in 1777.</p>
+  <p class="reveal"><strong>Statistics:</strong> The famous bell curve (normal distribution) — which describes everything from heights to exam scores to measurement errors — contains π in its formula.</p>
+  <p class="reveal"><strong>Physics:</strong> π appears in Einstein's field equations of general relativity. It appears in Heisenberg's uncertainty principle. It appears in the formula for the period of a pendulum. Circles are everywhere — and so is π.</p>
+
+  <div class="deeper reveal">
+    <p><strong>Euler's Identity: e<sup>iπ</sup> + 1 = 0</strong></p>
+    <p>Often called the most beautiful equation in mathematics. It connects five of the most important numbers in all of maths — e (the base of natural logarithms, ≈2.718), i (the square root of −1, an "imaginary" number), π, 1, and 0 — in a single, elegant equation. Richard Feynman called it "the most remarkable formula in mathematics." You'll understand it fully when you study complex numbers — but even now you can appreciate the mystery of why these five unrelated constants are connected at all.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VOCAB -->
+<section>
+  <span class="sec-label">Key Vocabulary</span>
+  <h2>Know the Words</h2>
+  <p>Tap to reveal. Try to guess first.</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Irrational number</div>
+      <div class="vocab-def">A number that cannot be written as a fraction of two integers. Its decimal expansion goes on forever without repeating. π is irrational. So is √2. Most numbers on the number line are actually irrational — rationals are the rare exception.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Transcendental</div>
+      <div class="vocab-def">A number that isn't the root of any polynomial equation with integer coefficients. All transcendental numbers are irrational, but not all irrationals are transcendental. π and e are transcendental. √2 is irrational but not transcendental (it solves x² = 2).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Circumference</div>
+      <div class="vocab-def">The distance around the outside of a circle. From Latin "circumferre" — to carry around. Always equals π × diameter. If you unrolled a circle's edge into a straight line, it would be exactly π times the circle's width.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Diameter vs Radius</div>
+      <div class="vocab-def">The diameter is the distance straight across the circle through the centre. The radius is the distance from the centre to the edge — exactly half the diameter. Most circle formulas use radius because it's measured from the natural reference point: the centre.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Archimedes' Method</div>
+      <div class="vocab-def">The technique of inscribing (drawing inside) and circumscribing (drawing outside) polygons around a circle, then computing their perimeters to squeeze tighter and tighter bounds on π. The more sides the polygon, the closer you get. This is one of the earliest uses of what we now call a "limit" — a concept central to calculus.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Ratio</div>
+      <div class="vocab-def">A relationship between two quantities — how many times one contains the other. The ratio of circumference to diameter is always π:1. Ratios are central to mathematics because they often reveal constant relationships (like π) that hold regardless of scale.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WATCH -->
+<section>
+  <span class="sec-label">Watch</span>
+  <h2>See It Explained</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=pi+and+its+history+explained+3blue1brown" target="_blank">3Blue1Brown — Pi hiding in prime numbers (YouTube)</a>
+        <p>Grant Sanderson's channel is the best mathematical animation channel on YouTube. Search "3Blue1Brown pi" — multiple brilliant videos. The one on pi hiding in primes is extraordinary.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=archimedes+pi+approximation+explained" target="_blank">Archimedes' pi approximation — polygon method (YouTube)</a>
+        <p>Search "Archimedes pi polygon method" for several clear visual explanations of how he trapped π between polygons.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.piday.org/million/" target="_blank">piday.org — first million digits of π</a>
+        <p>Scroll through the actual digits. Notice there's no pattern. This is what "irrational" means — if there were a pattern, you could express it as a fraction.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUIZ -->
+<section>
+  <span class="sec-label">Test Yourself</span>
+  <h2>Five Questions. Read Carefully.</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. Archimedes approximated π using polygons. Why did more sides give a better approximation?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,true,'q1')">A polygon with more sides looks more like a circle, so its perimeter gets closer to the circle's circumference</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">More sides means the polygon's area equals the circle's area exactly</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Archimedes made fewer calculation errors with more sides</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">The polygon's perimeter equals πd when it has exactly 96 sides</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. As you add more sides, the polygon's shape approaches the circle more and more closely — "in the limit," an infinite-sided polygon IS a circle. Archimedes was essentially using the concept of limits 2,000 years before calculus was invented to formalise it.</div>
+    <div class="quiz-feedback bad" id="q1-bad">More sides means the polygon approximates the circle's shape more closely, so its perimeter gets closer to the true circumference. Archimedes had polygons both inside and outside the circle, squeezing π between two bounds that got tighter as the sides increased.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What does it mean to say π is "irrational"?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">π doesn't make mathematical sense and can't be calculated precisely</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">π is approximately 22/7, which is close but not exact</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q2')">π cannot be written as a fraction of two whole numbers — its decimal expansion never terminates or repeats</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">π is different for different sized circles</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Exactly. Irrational means it cannot be expressed as a ratio of two integers. 22/7 is a useful approximation (accurate to 2 decimal places) but is not equal to π. The decimal expansion of π goes on forever with no repeating block — which is what makes it impossible to write as a fraction.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Irrational means π cannot be written as a fraction a/b where a and b are whole numbers. 22/7 ≈ 3.142857... which repeats. π = 3.14159265... which never repeats and never ends. These are different. An irrational number's decimal expansion is infinite and non-repeating.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. A circle has a diameter of 10cm. What is its circumference?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">About 20cm</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">About 25cm</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q3')">About 31.4cm</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">About 100cm</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Yes. C = πd = π × 10 ≈ 3.14159... × 10 ≈ 31.4cm. A circle's circumference is always just over 3 times its diameter — because π ≈ 3.14.</div>
+    <div class="quiz-feedback bad" id="q3-bad">C = πd = π × 10 ≈ 31.4cm. Since π ≈ 3.14, the circumference is about 3.14 times the diameter. Easy check: a circle with diameter 10 should have a circumference just over 30 — not 20 (too small, that's just 2×d) or 100 (way too big).</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Why is π called "transcendental" (beyond being just irrational)?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Because it was discovered by transcendentalist philosophers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Because it's larger than any number we can practically use</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q4')">Because it's not the solution to any algebraic equation with integer coefficients — it exists "beyond" algebra</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Because it transcends any attempt to calculate it exactly</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Correct. √2 is irrational but it solves x² = 2 (an algebraic equation). π doesn't solve any such equation — it's outside the algebraic number system entirely. Proving this in 1882 settled the ancient question of "squaring the circle" — it's genuinely impossible, not just hard.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Transcendental means π doesn't satisfy any polynomial equation with integer coefficients. Compare: √2 is irrational but it solves x² − 2 = 0. π doesn't solve any such equation. This is a strictly stronger condition than being irrational, and it took until 1882 to prove it about π.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. π appears in Buffon's Needle probability problem. What does this suggest?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">That probability theory was invented by circle geometers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">That randomness is secretly circular in nature</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q5')">That π is a fundamental constant of geometry itself — it appears wherever shapes and space interact, not just in circle calculations</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">That the needle experiment only works if you draw circles on the floor</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Right. π keeps appearing in unexpected places because it's a fundamental property of Euclidean space — the geometry of the flat world we live in. Any time rotational symmetry or circular geometry is involved — even hidden — π tends to show up. It's not a property of circles specifically; it's a property of geometry.</div>
+    <div class="quiz-feedback bad" id="q5-bad">π appearing in Buffon's Needle (a probability problem with no obvious circle) reveals that it's a constant of geometry itself — not just circles. It emerges wherever rotational symmetry is involved. The fact that it appears in Einstein's equations, the normal distribution, and pendulum physics suggests π is woven into the structure of space.</div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- GO DEEPER -->
+<section>
+  <span class="sec-label">Go Deeper</span>
+  <h2>For When the Quiz Feels Easy</h2>
+
+  <div class="deeper reveal">
+    <p><strong>Try Archimedes' Method Yourself</strong></p>
+    <ol>
+      <li>Draw a circle of radius 1 (diameter 2). Its circumference = 2π ≈ 6.283.</li>
+      <li>Draw a regular hexagon inside it. A hexagon has 6 sides each equal to the radius = 1. Perimeter = 6. So π > 3.</li>
+      <li>Draw a regular hexagon outside the circle. Each side = 2/√3 ≈ 1.155. Perimeter ≈ 6.928. So π &lt; 3.464.</li>
+      <li>Now try a 12-sided polygon. Calculate each side length and tighten the bounds further.</li>
+      <li><strong>Research challenge:</strong> How many decimal places did Archimedes get with a 96-gon? What did Zu Chongzhi achieve with his 24,576-gon?</li>
+    </ol>
+  </div>
+
+  <div class="deeper reveal">
+    <p><strong>The Monte Carlo Method for estimating π</strong></p>
+    <p>Imagine a circle inscribed in a square (just touching all four sides). If you throw darts randomly at the square, the fraction that land inside the circle approaches π/4 as you throw more darts. This is because the circle's area (πr²) divided by the square's area (4r²) = π/4.</p>
+    <ol>
+      <li>Search "Monte Carlo pi simulation" on YouTube — there are beautiful visual demonstrations.</li>
+      <li><strong>Think:</strong> Why does this work? What's the connection between random sampling and a geometric constant?</li>
+      <li><strong>Harder:</strong> This method converges very slowly. Why? And what does this tell you about when random methods are useful vs when they aren't?</li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESOURCES -->
+<section>
+  <span class="sec-label">Resources</span>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://www.exploratorium.edu/pi" target="_blank">Exploratorium Pi Day — exploratorium.edu/pi</a>
+        <p>The San Francisco science museum's pi resource. History, activities, and genuinely interesting explorations of π beyond the formula.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://mathworld.wolfram.com/Pi.html" target="_blank">Wolfram MathWorld — Pi</a>
+        <p>The definitive mathematical reference. Goes deep — some of it is university-level, but the first several sections are accessible and show just how far the rabbit hole goes.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=3blue1brown+pi" target="_blank">3Blue1Brown — Pi videos (YouTube)</a>
+        <p>The finest mathematical animation channel in existence. Any video with "pi" in the title is worth watching. Start with "Pi hiding in prime numbers."</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">INTERACTIVE</span>
+      <div>
+        <a href="https://www.geogebra.org/t/circle" target="_blank">GeoGebra — Circle explorations</a>
+        <p>Free interactive geometry tool. Draw circles, measure circumferences and diameters, and verify the ratio yourself. Then try inscribed polygons — Archimedes' method made interactive.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="lesson-nav">
+  <a href="maths-index.html" class="nav-btn">← Course Index</a>
+  <a href="maths-lesson-2.html" class="nav-btn next">Next: Prime Numbers →</a>
+</div>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/h*100)+'%';});
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  function ans(btn,ok,id){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(ok?'correct':'wrong');document.getElementById(id+(ok?'-good':'-bad')).classList.add('show');if(!ok)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>

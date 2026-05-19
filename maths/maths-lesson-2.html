@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prime Numbers · Maths for the Curious</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0C0C0C;
+    --surface: #141414;
+    --panel: #1A1A1A;
+    --red: #E03030;
+    --red-dim: #801818;
+    --white: #F0F0F0;
+    --grey: #707070;
+    --lt-grey: #404040;
+    --border: #252525;
+    --prime-color: #E03030;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--white); font-family:'IBM Plex Sans',sans-serif; font-weight:300; line-height:1.8; overflow-x:hidden; }
+
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:var(--red); width:0%; transition:width 0.15s; z-index:999; }
+
+  /* Sieve grid background */
+  .grid-bg { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; opacity:0.03; }
+  .grid-bg svg { width:100%; height:100%; }
+
+  /* HERO */
+  .hero {
+    position:relative; z-index:1; min-height:100vh;
+    display:grid; grid-template-columns:1fr 1fr; align-items:center;
+    padding:6rem 8vw; gap:4rem;
+    background:linear-gradient(160deg,#0C0C0C 0%,#140808 100%);
+  }
+
+  @media (max-width:720px) { .hero { grid-template-columns:1fr; } .prime-sieve { display:none; } }
+
+  .back-link { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--grey); text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:2rem; transition:color 0.2s; animation:fadeUp 0.4s ease both; }
+  .back-link:hover { color:var(--red); }
+
+  .lesson-badge { display:inline-block; border:1px solid var(--red); color:var(--red); font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.3rem 0.9rem; margin-bottom:1.5rem; animation:fadeUp 0.4s 0.05s ease both; }
+
+  .hero h1 { font-family:'IBM Plex Serif',serif; font-weight:700; font-size:clamp(2.5rem,6vw,5rem); line-height:1.05; color:var(--white); animation:fadeUp 0.4s 0.1s ease both; }
+  .hero h1 .acc { color:var(--red); }
+
+  .hero-q { margin-top:1.25rem; font-family:'IBM Plex Serif',serif; font-style:italic; font-size:1.05rem; color:var(--red); animation:fadeUp 0.4s 0.15s ease both; }
+  .hero-p { max-width:520px; margin-top:1rem; font-size:0.975rem; color:var(--grey); line-height:1.75; animation:fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color:var(--white); }
+
+  /* Sieve display */
+  .prime-sieve { animation:fadeUp 0.4s 0.25s ease both; }
+  .sieve-grid { display:grid; grid-template-columns:repeat(10,1fr); gap:3px; max-width:300px; }
+  .s-num { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-align:center; padding:4px 2px; color:var(--lt-grey); border:1px solid var(--border); transition:all 0.3s; }
+  .s-num.prime { color:var(--red); border-color:var(--red-dim); background:#1A0808; font-weight:700; }
+  .s-num.composite { color:var(--border); background:#0A0A0A; }
+  .sieve-label { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; color:var(--grey); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
+
+  .scroll-hint { display:block; margin-top:3rem; font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--border); text-transform:uppercase; animation:bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  section { padding:4.5rem 8vw; border-top:1px solid var(--border); position:relative; z-index:1; }
+
+  .sec-label { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--red); margin-bottom:0.75rem; display:block; }
+
+  h2 { font-family:'IBM Plex Serif',serif; font-weight:700; font-size:clamp(1.8rem,4vw,3rem); color:var(--white); margin-bottom:1.25rem; line-height:1.2; }
+  h3 { font-weight:600; font-size:1rem; color:var(--red); margin:2rem 0 0.6rem; font-family:'IBM Plex Sans',sans-serif; }
+  p { color:var(--grey); max-width:680px; margin-bottom:1rem; font-size:0.975rem; }
+  p strong { color:var(--white); }
+
+  .big-idea { background:var(--surface); border-left:3px solid var(--red); padding:2rem 2.5rem; margin:1.5rem 0; max-width:700px; }
+  .big-idea p { font-family:'IBM Plex Serif',serif; font-style:italic; font-size:1.1rem; color:var(--white); max-width:none; margin:0; }
+
+  .timeline { max-width:700px; margin:2rem 0; }
+  .tl-item { display:grid; grid-template-columns:110px 1fr; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--border); align-items:start; }
+  .tl-item:last-child { border:none; }
+  .tl-date { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--red); font-weight:700; line-height:1.4; padding-top:0.15rem; }
+  .tl-content { font-size:0.875rem; color:var(--grey); line-height:1.65; }
+  .tl-content strong { color:var(--white); font-size:0.95rem; display:block; margin-bottom:0.2rem; }
+
+  .nz-box { background:var(--surface); border:1px solid #1A2A1A; padding:1.75rem 2rem; margin:2rem 0; max-width:700px; }
+  .nz-box::before { content:'🇳🇿 REAL WORLD CONNECTION'; display:block; font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:#4A6A4A; margin-bottom:0.6rem; }
+  .nz-box p { color:#608060; max-width:none; }
+  .nz-box strong { color:#90C090; }
+
+  .deeper { background:var(--surface); border-left:3px solid var(--red); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .deeper::before { content:'⬡ GO DEEPER'; display:block; font-family:'IBM Plex Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--red); margin-bottom:0.75rem; }
+  .deeper p { max-width:none; color:var(--grey); }
+  .deeper strong { color:var(--white); }
+  .deeper ol { padding-left:1.5rem; color:var(--grey); margin-top:0.75rem; }
+  .deeper li { margin-bottom:0.4rem; font-size:0.875rem; }
+  .deeper li strong { color:var(--white); }
+
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:0.75rem; margin:1.5rem 0; max-width:860px; }
+  .vocab-card { background:var(--panel); border:1px solid var(--border); padding:1.1rem 1.25rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; }
+  .vocab-card:hover { border-color:var(--red); transform:translateY(-2px); }
+  .vocab-card.open { border-color:#808080; }
+  .vocab-term { font-family:'IBM Plex Mono',monospace; font-size:0.88rem; color:var(--red); margin-bottom:0.35rem; font-weight:700; }
+  .vocab-def { font-size:0.82rem; color:var(--grey); display:none; line-height:1.6; }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-hint { font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--border); position:absolute; bottom:0.5rem; right:0.7rem; }
+
+  .quiz-wrap { max-width:700px; margin:1.5rem 0; }
+  .quiz-q { font-size:1rem; font-weight:600; color:var(--white); margin-bottom:0.75rem; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem; }
+  .quiz-opt { background:var(--panel); border:1px solid var(--border); color:var(--grey); padding:0.75rem 1.1rem; text-align:left; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; font-size:0.9rem; transition:all 0.15s; }
+  .quiz-opt:hover { border-color:var(--red); color:var(--white); }
+  .quiz-opt.correct { border-color:#40C040; color:#90E090; background:#081408; }
+  .quiz-opt.wrong { border-color:var(--red); color:#FF9090; background:#1A0808; }
+  .quiz-feedback { font-size:0.875rem; padding:0.9rem 1.1rem; margin-top:0.4rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#081408; border-left:3px solid #40C040; color:#90E090; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid var(--red); color:#FF9090; }
+
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid var(--border); padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; background:var(--surface); color:var(--grey); padding:0.22rem 0.5rem; flex-shrink:0; margin-top:0.1rem; }
+  .resource-list a { color:var(--red); text-decoration:none; font-size:0.9rem; font-weight:600; }
+  .resource-list a:hover { color:var(--white); }
+  .resource-list p { margin:0.2rem 0 0; font-size:0.78rem; max-width:none; }
+
+  .lesson-nav { position:relative; z-index:1; padding:2.5rem 8vw; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .nav-btn { font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--grey); text-decoration:none; border:1px solid var(--border); padding:0.55rem 1.1rem; transition:all 0.2s; }
+  .nav-btn:hover { border-color:var(--red); color:var(--red); }
+  .nav-btn.next { background:var(--red); color:white; border-color:var(--red); }
+  .nav-btn.next:hover { background:var(--red-dim); }
+
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--red),transparent); opacity:0.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <div>
+    <a href="maths-index.html" class="back-link">← Course Index</a>
+    <div class="lesson-badge">Lesson 02 · Number Theory</div>
+    <h1>Prime<br><span class="acc">Numbers</span></h1>
+    <p class="hero-q">"The atoms of arithmetic — indivisible, unpredictable, and everywhere."</p>
+    <p class="hero-p">2, 3, 5, 7, 11, 13... Every number is either prime or built from primes. <strong>Mathematicians have been obsessed with them for 2,000 years</strong> — and still can't fully predict them. They also secretly protect every bank transaction and private message in the world.</p>
+    <span class="scroll-hint">↓ scroll to begin</span>
+  </div>
+
+  <div class="prime-sieve">
+    <div class="sieve-label">Primes highlighted — 1 to 100</div>
+    <div class="sieve-grid" id="sieveGrid"></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">The Big Idea</span>
+  <h2>Every Number Has a Prime Fingerprint</h2>
+
+  <div class="big-idea reveal">
+    <p>"The Fundamental Theorem of Arithmetic: every integer greater than 1 is either prime itself, or can be expressed as a unique product of prime numbers. Primes are the atoms of arithmetic — every number is built from them."</p>
+  </div>
+
+  <p class="reveal">A prime number has exactly two factors: 1 and itself. 7 is prime (only divisible by 1 and 7). 12 is not — it's 2 × 2 × 3. Every composite number breaks down into primes in exactly one way. This is as fundamental to number theory as the periodic table is to chemistry.</p>
+
+  <p class="reveal">What makes primes fascinating — and maddening — is their <strong>unpredictability</strong>. There's no formula that generates only primes. There's no pattern to where they appear. They seem scattered almost randomly — and yet mathematicians have discovered deep order hiding inside that apparent chaos.</p>
+
+  <h3>The Sieve of Eratosthenes (~240 BCE)</h3>
+  <p class="reveal">The head librarian of the Library of Alexandria devised a method to find all primes up to any number. Start with all numbers. Cross out every multiple of 2 (except 2 itself). Then every multiple of 3. Then 5. Then 7. Whatever's left — the numbers nothing crossed out — are prime. It's elegantly simple and still used in computing today.</p>
+
+  <h3>How Many Primes Are There?</h3>
+  <p class="reveal">Infinitely many. Euclid proved this around 300 BCE with a stunning argument:</p>
+  <p class="reveal">Suppose there are only finitely many primes: p₁, p₂, p₃... pₙ. Multiply them all together and add 1. Call this number Q. Q is either prime itself (contradicting our assumption) or divisible by some prime — but it leaves remainder 1 when divided by any of our supposed full list of primes. Either way, a prime exists outside our list. Contradiction. Therefore infinitely many primes exist. The whole proof fits in four lines.</p>
+
+  <h3>The Riemann Hypothesis</h3>
+  <p class="reveal">The deepest unsolved problem in mathematics. Bernhard Riemann proposed in 1859 that the distribution of prime numbers is controlled by the zeroes of a complex function called the Riemann Zeta Function. If true, it would tell us precisely how primes are distributed. <strong>It remains unproved.</strong> The Clay Mathematics Institute has offered a $1 million prize for a proof — unclaimed for 165 years.</p>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">~300 BCE</div>
+      <div class="tl-content"><strong>Euclid's Proof of Infinite Primes</strong>In Elements, Euclid proved there are infinitely many primes using a proof by contradiction that remains one of the most elegant arguments in all of mathematics. It requires no calculation — only logic.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">~240 BCE</div>
+      <div class="tl-content"><strong>Eratosthenes' Sieve</strong>The librarian of Alexandria — who also calculated the Earth's circumference using shadows — created the sieve algorithm. It efficiently finds all primes up to a given limit and is still implemented in computer code today.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1859</div>
+      <div class="tl-content"><strong>Riemann Hypothesis</strong>Bernhard Riemann proposed that the distribution of primes is tied to the zeroes of a complex function. If proven, it would have implications for cryptography, physics, and the foundations of mathematics. $1 million prize. Still open.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1977</div>
+      <div class="tl-content"><strong>RSA Encryption Invented</strong>Rivest, Shamir, and Adleman showed that multiplying two large primes is easy, but factoring the result back into its prime components is computationally infeasible. This asymmetry — easy one way, almost impossible the other — became the basis for nearly all internet encryption.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2024</div>
+      <div class="tl-content"><strong>Largest Known Prime</strong>Discovered by the Great Internet Mersenne Prime Search (GIMPS) — a distributed computing project. The current record is 2^136,279,841 − 1, a number with over 41 million digits. Finding it required months of computation across thousands of volunteer computers.</div>
+    </div>
+  </div>
+
+  <div class="nz-box reveal">
+    <p>Every time you connect to a website beginning with <strong>https://</strong>, your phone or computer performs a calculation involving enormous prime numbers. The padlock icon you see means two primes — each hundreds of digits long — were multiplied together to create an encryption key. Factoring that product back into its two primes would take the world's fastest supercomputer longer than the age of the universe. <strong>Your banking app, your messages, your passwords — all protected by the unpredictability of prime numbers.</strong> Euclid couldn't have imagined this application of his proof.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Key Vocabulary</span>
+  <h2>Know the Words</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Prime Number</div>
+      <div class="vocab-def">A natural number greater than 1 with exactly two factors: 1 and itself. Note: 1 is NOT prime (it has only one factor). 2 is the only even prime. After 2, all primes are odd — but not all odd numbers are prime.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Composite Number</div>
+      <div class="vocab-def">Any integer greater than 1 that is NOT prime — meaning it has at least one factor other than 1 and itself. Every composite number can be broken into prime factors in exactly one way (Fundamental Theorem of Arithmetic). Example: 12 = 2 × 2 × 3.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Prime Factorisation</div>
+      <div class="vocab-def">Breaking a number down into its prime components. 360 = 2³ × 3² × 5. Every composite number has exactly one prime factorisation (ignoring order). This uniqueness — one fingerprint per number — is the Fundamental Theorem of Arithmetic.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Mersenne Prime</div>
+      <div class="vocab-def">A prime of the form 2ⁿ − 1. Named after French monk Marin Mersenne. Not every such number is prime (2⁴ − 1 = 15 = 3 × 5), but when they are, they tend to be record-breakingly large. All of the largest known primes are Mersenne primes.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Twin Primes</div>
+      <div class="vocab-def">Pairs of primes that differ by 2: (3,5), (5,7), (11,13), (17,19), (41,43)... The Twin Prime Conjecture says there are infinitely many such pairs. Nobody has proved this. It's one of the oldest unsolved problems in mathematics — simple to state, extraordinarily hard to resolve.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">RSA Encryption</div>
+      <div class="vocab-def">A cryptographic system based on the difficulty of factoring large numbers. You publish a product of two large primes as your "public key." Only someone who knows the two primes can decode messages — and finding those primes from their product is computationally infeasible. Powers HTTPS, banking, email, and most internet security.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Watch</span>
+  <h2>See It Explained</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=prime+numbers+sieve+eratosthenes+3blue1brown" target="_blank">3Blue1Brown — Prime numbers and the Riemann Hypothesis</a>
+        <p>One of the clearest visual explanations of why primes matter and what the Riemann Hypothesis is actually about. Search "3Blue1Brown primes Riemann."</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=RSA+encryption+prime+numbers+explained+simply" target="_blank">How RSA encryption works — prime numbers protecting the internet</a>
+        <p>Search "RSA encryption prime numbers explained simply." Several excellent 5-10 minute explainers. Understanding how maths protects the internet is genuinely important.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">INTERACTIVE</span>
+      <div>
+        <a href="https://www.interactivemath.net/prime-sieve" target="_blank">Interactive Sieve of Eratosthenes</a>
+        <p>Run the sieve yourself and watch it cross out composites. Then search "Ulam spiral" — a strange pattern Stanislaw Ulam discovered by arranging numbers in a spiral and highlighting the primes. The diagonal lines that appear have no known explanation.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Test Yourself</span>
+  <h2>Five Questions.</h2>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. Is 1 a prime number?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Yes — it's divisible only by 1 and itself</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q1')">No — a prime must have exactly two distinct factors, and 1 only has one</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">It depends on which definition of prime you use</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Mathematicians disagree about this</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. 1 is not prime. A prime number must have exactly two distinct positive factors. 1 has only one factor (itself). Excluding 1 from the primes makes the Fundamental Theorem of Arithmetic work cleanly — otherwise you'd have infinite factorisations (12 = 1×2×2×3 = 1×1×2×2×3, etc.).</div>
+    <div class="quiz-feedback bad" id="q1-bad">1 is not prime. The definition requires exactly two distinct factors. 1 only has one factor. The reason this matters: if 1 were prime, the Fundamental Theorem of Arithmetic (unique factorisation) would break — every number would have infinitely many factorisations by including 1 as many times as you like.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What is the Fundamental Theorem of Arithmetic?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">All prime numbers are odd</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q2')">Every integer greater than 1 can be expressed as a unique product of prime numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">There are infinitely many prime numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">No even number can be prime except 2</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. Every integer greater than 1 has a unique prime factorisation. 12 = 2² × 3 — always, for every 12 that has ever existed. This uniqueness is why primes are called the "atoms" of arithmetic. It's why RSA encryption works — the product of two primes has exactly one factorisation.</div>
+    <div class="quiz-feedback bad" id="q2-bad">The Fundamental Theorem of Arithmetic states that every integer greater than 1 is either prime or can be written as a unique product of primes. "Unique" is the key word — there's only one way to do it. 60 = 2² × 3 × 5, and no other prime factorisation exists for 60.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. Euclid's proof that there are infinitely many primes works by:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">Showing that between any two primes, there is always another prime</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q3')">Assuming finitely many primes, then constructing a number that can't be divided by any of them — creating a contradiction</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">Calculating that the sum of all primes is infinite</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">Showing that the sieve of Eratosthenes never terminates</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Correct. Proof by contradiction. Assume only finitely many primes. Multiply them all and add 1. This number either is prime (we've found one outside our list) or has a prime factor — but it leaves remainder 1 when divided by each prime in our list. Either way we get a prime not in our list. Contradiction. QED. It's astonishing that this much insight fits in a paragraph.</div>
+    <div class="quiz-feedback bad" id="q3-bad">Euclid used proof by contradiction. Suppose only finitely many primes exist: p₁, p₂... pₙ. Form Q = (p₁ × p₂ × ... × pₙ) + 1. Q is either prime itself, or has a prime factor — but dividing Q by any pᵢ leaves remainder 1, so none of our primes divides Q. Therefore a prime exists outside our supposed complete list. Contradiction.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. Why are prime numbers used in RSA encryption?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Primes are very large numbers, making calculations harder to break</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Primes are random, which makes encryption keys unpredictable</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q4')">Multiplying two primes is easy, but factoring the result back into those two primes is computationally infeasible for very large numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">Prime numbers can only be read by special prime-capable computers</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Exactly. The asymmetry is the key. 17 × 19 = 323 — easy. But given 323, finding 17 and 19 requires trial and error. Scale this to numbers with hundreds of digits and the factoring problem becomes practically impossible even with the world's fastest computers. This one-way difficulty is what makes RSA secure.</div>
+    <div class="quiz-feedback bad" id="q4-bad">The security comes from asymmetry: multiplying two primes is fast (milliseconds), but factoring their product back into those primes is hard — exponentially harder as the numbers grow. With primes hundreds of digits long, the best-known factoring algorithms would take longer than the age of the universe on today's fastest supercomputers.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. What is the Twin Prime Conjecture, and why is it interesting?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">It states that every even number greater than 2 is the sum of two primes</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q5')">It conjectures that there are infinitely many pairs of primes separated by 2 — and nobody has proved or disproved it</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">It proves that twin primes always appear near larger primes</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">It states that any two consecutive odd numbers include at least one prime</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Yes. Twin primes are pairs like (3,5), (11,13), (17,19), (41,43)... The conjecture says these continue forever. Despite being one of the simplest statements in number theory, it remains unproved after millennia of effort. In 2013, Yitang Zhang proved that there are infinitely many prime pairs separated by at most 70 million — a massive breakthrough — but the gap from 70 million to 2 is still the work of the future.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Twin primes are pairs differing by 2: (3,5), (5,7), (11,13), (17,19)... The conjecture says there are infinitely many. Simple to state — extraordinarily hard to prove. Nobody has managed it. Note: Goldbach's Conjecture (every even number > 2 is the sum of two primes) is the other famous unsolved prime problem.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Go Deeper</span>
+  <h2>For the Obsessive</h2>
+
+  <div class="deeper reveal">
+    <p><strong>The Ulam Spiral</strong></p>
+    <p>In 1963, mathematician Stanislaw Ulam was bored in a meeting and started writing numbers in a spiral on graph paper, then circling the primes. He discovered that they cluster along diagonal lines — far more than random chance would predict. <strong>Nobody knows why.</strong></p>
+    <ol>
+      <li>Search "Ulam spiral" on Wikipedia — look at the image. The diagonal patterns are unmistakable.</li>
+      <li>Try drawing your own on graph paper: start 1 in the middle, spiral outward, circle the primes.</li>
+      <li><strong>Think:</strong> If primes are "unpredictable," why do they show visual patterns? What does this suggest about the nature of randomness in mathematics?</li>
+    </ol>
+  </div>
+
+  <div class="deeper reveal">
+    <p><strong>Goldbach's Conjecture (1742)</strong></p>
+    <p>Christian Goldbach wrote to Euler: "I believe every even number greater than 2 is the sum of two primes." 4=2+2, 6=3+3, 8=3+5, 100=3+97... Verified for every even number up to 4×10¹⁸. <strong>Still unproved.</strong></p>
+    <ol>
+      <li>Verify it for the first 10 even numbers. Can you always find the pair?</li>
+      <li>Is there a pattern in which prime pairs work? Do some numbers have many valid pairs?</li>
+      <li><strong>Research:</strong> What's the closest anyone has come to proving it? The "ternary Goldbach conjecture" (every odd number > 5 is the sum of three primes) was proved in 2013 — why is the binary version harder?</li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Resources</span>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://primes.utm.edu" target="_blank">The Prime Pages — primes.utm.edu</a>
+        <p>The definitive online resource for prime number research. Lists of records, history, proofs, conjectures. The current record-holder for largest known prime is updated here.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">INTERACTIVE</span>
+      <div>
+        <a href="https://www.khanacademy.org/math/cc-fourth-grade-math/imp-factors-multiples-and-patterns/imp-prime-and-composite-numbers/v/prime-numbers" target="_blank">Khan Academy — Prime Numbers</a>
+        <p>Clear video and practice problems from the fundamentals to factorisation. Free, self-paced, excellent.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=numberphile+prime+numbers" target="_blank">Numberphile — Prime Numbers (YouTube)</a>
+        <p>Numberphile has dozens of prime-related videos, each 10-15 minutes. All feature actual mathematicians. Start with "Why do prime numbers make these spirals?" about the Ulam spiral.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="lesson-nav">
+  <a href="maths-lesson-1.html" class="nav-btn">← Pi & Circles</a>
+  <a href="maths-lesson-3.html" class="nav-btn next">Next: Fibonacci & the Golden Ratio →</a>
+</div>
+
+<script>
+  // Build sieve grid
+  const grid = document.getElementById('sieveGrid');
+  const isPrime = n => { if(n<2)return false; for(let i=2;i<=Math.sqrt(n);i++)if(n%i===0)return false; return true; };
+  for(let i=1;i<=100;i++) {
+    const d=document.createElement('div'); d.className='s-num';
+    d.textContent=i;
+    if(i===1)d.classList.add('composite');
+    else if(isPrime(i))d.classList.add('prime');
+    else d.classList.add('composite');
+    grid.appendChild(d);
+  }
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/h*100)+'%';});
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  function ans(btn,ok,id){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(ok?'correct':'wrong');document.getElementById(id+(ok?'-good':'-bad')).classList.add('show');if(!ok)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinity · Maths for the Curious</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;600&family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050A18;
+    --surface: #080F22;
+    --panel: #0A1228;
+    --blue: #2A5FC0;
+    --blue-bright: #3A70D8;
+    --silver: #90A8C8;
+    --gold: #C8A840;
+    --cream: #E8EEFF;
+    --text: #A8B8D8;
+    --muted: #506080;
+    --border: #101E38;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; font-weight:300; line-height:1.8; overflow-x:hidden; }
+
+  /* Infinite horizon effect */
+  .horizon { position:fixed; bottom:0; left:0; right:0; height:40vh; background:linear-gradient(to top,rgba(42,95,192,0.04),transparent); pointer-events:none; z-index:0; }
+
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(to right,var(--blue),var(--silver)); width:0%; transition:width 0.15s; z-index:999; }
+
+  .hero {
+    position:relative; z-index:1; min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center; padding:6rem 8vw 4rem;
+    background:radial-gradient(ellipse at 50% 30%, #08152A 0%, #050A18 70%);
+  }
+
+  .back-link { font-family:'Inconsolata',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:2rem; transition:color 0.2s; animation:fadeUp 0.4s ease both; }
+  .back-link:hover { color:var(--blue-bright); }
+
+  .lesson-badge { display:inline-block; border:1px solid var(--blue); color:var(--blue-bright); font-family:'Inconsolata',monospace; font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.3rem 0.9rem; margin-bottom:1.5rem; animation:fadeUp 0.4s 0.05s ease both; }
+
+  .hero-inf { position:absolute; right:6vw; top:50%; transform:translateY(-50%); font-family:'Cormorant Garamond',serif; font-size:22rem; color:rgba(42,95,192,0.06); line-height:1; user-select:none; pointer-events:none; }
+
+  .hero h1 { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(3rem,9vw,7rem); line-height:1.0; color:var(--cream); animation:fadeUp 0.4s 0.1s ease both; }
+  .hero h1 em { font-style:italic; color:var(--blue-bright); }
+
+  .hero-q { margin-top:1.25rem; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.2rem; color:var(--gold); animation:fadeUp 0.4s 0.15s ease both; }
+  .hero-p { max-width:520px; margin-top:1rem; font-size:0.975rem; color:var(--muted); line-height:1.75; animation:fadeUp 0.4s 0.2s ease both; }
+  .hero-p strong { color:var(--text); }
+
+  .scroll-hint { display:block; margin-top:3rem; font-family:'Inconsolata',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--border); text-transform:uppercase; animation:bounce 2s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  section { padding:4.5rem 8vw; border-top:1px solid var(--border); position:relative; z-index:1; }
+  .sec-label { font-family:'Inconsolata',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--blue-bright); margin-bottom:0.75rem; display:block; }
+  h2 { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,4vw,3rem); color:var(--cream); margin-bottom:1.25rem; line-height:1.2; }
+  h3 { font-weight:600; font-size:1rem; color:var(--gold); margin:2rem 0 0.6rem; }
+  p { color:var(--muted); max-width:680px; margin-bottom:1rem; font-size:0.975rem; }
+  p strong { color:var(--text); }
+
+  .big-idea { background:linear-gradient(135deg,#05101E,#050A18); border-left:3px solid var(--blue-bright); padding:2rem 2.5rem; margin:1.5rem 0; max-width:700px; }
+  .big-idea p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.15rem; color:var(--cream); max-width:none; margin:0; }
+
+  /* Hotel illustration */
+  .hotel-box { background:var(--surface); border:1px solid var(--border); padding:2rem; margin:2rem 0; max-width:700px; }
+  .hotel-box h4 { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); margin-bottom:1rem; }
+  .hotel-scenario { margin-bottom:1rem; padding:0.75rem 1rem; border-left:2px solid var(--blue); }
+  .hotel-scenario .hs-label { font-family:'Inconsolata',monospace; font-size:0.62rem; letter-spacing:0.12em; color:var(--blue-bright); text-transform:uppercase; margin-bottom:0.3rem; }
+  .hotel-scenario p { max-width:none; font-size:0.875rem; margin:0; }
+
+  .timeline { max-width:700px; margin:2rem 0; }
+  .tl-item { display:grid; grid-template-columns:110px 1fr; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--border); align-items:start; }
+  .tl-item:last-child { border:none; }
+  .tl-date { font-family:'Inconsolata',monospace; font-size:0.68rem; color:var(--gold); font-weight:600; line-height:1.4; }
+  .tl-content { font-size:0.875rem; color:var(--muted); line-height:1.65; }
+  .tl-content strong { color:var(--text); display:block; margin-bottom:0.2rem; }
+
+  .nz-box { background:var(--surface); border:1px solid #1A2A3A; padding:1.75rem 2rem; margin:2rem 0; max-width:700px; }
+  .nz-box::before { content:'🇳🇿 REAL WORLD CONNECTION'; display:block; font-family:'Inconsolata',monospace; font-size:0.58rem; letter-spacing:0.18em; color:#4A6A8A; margin-bottom:0.6rem; }
+  .nz-box p { color:#608090; max-width:none; }
+  .nz-box strong { color:#90B0C0; }
+
+  .deeper { background:var(--surface); border-left:3px solid var(--blue); padding:2rem 2.5rem; margin:2.5rem 0; max-width:700px; }
+  .deeper::before { content:'⬡ GO DEEPER'; display:block; font-family:'Inconsolata',monospace; font-size:0.58rem; letter-spacing:0.18em; color:var(--blue-bright); margin-bottom:0.75rem; }
+  .deeper p { max-width:none; color:var(--muted); }
+  .deeper strong { color:var(--text); }
+  .deeper ol { padding-left:1.5rem; color:var(--muted); margin-top:0.75rem; }
+  .deeper li { margin-bottom:0.4rem; font-size:0.875rem; }
+
+  .vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:0.75rem; margin:1.5rem 0; max-width:860px; }
+  .vocab-card { background:var(--panel); border:1px solid var(--border); padding:1.1rem 1.25rem; cursor:pointer; transition:border-color 0.2s,transform 0.15s; position:relative; }
+  .vocab-card:hover { border-color:var(--blue); transform:translateY(-2px); }
+  .vocab-card.open { border-color:var(--gold); }
+  .vocab-term { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--gold); margin-bottom:0.35rem; }
+  .vocab-def { font-size:0.82rem; color:var(--muted); display:none; line-height:1.6; }
+  .vocab-card.open .vocab-def { display:block; }
+  .vocab-hint { font-family:'Inconsolata',monospace; font-size:0.52rem; color:var(--border); position:absolute; bottom:0.5rem; right:0.7rem; }
+
+  .quiz-wrap { max-width:700px; margin:1.5rem 0; }
+  .quiz-q { font-size:1rem; font-weight:600; color:var(--cream); margin-bottom:0.75rem; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem; }
+  .quiz-opt { background:var(--panel); border:1px solid var(--border); color:var(--muted); padding:0.75rem 1.1rem; text-align:left; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.9rem; transition:all 0.15s; }
+  .quiz-opt:hover { border-color:var(--blue); color:var(--text); }
+  .quiz-opt.correct { border-color:#40A0C0; color:#80D0E0; background:#041018; }
+  .quiz-opt.wrong { border-color:#C04040; color:#FF9090; background:#1A0808; }
+  .quiz-feedback { font-size:0.875rem; padding:0.9rem 1.1rem; margin-top:0.4rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#041018; border-left:3px solid #40A0C0; color:#80D0E0; }
+  .quiz-feedback.bad { background:#1A0808; border-left:3px solid #C04040; color:#FF9090; }
+
+  .resource-list { list-style:none; max-width:700px; margin:1.5rem 0; }
+  .resource-list li { border-bottom:1px solid var(--border); padding:1rem 0; display:flex; gap:1rem; align-items:flex-start; }
+  .resource-type { font-family:'Inconsolata',monospace; font-size:0.6rem; letter-spacing:0.1em; background:var(--surface); color:var(--muted); padding:0.22rem 0.5rem; flex-shrink:0; margin-top:0.1rem; }
+  .resource-list a { color:var(--blue-bright); text-decoration:none; font-size:0.9rem; font-weight:600; }
+  .resource-list a:hover { color:var(--gold); }
+  .resource-list p { margin:0.2rem 0 0; font-size:0.78rem; max-width:none; }
+
+  .lesson-nav { position:relative; z-index:1; padding:2.5rem 8vw; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .nav-btn { font-family:'Inconsolata',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); text-decoration:none; border:1px solid var(--border); padding:0.55rem 1.1rem; transition:all 0.2s; }
+  .nav-btn:hover { border-color:var(--blue); color:var(--blue-bright); }
+  .nav-btn.next { background:var(--blue); color:white; border-color:var(--blue); }
+  .nav-btn.next:hover { background:var(--blue-bright); }
+
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--blue),transparent); opacity:0.2; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity 0.5s ease,transform 0.5s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+<div class="horizon"></div>
+<div class="progress-bar" id="pb"></div>
+
+<div class="hero">
+  <div class="hero-inf">∞</div>
+  <a href="maths-index.html" class="back-link">← Course Index</a>
+  <div class="lesson-badge">Lesson 04 · Set Theory</div>
+  <h1>Infin<em>ity</em></h1>
+  <p class="hero-q">"Some infinities are bigger than others. This is not a metaphor. It's a theorem."</p>
+  <p class="hero-p">There are infinitely many whole numbers. There are infinitely many decimals between 0 and 1. <strong>But these two infinities are not the same size.</strong> Georg Cantor proved this in the 1870s — and the mathematics community at the time nearly had a breakdown about it.</p>
+  <span class="scroll-hint">↓ scroll to begin</span>
+</div>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">The Big Idea</span>
+  <h2>Infinity Is Not a Number — It's a Concept With Structure</h2>
+
+  <div class="big-idea reveal">
+    <p>"The set of all even numbers is infinite. The set of all integers is infinite. But they're the same size of infinite — you can match them one-to-one. The set of all real numbers is a strictly larger infinity. Cantor proved there's no way to match them up."</p>
+  </div>
+
+  <p class="reveal">When we say two sets are the same size, we mean we can pair them up — one from each set — with nothing left over. This works for finite sets obviously. But Cantor extended it to infinite sets, and the results are extraordinary.</p>
+
+  <p class="reveal">The natural numbers (1, 2, 3, 4...) are infinite. The even numbers (2, 4, 6, 8...) are also infinite. Are they the same size? <strong>Yes</strong> — because you can pair them: 1↔2, 2↔4, 3↔6, 4↔8... Every natural number pairs with exactly one even number. There's no "gap." This seems wrong — there should be twice as many natural numbers — but that intuition is built for finite sets. Infinity doesn't obey the same rules.</p>
+
+  <h3>Hilbert's Hotel — The Most Famous Thought Experiment in Mathematics</h3>
+
+  <div class="hotel-box reveal">
+    <h4>A hotel with infinitely many rooms, all occupied</h4>
+
+    <div class="hotel-scenario">
+      <div class="hs-label">Scenario 1 — One new guest arrives</div>
+      <p class="muted">Paradox: every room is full. Solution: ask every current guest to move to the next room (room 1→2, 2→3, 3→4...). Room 1 is now empty. The hotel is still full — just differently arranged.</p>
+    </div>
+
+    <div class="hotel-scenario">
+      <div class="hs-label">Scenario 2 — Infinitely many new guests arrive</div>
+      <p class="muted">Ask every current guest to move to double their room number (room 1→2, 2→4, 3→6...). All the odd rooms are now empty — infinitely many of them. The infinite bus of new guests can fill them.</p>
+    </div>
+
+    <div class="hotel-scenario">
+      <div class="hs-label">Scenario 3 — Infinitely many infinite buses arrive</div>
+      <p class="muted">This still works — using prime powers to assign rooms. There are clever numbering schemes that fit countably infinite groups into a single infinity. Cantor showed all of this.</p>
+    </div>
+
+    <div class="hotel-scenario">
+      <div class="hs-label">Scenario 4 — One bus arrives with ALL real numbers between 0 and 1</div>
+      <p class="muted" style="color:#C04040;">This does NOT work. No matter how cleverly you try to assign rooms, you will always leave real numbers unhoused. This is Cantor's diagonal proof — the real numbers are a bigger infinity than the integers.</p>
+    </div>
+  </div>
+
+  <h3>Cantor's Diagonal Argument</h3>
+  <p class="reveal">The proof is elegant. Suppose you claim to have listed all real numbers between 0 and 1 — in some order. Cantor constructs a new number by taking the 1st digit of the 1st number and changing it, the 2nd digit of the 2nd number and changing it, the 3rd digit of the 3rd number... This new number differs from every number in your list in at least one place. So your list was incomplete. This works for any list — proving you can never list all real numbers. The real numbers are uncountably infinite.</p>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">~300 BCE</div>
+      <div class="tl-content"><strong>Aristotle rejects actual infinity</strong>Aristotle distinguished between "potential infinity" (you can always count higher) and "actual infinity" (an infinite completed set). He accepted the former, rejected the latter. This view dominated for 2,000 years.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1638</div>
+      <div class="tl-content"><strong>Galileo's Paradox</strong>Galileo noted that the perfect squares (1, 4, 9, 16...) can be matched one-to-one with all positive integers — even though "there should be fewer." He concluded that the concepts of "greater than" and "less than" don't apply to infinite sets. He was right. He just didn't know what to do about it.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1873–1884</div>
+      <div class="tl-content"><strong>Georg Cantor revolutionises mathematics</strong>Cantor developed set theory and proved that infinities come in different sizes. His contemporaries — especially Kronecker — attacked him viciously. "I don't know what predominates in Cantor's theory — philosophy or theology," said Poincaré. Cantor suffered severe depression. He died in a sanatorium in 1918.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1900</div>
+      <div class="tl-content"><strong>Hilbert's Programme</strong>David Hilbert — widely considered the greatest mathematician of his era — publicly championed Cantor's work: "No one shall expel us from the paradise that Cantor has created." He proposed that Cantor's infinity hierarchy should be formalised as the foundation of all mathematics.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1931</div>
+      <div class="tl-content"><strong>Gödel's Incompleteness Theorems</strong>Kurt Gödel proved that in any sufficiently powerful mathematical system, there are true statements that cannot be proved within the system. This shattered Hilbert's programme — mathematics cannot be completely formalised. Some mathematical truths are forever beyond proof.</div>
+    </div>
+  </div>
+
+  <div class="nz-box reveal">
+    <p>Computer science runs on infinity-adjacent concepts. Every algorithm has a complexity — how many steps it takes as the input grows toward infinity. <strong>Big-O notation</strong> (O(n), O(n²), O(log n)) describes how algorithms behave "in the limit." Understanding that some algorithms scale fundamentally differently from others — even if they're both technically infinite in steps — is exactly the kind of thinking Cantor pioneered. New Zealand's tech sector — from Xero to Rocket Lab's software — depends on engineers who understand this deeply.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Key Vocabulary</span>
+  <h2>Know the Words</h2>
+
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Countably Infinite</div>
+      <div class="vocab-def">An infinite set is countably infinite if its elements can be matched one-to-one with the natural numbers (1, 2, 3...). The integers, rational numbers, and even algebraic numbers are countably infinite. Cantor called this cardinality ℵ₀ (aleph-null).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Uncountably Infinite</div>
+      <div class="vocab-def">An infinite set is uncountably infinite if it cannot be matched one-to-one with the natural numbers — it's a strictly larger infinity. The real numbers are uncountably infinite. No matter how you try to list them, you always miss some. Cantor called this cardinality 𝔠 (the cardinality of the continuum).</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Cantor's Diagonal Argument</div>
+      <div class="vocab-def">A proof that shows no list of real numbers between 0 and 1 can be complete. For any claimed complete list, construct a number by changing the nth digit of the nth entry. This number differs from every entry in the list — proving the list is incomplete. Therefore the real numbers are uncountable.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Cardinality</div>
+      <div class="vocab-def">The size of a set — how many elements it contains. For finite sets, this is just counting. For infinite sets, Cantor defined cardinality using bijections (one-to-one matchings). Two sets have the same cardinality if they can be perfectly matched. The hierarchy of infinite cardinalities is: ℵ₀ &lt; ℵ₁ &lt; ℵ₂...</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Continuum Hypothesis</div>
+      <div class="vocab-def">Is there an infinity between ℵ₀ (countable) and 𝔠 (real numbers)? Cantor believed there wasn't but couldn't prove it. Gödel (1940) and Cohen (1963) together proved something extraordinary: the continuum hypothesis is independent of standard set theory — it can neither be proved nor disproved. It's undecidable.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+    <div class="vocab-card" onclick="this.classList.toggle('open')">
+      <div class="vocab-term">Gödel's Incompleteness</div>
+      <div class="vocab-def">Kurt Gödel proved in 1931 that any consistent mathematical system powerful enough to include arithmetic contains true statements that cannot be proved within the system. Mathematics is, in a precise sense, incomplete. This doesn't mean maths is broken — it means no finite set of axioms can capture all mathematical truth.</div>
+      <span class="vocab-hint">tap to reveal</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Watch</span>
+  <h2>See It Explained</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=hilbert+hotel+infinity+vsauce" target="_blank">VSauce — How To Count Past Infinity (YouTube)</a>
+        <p>Michael Stevens' treatment of Hilbert's Hotel and transfinite numbers is one of the finest popular mathematics videos ever made. About 20 minutes. Essential.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=cantor+diagonal+argument+explained" target="_blank">Cantor's Diagonal Argument — Explained (YouTube)</a>
+        <p>Multiple 5-10 minute explanations available. Search "Cantor diagonal argument explained." The Numberphile version with Dr James Grime is particularly clear.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">WEBSITE</span>
+      <div>
+        <a href="https://plato.stanford.edu/entries/set-theory/" target="_blank">Stanford Encyclopedia of Philosophy — Set Theory</a>
+        <p>University level but the opening sections are accessible. Shows that infinity connects mathematics, philosophy, and logic in ways that are still debated today.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Test Yourself</span>
+  <h2>Five Questions.</h2>
+  <div class="quiz-wrap">
+
+    <div class="quiz-q">1. Is the set of even numbers bigger than, smaller than, or the same size as the set of all positive integers?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Smaller — there are half as many even numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">Bigger — even numbers grow faster</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q1')">The same size — they can be matched one-to-one (1↔2, 2↔4, 3↔6...)</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q1')">The question doesn't make sense for infinite sets</button>
+    </div>
+    <div class="quiz-feedback good" id="q1-good">Correct. By Cantor's definition of size (cardinality), two sets are the same size if you can match them one-to-one with nothing left over. Match 1↔2, 2↔4, 3↔6, n↔2n... Every natural number pairs with exactly one even number. Same size. This feels wrong — but finite intuitions don't apply to infinite sets.</div>
+    <div class="quiz-feedback bad" id="q1-bad">By Cantor's definition, two infinite sets have the same cardinality if their elements can be matched one-to-one. Every natural number n matches with even number 2n — perfectly, with nothing left over. So they're the same size (both ℵ₀), even though one "feels" bigger. Infinity breaks our finite intuitions.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">2. What does Hilbert's Hotel demonstrate about countable infinity?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">That infinite hotels can't actually exist</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q2')">That a countably infinite set can always accommodate more elements — it never "fills up" in the way finite sets do</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">That infinity plus one is bigger than infinity</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q2')">That all infinities are the same size</button>
+    </div>
+    <div class="quiz-feedback good" id="q2-good">Yes. The hotel is "full" in the sense that every room has a guest — but you can always make room for more by rearranging. Adding 1, adding ∞, adding infinitely many infinite buses — all still produce the same countable infinity. This is why ℵ₀ + 1 = ℵ₀, ℵ₀ + ℵ₀ = ℵ₀, ℵ₀ × ℵ₀ = ℵ₀. Countable infinity absorbs finite additions.</div>
+    <div class="quiz-feedback bad" id="q2-bad">Hilbert's Hotel shows that countable infinity is "flexible" — you can always rearrange to fit more. The hotel never truly runs out of room because the natural numbers are unbounded. Any finite number of new guests, or any countably infinite number, can be accommodated. The hotel only fails when confronted with uncountable infinity.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">3. What did Cantor's Diagonal Argument prove?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">That there are exactly two sizes of infinity</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">That infinity is not a real mathematical concept</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q3')">That the real numbers between 0 and 1 cannot be listed — they are a strictly larger infinity than the natural numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q3')">That diagonal numbers are always different from the numbers they're based on</button>
+    </div>
+    <div class="quiz-feedback good" id="q3-good">Correct. The argument shows that for any attempted complete list of real numbers, you can construct a real number that differs from every entry — so the list is always incomplete. No list can capture all real numbers. Therefore the real numbers are uncountably infinite — a strictly larger infinity (𝔠) than the countable infinity of integers (ℵ₀).</div>
+    <div class="quiz-feedback bad" id="q3-bad">The diagonal argument proves that the real numbers cannot be put in a list — they're uncountably infinite. For any claimed complete list, changing the nth digit of the nth number creates a number that differs from every entry. The list is always incomplete. This means |ℝ| > |ℕ| — there are more real numbers than natural numbers.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">4. What did Gödel's Incompleteness Theorems show about mathematics?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">That mathematics contains errors that need to be fixed</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">That infinity is an inconsistent concept</button>
+      <button class="quiz-opt" onclick="ans(this,true,'q4')">That any sufficiently powerful mathematical system contains true statements that cannot be proved within it — mathematics is fundamentally incomplete</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q4')">That all mathematical statements are either true or false</button>
+    </div>
+    <div class="quiz-feedback good" id="q4-good">Yes. Gödel proved that in any consistent system rich enough to include basic arithmetic, there exist statements that are true but unprovable within the system. This doesn't mean mathematics is wrong — it means no finite set of axioms can capture all mathematical truth. It was one of the most shocking results in the history of thought.</div>
+    <div class="quiz-feedback bad" id="q4-bad">Gödel showed that mathematical truth outstrips mathematical proof. In any consistent formal system powerful enough to do arithmetic, there are statements that are true but can't be proved within that system. You can extend the system to prove them — but the extended system will have its own unprovable truths. It never ends. Mathematics is irreducibly incomplete.</div>
+
+    <div class="quiz-q" style="margin-top:2rem;">5. Can the following be matched one-to-one with the natural numbers? The rational numbers (all fractions a/b)</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="ans(this,true,'q5')">Yes — Cantor showed the rationals are countably infinite, despite appearing denser on the number line</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">No — there are clearly more fractions than whole numbers</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">Only if you exclude irrational fractions like π/2</button>
+      <button class="quiz-opt" onclick="ans(this,false,'q5')">The rationals are the same size as the reals</button>
+    </div>
+    <div class="quiz-feedback good" id="q5-good">Yes! This is one of Cantor's most surprising results. You can list all fractions by arranging them in a grid (by numerator and denominator) and zigzagging through — creating a complete list. So the rationals are countably infinite (ℵ₀), same as the integers. The real numbers (including irrationals like √2 and π) are strictly bigger — uncountably infinite.</div>
+    <div class="quiz-feedback bad" id="q5-bad">Counterintuitively, yes. Cantor showed the rationals can be listed by arranging fractions in a grid indexed by numerator and denominator, then following a diagonal path. Every fraction appears somewhere in this list — so the rationals are countably infinite (ℵ₀). The jump to uncountable infinity happens with the reals, which include all the irrationals.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Go Deeper</span>
+  <h2>For the Obsessive</h2>
+
+  <div class="deeper reveal">
+    <p><strong>Try the Diagonal Argument Yourself</strong></p>
+    <ol>
+      <li>Write down 5 decimal numbers between 0 and 1 (any ones you like).</li>
+      <li>Take the 1st digit of number 1, the 2nd digit of number 2, the 3rd of number 3... Change each digit (if it's 5, make it 6; if it's 9, make it 1).</li>
+      <li>Your new number differs from number 1 in position 1, number 2 in position 2, etc. It's not in your list.</li>
+      <li><strong>Insight:</strong> This works for ANY list — you can always construct a number not in it. What does this tell you about the "size" of the gap between countable and uncountable infinity?</li>
+    </ol>
+  </div>
+
+  <div class="deeper reveal">
+    <p><strong>The Banach-Tarski Paradox</strong></p>
+    <p>Using the properties of infinity, it can be mathematically "proved" that you can decompose a solid sphere into a finite number of pieces, then reassemble those pieces — using only rotations and translations — into two spheres of the same size as the original. This is not physically possible, but mathematically valid in a system that allows the Axiom of Choice.</p>
+    <ol>
+      <li>Search "Banach-Tarski paradox Vsauce" — there's an excellent video about it.</li>
+      <li><strong>Think:</strong> Does mathematics describe reality, or does it sometimes go beyond it? When a mathematical result seems physically impossible, is the maths wrong — or is reality wrong — or does the question not make sense?</li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <span class="sec-label">Resources</span>
+  <h2>Where to Go Next</h2>
+  <ul class="resource-list">
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=vsauce+how+to+count+past+infinity" target="_blank">VSauce — How To Count Past Infinity (YouTube, ~20 mins)</a>
+        <p>The definitive popular treatment. One of the most-watched mathematics videos ever made for good reason.</p>
+      </div>
+    </li>
+    <li>
+      <span class="resource-type">VIDEO</span>
+      <div>
+        <a href="https://www.youtube.com/results?search_query=numberphile+cantor+infinity" target="_blank">Numberphile — Cantor's Infinities (YouTube)</a>
+        <p>Multiple excellent videos. The "Infinity is bigger than you think" one is a brilliant 10-minute introduction.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<div class="lesson-nav">
+  <a href="maths-lesson-3.html" class="nav-btn">← Fibonacci & Golden Ratio</a>
+  <a href="maths-lesson-5.html" class="nav-btn next">Next: Probability & Chance →</a>
+</div>
+
+<script>
+  window.addEventListener('scroll',()=>{const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('pb').style.width=(s/h*100)+'%';});
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  function ans(btn,ok,id){btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);btn.classList.add(ok?'correct':'wrong');document.getElementById(id+(ok?'-good':'-bad')).classList.add('show');if(!ok)btn.parentElement.querySelectorAll('.quiz-opt').forEach(b=>{if(b.onclick.toString().includes('true'))b.classList.add('correct');});}
+</script>
+</body>
+</html>
