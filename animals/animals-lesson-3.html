@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 · Where Does a Sheep Really Come From?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f9f4e6;--cream-deep:#f1e9d2;--ink:#3d3228;--ink-soft:#6a5b49;
+    --wool:#fffdf7;--clover:#d6553f;
+    --accent:#c79a4a;--accent-deep:#9a7222;--accent-dark:#6f5215;--accent-soft:#f3e6c6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.7;overflow-x:hidden}
+  #progress-bar{position:fixed;top:0;left:0;height:6px;width:0;background:linear-gradient(90deg,var(--accent),var(--clover));z-index:999;transition:width .15s ease}
+  h1,h2,h3,.brand{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.15}
+  a{color:var(--accent-deep)}
+
+  .topbar{position:fixed;top:6px;left:0;width:100%;display:flex;justify-content:space-between;padding:.6rem 1.1rem;z-index:50;pointer-events:none}
+  .topbar a{pointer-events:auto;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);color:var(--accent-deep);font-family:'Fredoka',sans-serif;font-size:.9rem;padding:.35rem .9rem;border-radius:30px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+
+  .hero{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 1.25rem 2rem;position:relative;overflow:hidden;background:linear-gradient(180deg,#f3e6c6,var(--cream))}
+  .star-badge{position:absolute;top:14%;left:50%;transform:translateX(-50%);background:var(--clover);color:#fff;font-family:'Fredoka',sans-serif;font-size:.85rem;padding:.3rem 1rem;border-radius:30px;box-shadow:0 4px 0 #b3402c}
+  .lesson-tag{font-family:'Fredoka',sans-serif;background:var(--accent);color:#fff;padding:.3rem 1rem;border-radius:30px;font-size:.95rem;transform:rotate(-2deg);box-shadow:0 4px 0 var(--accent-deep);margin-bottom:1.2rem}
+  .hero h1{font-size:clamp(2rem,5.2vw,3.4rem);color:var(--accent-dark);margin-bottom:.6rem}
+  .hero .sub{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--ink-soft);max-width:620px}
+  .hero .morph{font-size:3rem;margin-bottom:1rem}
+  .hero .morph .a{display:inline-block;animation:wob 3s ease-in-out infinite}
+  .hero .morph .arr{color:var(--accent-deep);margin:0 .3rem}
+  @keyframes wob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .scroll-hint{margin-top:1.8rem;color:var(--accent-dark);font-family:'Fredoka',sans-serif;font-size:.95rem;animation:bob 1.8s ease-in-out infinite}
+  .scroll-hint .arrow{font-size:1.4rem;display:block}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  .wrap{max-width:780px;margin:0 auto;padding:0 1.25rem}
+  section.block{padding:3rem 0}
+  .eyebrow{font-family:'Fredoka',sans-serif;color:var(--clover);font-size:1rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.4rem}
+  h2.section-title{font-size:clamp(1.6rem,4vw,2.3rem);color:var(--accent-dark);margin-bottom:1rem}
+  p.lead{font-size:1.15rem;margin-bottom:1rem}
+  .big-idea{background:var(--accent-soft);border-left:8px solid var(--accent);border-radius:0 18px 18px 0;padding:1.5rem 1.7rem;font-size:1.25rem;font-family:'Fredoka',sans-serif;color:var(--accent-dark)}
+
+  .nz-box{background:var(--wool);border:3px dashed var(--accent);border-radius:20px;padding:1.4rem 1.6rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .nz-box .ico{font-size:2rem;flex:none}
+  .nz-box b{color:var(--clover)}
+  .history-box{background:var(--cream-deep);border-radius:18px;padding:1.3rem 1.5rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .history-box .ico{font-size:1.8rem;flex:none}
+
+  /* timeline */
+  .timeline{position:relative;margin:1.5rem 0 0;padding-left:1rem}
+  .tl-step{position:relative;background:var(--wool);border:2px solid var(--cream-deep);border-left:6px solid var(--accent);
+    border-radius:0 16px 16px 0;padding:1.1rem 1.3rem;margin-bottom:1rem;box-shadow:0 4px 0 rgba(61,50,40,.07)}
+  .tl-step .when{font-family:'Fredoka',sans-serif;color:var(--clover);font-size:.95rem}
+  .tl-step h3{color:var(--accent-dark);font-size:1.25rem;margin:.2rem 0 .4rem}
+  .tl-step .emoji{font-size:1.6rem}
+  .tl-step p{color:var(--ink-soft);font-size:1rem}
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.2rem}
+  .vcard{background:var(--wool);border:2px solid var(--accent-soft);border-radius:18px;padding:1.2rem;cursor:pointer;text-align:center;transition:transform .15s ease;box-shadow:0 5px 0 rgba(61,50,40,.08);user-select:none}
+  .vcard:hover{transform:translateY(-3px)}
+  .vcard .word{font-family:'Fredoka',sans-serif;font-size:1.2rem;color:var(--accent-deep)}
+  .vcard .hintline{font-size:.85rem;color:var(--ink-soft);margin-top:.3rem}
+  .vcard .meaning{display:none;margin-top:.7rem;color:var(--ink);font-size:.98rem}
+  .vcard.open{background:var(--accent-soft)}
+  .vcard.open .meaning{display:block}.vcard.open .hintline{display:none}
+
+  .watch-list{display:grid;gap:.8rem;margin-top:1rem}
+  .watch{display:flex;gap:.9rem;align-items:center;background:var(--wool);border-radius:16px;padding:1rem 1.2rem;text-decoration:none;color:inherit;border:2px solid var(--cream-deep);transition:transform .15s ease}
+  .watch:hover{transform:translateX(4px)}
+  .watch .play{font-size:1.6rem}.watch b{color:var(--accent-deep)}.watch small{color:var(--ink-soft)}
+  .grownup{font-size:.85rem;color:var(--ink-soft);font-style:italic;margin-top:.7rem}
+
+  .quiz{background:var(--wool);border-radius:22px;padding:1.6rem;border:2px solid var(--cream-deep);box-shadow:0 6px 0 rgba(61,50,40,.08)}
+  .q{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:2px dashed var(--cream-deep)}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q .qtext{font-family:'Fredoka',sans-serif;font-size:1.15rem;color:var(--accent-dark);margin-bottom:.8rem}
+  .q .qtext .n{background:var(--accent);color:#fff;border-radius:50%;padding:.1rem .6rem;margin-right:.4rem;font-size:.95rem}
+  .opt{display:block;width:100%;text-align:left;background:var(--cream);border:2px solid var(--cream-deep);border-radius:12px;padding:.7rem 1rem;margin-bottom:.5rem;cursor:pointer;font-family:'Nunito',sans-serif;font-size:1rem;color:var(--ink);transition:all .12s ease}
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{background:#cfe9d9;border-color:#4a9e6e;font-weight:700}
+  .opt.wrong{background:#f6d6cf;border-color:var(--clover)}
+  .opt:disabled{cursor:default}
+  .explain{display:none;margin-top:.6rem;padding:.8rem 1rem;border-radius:12px;font-size:.98rem}
+  .explain.show{display:block}.explain.good{background:#dff0e6;color:#256445}.explain.bad{background:#fbe7e2;color:#9a3a28}
+
+  .done-banner{display:none;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;border-radius:22px;padding:2rem;margin-top:2rem}
+  .done-banner.show{display:block;animation:pop .4s ease}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .done-banner h3{font-size:1.8rem;margin-bottom:.5rem}
+  .done-banner a{display:inline-block;margin-top:1rem;background:#fff;color:var(--accent-deep);text-decoration:none;font-family:'Fredoka',sans-serif;padding:.7rem 1.6rem;border-radius:30px;font-size:1.05rem;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+
+  .discuss{background:#fff3d6;border-radius:20px;padding:1.4rem 1.6rem;border:2px solid #f0dca0;display:flex;gap:1rem;align-items:flex-start;margin-top:1rem}
+  .discuss .ico{font-size:2rem}.discuss b{color:#9a7a1f}
+  .deeper{background:var(--accent-soft);border-radius:20px;padding:1.4rem 1.6rem}
+  .deeper ul{margin:.6rem 0 0 1.2rem}.deeper li{margin-bottom:.5rem}
+  .resources li{margin-bottom:.5rem}
+  .lesson-nav{display:flex;justify-content:space-between;gap:1rem;margin:2.5rem 0 1rem;flex-wrap:wrap}
+  .lesson-nav a{flex:1;min-width:160px;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);border-radius:16px;padding:1rem 1.2rem;color:var(--accent-deep);font-family:'Fredoka',sans-serif;text-align:center}
+  .lesson-nav a.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  footer{background:var(--accent-dark);color:#f3e9d3;text-align:center;padding:2.5rem 1.25rem;margin-top:2rem}
+  footer .brand{font-size:1.3rem;color:#fff}footer p{font-size:.92rem;opacity:.85;margin-top:.3rem}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="topbar">
+  <a href="animals-lesson-2.html">← Lesson 2</a>
+  <a href="animals-lesson-4.html">Next: NZ Animals →</a>
+</div>
+
+<header class="hero">
+  <span class="star-badge">⭐ The big one!</span>
+  <div class="morph"><span class="a">🐏</span><span class="arr">➡️</span><span class="a">🐑</span></div>
+  <span class="lesson-tag">Lesson 3</span>
+  <h1>Where Does a Sheep <em>Really</em> Come From?</h1>
+  <p class="sub">The answer to the boy's question! A wild, hairy mountain animal slowly became the soft, woolly sheep — because of a clever trick people discovered long ago.</p>
+  <div class="scroll-hint">Follow the sheep<span class="arrow">↓</span></div>
+</header>
+
+<main>
+  <!-- BIG IDEA -->
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow reveal">The Big Idea</div>
+      <h2 class="section-title reveal">A wild animal + thousands of years of people choosing = the sheep</h2>
+      <div class="big-idea reveal">Today's fluffy sheep came from a tough, <b>hairy wild mountain animal</b> called the <b>mouflon</b>. It had no fluffy wool at all! Over <b>thousands of years</b>, people kept the woolliest, gentlest sheep and bred them — slowly turning a wild animal into the woolly sheep we know. 🐑</div>
+      <p class="lead reveal" style="margin-top:1.2rem">Remember Darwin in Lesson 2? In nature, <em>nature</em> does the choosing. But with sheep, <b>people</b> did the choosing instead. Same idea — different chooser!</p>
+    </div>
+  </section>
+
+  <!-- THE WILD ANCESTOR -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Meet the great-great-grandparent</div>
+      <h2 class="section-title reveal">The wild mouflon 🐏</h2>
+      <p class="lead reveal">Long, long ago there was no such thing as a fluffy sheep. Instead there was a wild animal called the <b>mouflon</b> (say it: <em>MOO-flon</em>). It lived on rocky mountains and it was nothing like a cuddly farm sheep:</p>
+      <div class="timeline">
+        <div class="tl-step reveal"><span class="emoji">🐏</span><h3>It had big curved horns</h3><p>Sharp, twisty horns for fighting and showing off — not soft and cuddly at all!</p></div>
+        <div class="tl-step reveal"><span class="emoji">🟤</span><h3>It had a coarse brown coat</h3><p>A rough, hairy coat — NOT thick white wool. And it shed its coat each spring, just like a dog.</p></div>
+        <div class="tl-step reveal"><span class="emoji">💨</span><h3>It was fast and shy</h3><p>Wild mouflon could run and leap across mountains to escape danger.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE STORY TIMELINE -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">The whole story</div>
+      <h2 class="section-title reveal">How the mouflon became a sheep ⏳</h2>
+      <div class="timeline">
+        <div class="tl-step reveal"><span class="when">About 11,000 years ago</span><h3>People start keeping wild sheep 🏕️</h3><p>In a place called the <b>Fertile Crescent</b> (today that's countries like Turkey, Iraq and Iran), people stopped only hunting wild mouflon and started <b>keeping</b> them for milk, meat and skins. Keeping wild animals and slowly taming them is called <b>domestication</b>.</p></div>
+        <div class="tl-step reveal"><span class="when">Over many lifetimes</span><h3>People pick the best ones 👨‍🌾</h3><p>Farmers noticed some sheep were calmer, or had softer, thicker coats. They let <em>those</em> sheep have babies. The babies were a bit woollier too. Do that again and again for hundreds of years…</p></div>
+        <div class="tl-step reveal"><span class="when">About 8,000 years ago (around 6000 BCE)</span><h3>Wool appears! 🧶</h3><p>Slowly the rough hair turned into thick, soft <b>wool</b> that kept growing instead of falling out. It took about <b>3,000 to 4,000 years</b> of careful choosing to make a truly woolly sheep!</p></div>
+        <div class="tl-step reveal"><span class="when">Today</span><h3>The sheep we know 🐑</h3><p>Now there are hundreds of kinds of sheep, all over the world — and they need people to shear (cut) their wool, because they can't shed it anymore.</p></div>
+      </div>
+      <p class="lead reveal" style="margin-top:1.2rem">When <b>people</b> do the choosing like this, it has a special name: <b>artificial selection</b>. ("Artificial" just means "made by people.") It's Darwin's idea — but with humans as the chooser.</p>
+    </div>
+  </section>
+
+  <!-- THE DOG PARALLEL -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">The same trick, again</div>
+      <h2 class="section-title reveal">People did this to wolves too! 🐺➡️🐕</h2>
+      <p class="lead reveal">Here's something amazing: people used the <b>exact same trick</b> to turn wild <b>wolves</b> into pet <b>dogs</b> — a very, very long time ago. They kept the friendliest wolves, who had friendlier puppies, and slowly… you get the chihuahua, the labrador, and every dog you've ever met!</p>
+      <p class="lead reveal">So a poodle and a woolly sheep have something in common: both are a <b>wild animal + lots and lots of human choosing</b>. 🐩🐑</p>
+      <div class="history-box reveal">
+        <span class="ico">📜</span>
+        <div><b>A bit of history:</b> Wool changed the world! Once people had woolly sheep, they could make warm clothes, blankets and cloth to trade. Wool helped whole cities and countries grow rich — long before there were shops or money like ours.</div>
+      </div>
+      <div class="nz-box reveal">
+        <span class="ico">🥝</span>
+        <div><b>Aotearoa connection:</b> The woolly sheep that all this choosing created is <b>exactly</b> the animal that would later be carried by ship all the way to New Zealand. How did it get here, and why are there SO many? That's the story of Lesson 4! 🚢</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOCAB -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Key Words</div>
+      <h2 class="section-title reveal">Tap a card to reveal the meaning 👆</h2>
+      <div class="vocab-grid">
+        <div class="vcard reveal"><div class="word">Mouflon</div><div class="hintline">tap to reveal</div><div class="meaning">The wild mountain animal that all sheep came from. Curved horns, hairy coat, no fluffy wool. 🐏</div></div>
+        <div class="vcard reveal"><div class="word">Domestication</div><div class="hintline">tap to reveal</div><div class="meaning">Slowly taming a wild animal so it can live with people. 🏕️</div></div>
+        <div class="vcard reveal"><div class="word">Artificial selection</div><div class="hintline">tap to reveal</div><div class="meaning">When <b>people</b> (not nature) choose which animals have babies, to get the features they want.</div></div>
+        <div class="vcard reveal"><div class="word">Fleece</div><div class="hintline">tap to reveal</div><div class="meaning">The woolly coat of a sheep. We cut it off (shear it) to make wool. 🧶</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WATCH -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Watch</div>
+      <h2 class="section-title reveal">See it for yourself</h2>
+      <div class="watch-list">
+        <a class="watch reveal" href="https://www.youtube.com/@SciShowKids" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>SciShow Kids</b><br><small>Search "where do farm animals come from" or "how dogs were domesticated".</small></span></a>
+        <a class="watch reveal" href="https://www.youtube.com/results?search_query=sheep+shearing+for+kids" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>Sheep shearing videos</b><br><small>See how a sheep's woolly fleece is carefully cut off — they don't mind!</small></span></a>
+      </div>
+      <p class="grownup reveal">👨‍👩‍👧 Grown-ups: please preview videos first to pick the best one for your kid.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Quiz Time</div>
+      <h2 class="section-title reveal">5 questions — the big one! 🌟</h2>
+      <p class="lead reveal">Pick an answer for each one. We'll tell you why it's right or wrong — getting it wrong is just learning!</p>
+      <div class="quiz reveal" id="quiz"></div>
+      <div class="done-banner" id="doneBanner">
+        <h3>🎉 You finished the big lesson!</h3>
+        <p>You can now answer the boy's question: a sheep comes from a wild mouflon, changed by thousands of years of people choosing. One lesson to go — bringing the sheep home to New Zealand!</p>
+        <a href="animals-lesson-4.html">Go to Lesson 4: Aotearoa's Animals →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCUSS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="discuss reveal">
+        <span class="ico">🗣️</span>
+        <div><b>Discuss with a friend or grown-up:</b> If you were a farmer 8,000 years ago and you wanted softer wool, which sheep would you choose to have babies — the rough hairy one or the soft fluffy one? What would happen if you kept choosing the fluffiest one every time?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GO DEEPER -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Go Deeper</div>
+      <h2 class="section-title reveal">A challenge for curious minds 🧠</h2>
+      <div class="deeper reveal">
+        <p><b>Draw the sheep's transformation.</b> On the left, draw the wild mouflon (curved horns, hairy, brown). On the right, draw a modern fluffy sheep. In the middle, draw the people doing the choosing. You've just drawn 11,000 years of history!</p>
+        <ul>
+          <li>🐩 Can you name three breeds of dog that look totally different? They ALL came from wolves — just like sheep all came from mouflon.</li>
+          <li>🧶 Find something woolly in your house (a jumper, a blanket). That wool grew on a sheep — whose great-great-grandparent was a wild mountain animal!</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Resources</div>
+      <h2 class="section-title reveal">Where to find out more</h2>
+      <ul class="resources reveal" style="margin-left:1.2rem">
+        <li><a href="https://en.wikipedia.org/wiki/Mouflon" target="_blank" rel="noopener">All about the mouflon (with grown-up help)</a></li>
+        <li><a href="https://teara.govt.nz/en/sheep-farming" target="_blank" rel="noopener">Te Ara – the story of sheep</a></li>
+        <li>Your local library: ask for a book about "farm animals long ago" or "how dogs became pets"</li>
+      </ul>
+
+      <div class="lesson-nav reveal">
+        <a href="animals-lesson-2.html">← Lesson 2</a>
+        <a class="next" href="animals-lesson-4.html">Next: Aotearoa's Animals →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="brand">antomatic.design</div>
+  <p>Crafted with curiosity · Wellington, NZ</p>
+</footer>
+
+<script>
+  const LESSON_KEY='animals-lesson-3-complete';
+  const bar=document.getElementById('progress-bar');
+  window.addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  document.querySelectorAll('.vcard').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+
+  const questions=[
+    {q:"What wild animal did all sheep come from?",
+     opts:["A wolf","The mouflon","A goat","A deer"],
+     correct:1,
+     good:"Yes! The mouflon — a wild mountain animal with curved horns and a hairy coat.",
+     bad:"Not quite. All sheep came from the <b>mouflon</b>, a wild mountain animal. (Wolves became dogs!)"},
+    {q:"Did the wild mouflon have thick fluffy wool?",
+     opts:["Yes, lots of it","No — it had a rough hairy coat that it shed","Yes, but only in winter","It had no coat at all"],
+     correct:1,
+     good:"Correct! The mouflon had a rough, hairy coat and shed it each spring — no fluffy wool at all.",
+     bad:"Nope! The wild mouflon had a <b>rough, hairy coat</b> with no fluffy wool. Wool came later, thanks to people."},
+    {q:"How did rough hair slowly turn into soft wool?",
+     opts:["By magic","People kept choosing the woolliest sheep to have babies","The weather got colder","Sheep decided to grow wool"],
+     correct:1,
+     good:"Exactly! People chose the woolliest, softest sheep again and again over thousands of years. That's artificial selection.",
+     bad:"Not magic! <b>People</b> kept choosing the woolliest sheep to have babies, over thousands of years."},
+    {q:"What does <b>domestication</b> mean?",
+     opts:["Hunting wild animals","Slowly taming a wild animal to live with people","Letting animals run free","Painting animals"],
+     correct:1,
+     good:"Right! Domestication is slowly taming a wild animal so it can live with people — like the mouflon becoming a sheep.",
+     bad:"Not quite. <b>Domestication</b> means slowly taming a wild animal so it can live with people."},
+    {q:"What other animal did people make using this same 'choosing' trick?",
+     opts:["The dog (from wolves)","The kiwi","The shark","The butterfly"],
+     correct:0,
+     good:"Yes! People turned wild wolves into every kind of dog — exactly the same trick they used on sheep.",
+     bad:"The answer is the <b>dog</b> — people turned wild wolves into dogs using the very same trick they used on sheep."}
+  ];
+
+  const quizEl=document.getElementById('quiz');
+  const answered=new Array(questions.length).fill(false);
+  questions.forEach((item,qi)=>{
+    const qDiv=document.createElement('div');qDiv.className='q';
+    qDiv.innerHTML=`<div class="qtext"><span class="n">${qi+1}</span>${item.q}</div>`;
+    item.opts.forEach((opt,oi)=>{const btn=document.createElement('button');btn.className='opt';btn.innerHTML=opt;
+      btn.addEventListener('click',()=>handleAnswer(qDiv,item,qi,oi,btn));qDiv.appendChild(btn);});
+    const ex=document.createElement('div');ex.className='explain';qDiv.appendChild(ex);quizEl.appendChild(qDiv);
+  });
+  function handleAnswer(qDiv,item,qi,oi,btn){
+    if(answered[qi])return;answered[qi]=true;
+    qDiv.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===item.correct)b.classList.add('correct');});
+    const ex=qDiv.querySelector('.explain');
+    if(oi===item.correct){ex.className='explain show good';ex.innerHTML='✅ '+item.good;}
+    else{btn.classList.add('wrong');ex.className='explain show bad';ex.innerHTML='💡 '+item.bad;}
+    checkDone();
+  }
+  function checkDone(){if(answered.every(a=>a)){localStorage.setItem(LESSON_KEY,'true');document.getElementById('doneBanner').classList.add('show');}}
+  if(localStorage.getItem(LESSON_KEY)==='true'){document.getElementById('doneBanner').classList.add('show');}
+</script>
+</body>
+</html>

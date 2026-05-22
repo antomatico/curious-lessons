@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4 · Aotearoa's Animals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f9f4e6;--cream-deep:#f1e9d2;--ink:#3d3228;--ink-soft:#5b6a52;
+    --wool:#fffdf7;--clover:#d6553f;
+    --accent:#4a8c5f;--accent-deep:#356b46;--accent-dark:#244d31;--accent-soft:#d9ecdd;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.7;overflow-x:hidden}
+  #progress-bar{position:fixed;top:0;left:0;height:6px;width:0;background:linear-gradient(90deg,var(--accent),var(--clover));z-index:999;transition:width .15s ease}
+  h1,h2,h3,.brand{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.15}
+  a{color:var(--accent-deep)}
+
+  .topbar{position:fixed;top:6px;left:0;width:100%;display:flex;justify-content:space-between;padding:.6rem 1.1rem;z-index:50;pointer-events:none}
+  .topbar a{pointer-events:auto;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);color:var(--accent-deep);font-family:'Fredoka',sans-serif;font-size:.9rem;padding:.35rem .9rem;border-radius:30px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+
+  .hero{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 1.25rem 2rem;position:relative;overflow:hidden;background:linear-gradient(180deg,#d9ecdd,var(--cream))}
+  .lesson-tag{font-family:'Fredoka',sans-serif;background:var(--accent);color:#fff;padding:.3rem 1rem;border-radius:30px;font-size:.95rem;transform:rotate(-2deg);box-shadow:0 4px 0 var(--accent-deep);margin-bottom:1.2rem}
+  .hero h1{font-size:clamp(2.1rem,5.5vw,3.6rem);color:var(--accent-dark);margin-bottom:.6rem}
+  .hero .sub{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--ink-soft);max-width:600px}
+  .hero .big-emoji{font-size:3.2rem;margin-bottom:1rem}
+  .hero .big-emoji span{display:inline-block;animation:hop 2.4s ease-in-out infinite}
+  .hero .big-emoji span:nth-child(2){animation-delay:.4s}
+  .hero .big-emoji span:nth-child(3){animation-delay:.8s}
+  @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .scroll-hint{margin-top:1.8rem;color:var(--accent-dark);font-family:'Fredoka',sans-serif;font-size:.95rem;animation:bob 1.8s ease-in-out infinite}
+  .scroll-hint .arrow{font-size:1.4rem;display:block}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  .wrap{max-width:780px;margin:0 auto;padding:0 1.25rem}
+  section.block{padding:3rem 0}
+  .eyebrow{font-family:'Fredoka',sans-serif;color:var(--clover);font-size:1rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.4rem}
+  h2.section-title{font-size:clamp(1.6rem,4vw,2.3rem);color:var(--accent-dark);margin-bottom:1rem}
+  p.lead{font-size:1.15rem;margin-bottom:1rem}
+  .big-idea{background:var(--accent-soft);border-left:8px solid var(--accent);border-radius:0 18px 18px 0;padding:1.5rem 1.7rem;font-size:1.25rem;font-family:'Fredoka',sans-serif;color:var(--accent-dark)}
+
+  .nz-box{background:var(--wool);border:3px dashed var(--accent);border-radius:20px;padding:1.4rem 1.6rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .nz-box .ico{font-size:2rem;flex:none}.nz-box b{color:var(--clover)}
+  .history-box{background:var(--cream-deep);border-radius:18px;padding:1.3rem 1.5rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .history-box .ico{font-size:1.8rem;flex:none}
+
+  /* 4 groups */
+  .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-top:1.2rem}
+  .group{background:var(--wool);border-radius:18px;padding:1.3rem;border:2px solid var(--cream-deep);box-shadow:0 5px 0 rgba(61,50,40,.08)}
+  .group .gico{font-size:2rem}
+  .group h3{font-size:1.2rem;margin:.3rem 0;color:var(--accent-dark)}
+  .group .tag{font-family:'Fredoka',sans-serif;font-size:.78rem;color:#fff;background:var(--accent);padding:.15rem .6rem;border-radius:20px}
+  .group.wild .tag{background:#c0703a}.group.dom .tag{background:#5aa3bd}.group.farm .tag{background:#c79a4a}
+  .group p{font-size:.95rem;color:var(--ink-soft);margin-top:.5rem}
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.2rem}
+  .vcard{background:var(--wool);border:2px solid var(--accent-soft);border-radius:18px;padding:1.2rem;cursor:pointer;text-align:center;transition:transform .15s ease;box-shadow:0 5px 0 rgba(61,50,40,.08);user-select:none}
+  .vcard:hover{transform:translateY(-3px)}
+  .vcard .word{font-family:'Fredoka',sans-serif;font-size:1.2rem;color:var(--accent-deep)}
+  .vcard .hintline{font-size:.85rem;color:var(--ink-soft);margin-top:.3rem}
+  .vcard .meaning{display:none;margin-top:.7rem;color:var(--ink);font-size:.98rem}
+  .vcard.open{background:var(--accent-soft)}.vcard.open .meaning{display:block}.vcard.open .hintline{display:none}
+
+  .watch-list{display:grid;gap:.8rem;margin-top:1rem}
+  .watch{display:flex;gap:.9rem;align-items:center;background:var(--wool);border-radius:16px;padding:1rem 1.2rem;text-decoration:none;color:inherit;border:2px solid var(--cream-deep);transition:transform .15s ease}
+  .watch:hover{transform:translateX(4px)}
+  .watch .play{font-size:1.6rem}.watch b{color:var(--accent-deep)}.watch small{color:var(--ink-soft)}
+  .grownup{font-size:.85rem;color:var(--ink-soft);font-style:italic;margin-top:.7rem}
+
+  .quiz{background:var(--wool);border-radius:22px;padding:1.6rem;border:2px solid var(--cream-deep);box-shadow:0 6px 0 rgba(61,50,40,.08)}
+  .q{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:2px dashed var(--cream-deep)}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q .qtext{font-family:'Fredoka',sans-serif;font-size:1.15rem;color:var(--accent-dark);margin-bottom:.8rem}
+  .q .qtext .n{background:var(--accent);color:#fff;border-radius:50%;padding:.1rem .6rem;margin-right:.4rem;font-size:.95rem}
+  .opt{display:block;width:100%;text-align:left;background:var(--cream);border:2px solid var(--cream-deep);border-radius:12px;padding:.7rem 1rem;margin-bottom:.5rem;cursor:pointer;font-family:'Nunito',sans-serif;font-size:1rem;color:var(--ink);transition:all .12s ease}
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{background:#cfe9d9;border-color:#4a9e6e;font-weight:700}
+  .opt.wrong{background:#f6d6cf;border-color:var(--clover)}
+  .opt:disabled{cursor:default}
+  .explain{display:none;margin-top:.6rem;padding:.8rem 1rem;border-radius:12px;font-size:.98rem}
+  .explain.show{display:block}.explain.good{background:#dff0e6;color:#256445}.explain.bad{background:#fbe7e2;color:#9a3a28}
+
+  .done-banner{display:none;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;border-radius:22px;padding:2rem;margin-top:2rem}
+  .done-banner.show{display:block;animation:pop .4s ease}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .done-banner h3{font-size:1.8rem;margin-bottom:.5rem}
+  .done-banner a{display:inline-block;margin-top:1rem;background:#fff;color:var(--accent-deep);text-decoration:none;font-family:'Fredoka',sans-serif;padding:.7rem 1.6rem;border-radius:30px;font-size:1.05rem;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+
+  .discuss{background:#fff3d6;border-radius:20px;padding:1.4rem 1.6rem;border:2px solid #f0dca0;display:flex;gap:1rem;align-items:flex-start;margin-top:1rem}
+  .discuss .ico{font-size:2rem}.discuss b{color:#9a7a1f}
+  .deeper{background:var(--accent-soft);border-radius:20px;padding:1.4rem 1.6rem}
+  .deeper ul{margin:.6rem 0 0 1.2rem}.deeper li{margin-bottom:.5rem}
+  .resources li{margin-bottom:.5rem}
+  .lesson-nav{display:flex;justify-content:space-between;gap:1rem;margin:2.5rem 0 1rem;flex-wrap:wrap}
+  .lesson-nav a{flex:1;min-width:160px;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);border-radius:16px;padding:1rem 1.2rem;color:var(--accent-deep);font-family:'Fredoka',sans-serif;text-align:center}
+  .lesson-nav a.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  footer{background:var(--accent-dark);color:#e0efe3;text-align:center;padding:2.5rem 1.25rem;margin-top:2rem}
+  footer .brand{font-size:1.3rem;color:#fff}footer p{font-size:.92rem;opacity:.85;margin-top:.3rem}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="topbar">
+  <a href="animals-lesson-3.html">← Lesson 3</a>
+  <a href="animals-index.html">All lessons →</a>
+</div>
+
+<header class="hero">
+  <div class="big-emoji"><span>🥝</span><span>🦎</span><span>🐑</span></div>
+  <span class="lesson-tag">Lesson 4 · The finale</span>
+  <h1>Aotearoa's Animals</h1>
+  <p class="sub">Native, wild, tame and farmed. Let's sort out New Zealand's animals — and follow the sheep all the way home to our green hills.</p>
+  <div class="scroll-hint">Come home<span class="arrow">↓</span></div>
+</header>
+
+<main>
+  <!-- BIG IDEA -->
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow reveal">The Big Idea</div>
+      <h2 class="section-title reveal">We can sort animals by how they got here and how they live with us</h2>
+      <div class="big-idea reveal">New Zealand's animals fall into <b>four groups</b>: <b>native</b> ones that evolved here, <b>wild</b> ones that people brought and now run loose, <b>tame</b> ones that live with people, and <b>farmed</b> ones raised for food and wool — like our sheep! 🐑</div>
+    </div>
+  </section>
+
+  <!-- FOUR GROUPS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Four groups</div>
+      <h2 class="section-title reveal">Let's sort them out 🗂️</h2>
+      <div class="groups">
+        <div class="group reveal"><span class="gico">🥝</span><span class="tag">Native</span><h3>Native</h3><p>Evolved right here over millions of years: <b>kiwi, kākāpō, takahē, tuatara</b>, and our little bats (<b>pekapeka</b>).</p></div>
+        <div class="group wild reveal"><span class="gico">🐀</span><span class="tag">Wild / Introduced</span><h3>Wild</h3><p>Brought by people, now living wild and causing trouble: <b>possums, rats, stoats</b>.</p></div>
+        <div class="group dom reveal"><span class="gico">🐕</span><span class="tag">Domesticated</span><h3>Tame</h3><p>Tame animals that live with people as pets or helpers: <b>dogs, cats, chickens</b>.</p></div>
+        <div class="group farm reveal"><span class="gico">🐑</span><span class="tag">Farmed</span><h3>Farmed</h3><p>Raised on farms for food, milk and wool: <b>sheep, cows, deer</b>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY NO MAMMALS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">A great mystery solved</div>
+      <h2 class="section-title reveal">Why are NZ's native animals mostly birds? 🐦</h2>
+      <p class="lead reveal">Remember in Lesson 1, we said New Zealand had almost no native furry land animals? Here's why. About <b>80 million years ago</b>, New Zealand broke away from the other land and floated off on its own — <em>before</em> most furry mammals even existed!</p>
+      <p class="lead reveal">With no cats, dogs, or other predators to run from, our <b>birds</b> were safe on the ground. Some, like the kiwi and kākāpō, even stopped flying and walked everywhere instead. They had no need for wings! It was a bird paradise. 🌿</p>
+      <div class="history-box reveal">
+        <span class="ico">⚠️</span>
+        <div><b>Why this matters today:</b> When people arrived, they brought animals like rats and stoats. Our birds had never learned to be afraid of them — so many became <b>endangered</b>. That's why New Zealanders work so hard to protect native animals at safe places like <b>Zealandia</b> in Wellington.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHEEP COMES HOME -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">The sheep comes home</div>
+      <h2 class="section-title reveal">How the sheep reached New Zealand 🚢</h2>
+      <p class="lead reveal">Remember the woolly sheep from Lesson 3 — the one people made from the wild mouflon? Eventually it travelled by ship right across the world to New Zealand. But its start here was <b>very</b> bumpy:</p>
+      <div class="nz-box reveal">
+        <span class="ico">🐑</span>
+        <div><b>A funny true story:</b> The famous explorer <b>Captain Cook</b> let the very first sheep loose in New Zealand on <b>20 May 1773</b> — but the two sheep ate the wrong plants and died within just a few days! Not a great start. Real sheep farming didn't take off until the <b>1850s</b>.</div>
+      </div>
+      <p class="lead reveal">After that, though, sheep <em>loved</em> New Zealand's green grassy hills. There got to be SO many that in <b>1982</b> there were about <b>70 million sheep</b> — that's roughly <b>20 sheep for every single person</b> in the country! 🤯</p>
+      <p class="lead reveal">Today there are fewer — about <b>23 million</b> — but that's still loads of sheep. So next time you see one on a hillside, you'll know the whole story: it's the great-great-(many greats!)-grandchild of a wild mouflon, changed by people over 11,000 years, and carried all the way to Aotearoa. <b>That</b> is where a sheep comes from!</p>
+    </div>
+  </section>
+
+  <!-- VOCAB -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Key Words</div>
+      <h2 class="section-title reveal">Tap a card to reveal the meaning 👆</h2>
+      <div class="vocab-grid">
+        <div class="vcard reveal"><div class="word">Native</div><div class="hintline">tap to reveal</div><div class="meaning">An animal that evolved in a place and belongs there naturally — like the kiwi in NZ. 🥝</div></div>
+        <div class="vcard reveal"><div class="word">Introduced</div><div class="hintline">tap to reveal</div><div class="meaning">An animal that people brought from somewhere else — like possums and rats.</div></div>
+        <div class="vcard reveal"><div class="word">Endangered</div><div class="hintline">tap to reveal</div><div class="meaning">When there are so few of an animal left that it might disappear forever. We protect them! 💚</div></div>
+        <div class="vcard reveal"><div class="word">Extinct</div><div class="hintline">tap to reveal</div><div class="meaning">When a kind of animal has died out completely and none are left — like the moa.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WATCH -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Watch</div>
+      <h2 class="section-title reveal">See it for yourself</h2>
+      <div class="watch-list">
+        <a class="watch reveal" href="https://www.doc.govt.nz/nature/native-animals/" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>DOC – Native Animals</b><br><small>Meet New Zealand's kiwi, kākāpō, tuatara and more.</small></span></a>
+        <a class="watch reveal" href="https://www.visitzealandia.com/" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>Zealandia (Wellington)</b><br><small>A safe valley where native birds are protected. Maybe you can visit!</small></span></a>
+      </div>
+      <p class="grownup reveal">👨‍👩‍👧 Grown-ups: please preview videos and pages first to pick the best one for your kid.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Quiz Time</div>
+      <h2 class="section-title reveal">5 last questions — you've got this! 🌟</h2>
+      <p class="lead reveal">Pick an answer for each one. We'll tell you why it's right or wrong — getting it wrong is just learning!</p>
+      <div class="quiz reveal" id="quiz"></div>
+      <div class="done-banner" id="doneBanner">
+        <h3>🎉🐑 You finished the whole course!</h3>
+        <p>You can now answer the boy's question all by yourself: a sheep comes from a wild mouflon, changed by people over thousands of years, and carried across the world to New Zealand. You're a real animal scientist now!</p>
+        <a href="animals-index.html">Back to all lessons →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCUSS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="discuss reveal">
+        <span class="ico">🗣️</span>
+        <div><b>Discuss with a friend or grown-up:</b> Can you sort these into native, wild, tame or farmed? — a kiwi, a pet cat, a possum, a cow. Why do you think New Zealand works so hard to protect its native birds from the introduced animals?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GO DEEPER -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Go Deeper</div>
+      <h2 class="section-title reveal">A challenge for curious minds 🧠</h2>
+      <div class="deeper reveal">
+        <p><b>Be an animal sorter.</b> Make four boxes on a piece of paper: Native, Wild, Tame, Farmed. Then write or draw as many New Zealand animals as you can think of in the right box. Which box is the sheep in?</p>
+        <ul>
+          <li>🥝 Find three native NZ birds. Can any of them fly? Why do you think some stopped flying?</li>
+          <li>🧮 If there were 70 million sheep and about 3 million people in 1982, roughly how many sheep was that <em>each</em>? (About 20!)</li>
+          <li>🌏 Trace the sheep's whole journey: wild mountains → farms → a ship → New Zealand hills. What a trip!</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Resources</div>
+      <h2 class="section-title reveal">Where to find out more</h2>
+      <ul class="resources reveal" style="margin-left:1.2rem">
+        <li><a href="https://nzhistory.govt.nz/first-sheep-released-in-new-zealand" target="_blank" rel="noopener">NZ History – New Zealand's first sheep</a></li>
+        <li><a href="https://www.doc.govt.nz/nature/native-animals/" target="_blank" rel="noopener">DOC – New Zealand native animals</a></li>
+        <li><a href="https://www.visitzealandia.com/" target="_blank" rel="noopener">Zealandia</a> – a wildlife sanctuary in Wellington you can visit</li>
+      </ul>
+
+      <div class="lesson-nav reveal">
+        <a href="animals-lesson-3.html">← Lesson 3</a>
+        <a class="next" href="animals-index.html">🏁 Back to all lessons</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="brand">antomatic.design</div>
+  <p>Crafted with curiosity · Wellington, NZ</p>
+</footer>
+
+<script>
+  const LESSON_KEY='animals-lesson-4-complete';
+  const bar=document.getElementById('progress-bar');
+  window.addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  document.querySelectorAll('.vcard').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+
+  const questions=[
+    {q:"Which of these is a <b>native</b> New Zealand animal?",
+     opts:["A sheep","A kiwi","A possum","A pet dog"],
+     correct:1,
+     good:"Yes! The kiwi evolved right here in New Zealand over millions of years — it's native.",
+     bad:"Not quite. The <b>kiwi</b> is native — it evolved here. Sheep, possums and dogs were all brought by people."},
+    {q:"Why does New Zealand have almost no native furry land animals?",
+     opts:["They all ran away","It broke off on its own before most mammals existed","It's too cold","People ate them all"],
+     correct:1,
+     good:"Correct! NZ floated off on its own about 80 million years ago, before most furry mammals existed.",
+     bad:"Not this one. New Zealand <b>broke away on its own</b> long ago, before most furry mammals existed — so birds ruled instead."},
+    {q:"What happened to Captain Cook's very first sheep in 1773?",
+     opts:["They had 100 babies","They ate the wrong plants and died in a few days","They swam back home","They became pets"],
+     correct:1,
+     good:"Right — a funny, sad start! The first two sheep ate poisonous plants and didn't last long.",
+     bad:"Actually the first two sheep <b>ate the wrong plants and died</b> within days. Sheep farming didn't really take off until the 1850s."},
+    {q:"About how many sheep were in New Zealand at the peak in 1982?",
+     opts:["About 100","About 1 million","About 70 million","About 5"],
+     correct:2,
+     good:"Wow — yes! About 70 million sheep, roughly 20 for every person in the country!",
+     bad:"It was huge — about <b>70 million</b> sheep in 1982! That's roughly 20 sheep for every person."},
+    {q:"So, where does a sheep <em>really</em> come from?",
+     opts:["A shop","A wild mouflon, changed by people over thousands of years","It was always a sheep","A chicken egg"],
+     correct:1,
+     good:"🎉 PERFECT! A sheep comes from the wild mouflon, changed by people over 11,000 years, and carried all the way to New Zealand. You answered the big question!",
+     bad:"Remember the whole story! A sheep comes from a <b>wild mouflon</b>, changed by people over thousands of years — then carried across the world to NZ."}
+  ];
+
+  const quizEl=document.getElementById('quiz');
+  const answered=new Array(questions.length).fill(false);
+  questions.forEach((item,qi)=>{
+    const qDiv=document.createElement('div');qDiv.className='q';
+    qDiv.innerHTML=`<div class="qtext"><span class="n">${qi+1}</span>${item.q}</div>`;
+    item.opts.forEach((opt,oi)=>{const btn=document.createElement('button');btn.className='opt';btn.innerHTML=opt;
+      btn.addEventListener('click',()=>handleAnswer(qDiv,item,qi,oi,btn));qDiv.appendChild(btn);});
+    const ex=document.createElement('div');ex.className='explain';qDiv.appendChild(ex);quizEl.appendChild(qDiv);
+  });
+  function handleAnswer(qDiv,item,qi,oi,btn){
+    if(answered[qi])return;answered[qi]=true;
+    qDiv.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===item.correct)b.classList.add('correct');});
+    const ex=qDiv.querySelector('.explain');
+    if(oi===item.correct){ex.className='explain show good';ex.innerHTML='✅ '+item.good;}
+    else{btn.classList.add('wrong');ex.className='explain show bad';ex.innerHTML='💡 '+item.bad;}
+    checkDone();
+  }
+  function checkDone(){if(answered.every(a=>a)){localStorage.setItem(LESSON_KEY,'true');document.getElementById('doneBanner').classList.add('show');}}
+  if(localStorage.getItem(LESSON_KEY)==='true'){document.getElementById('doneBanner').classList.add('show');}
+</script>
+</body>
+</html>

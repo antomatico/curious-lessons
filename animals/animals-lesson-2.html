@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 · Darwin's Big Idea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f9f4e6;--cream-deep:#f1e9d2;--ink:#3d3228;--ink-soft:#5a6470;
+    --wool:#fffdf7;--clover:#d6553f;
+    --accent:#5aa3bd;--accent-deep:#3f7c92;--accent-dark:#2c5d70;--accent-soft:#dbeef4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.7;overflow-x:hidden}
+  #progress-bar{position:fixed;top:0;left:0;height:6px;width:0;background:linear-gradient(90deg,var(--accent),var(--clover));z-index:999;transition:width .15s ease}
+  h1,h2,h3,.brand{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.15}
+  a{color:var(--accent-deep)}
+
+  .topbar{position:fixed;top:6px;left:0;width:100%;display:flex;justify-content:space-between;padding:.6rem 1.1rem;z-index:50;pointer-events:none}
+  .topbar a{pointer-events:auto;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);color:var(--accent-deep);font-family:'Fredoka',sans-serif;font-size:.9rem;padding:.35rem .9rem;border-radius:30px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+
+  .hero{min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 1.25rem 2rem;position:relative;overflow:hidden;background:linear-gradient(180deg,#cfe9f1,var(--cream))}
+  .waves{position:absolute;bottom:0;left:0;width:100%;line-height:0}
+  .lesson-tag{font-family:'Fredoka',sans-serif;background:var(--accent);color:#fff;padding:.3rem 1rem;border-radius:30px;font-size:.95rem;transform:rotate(-2deg);box-shadow:0 4px 0 var(--accent-deep);margin-bottom:1.2rem}
+  .hero h1{font-size:clamp(2.1rem,5.5vw,3.6rem);color:var(--accent-dark);margin-bottom:.6rem}
+  .hero .sub{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--ink-soft);max-width:600px}
+  .hero .big-emoji{font-size:3.4rem;margin-bottom:1rem;animation:sail 4s ease-in-out infinite}
+  @keyframes sail{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+  .scroll-hint{margin-top:1.8rem;color:var(--accent-dark);font-family:'Fredoka',sans-serif;font-size:.95rem;animation:bob 1.8s ease-in-out infinite}
+  .scroll-hint .arrow{font-size:1.4rem;display:block}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  .wrap{max-width:780px;margin:0 auto;padding:0 1.25rem}
+  section.block{padding:3rem 0}
+  .eyebrow{font-family:'Fredoka',sans-serif;color:var(--clover);font-size:1rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.4rem}
+  h2.section-title{font-size:clamp(1.6rem,4vw,2.3rem);color:var(--accent-dark);margin-bottom:1rem}
+  p.lead{font-size:1.15rem;margin-bottom:1rem}
+  .big-idea{background:var(--accent-soft);border-left:8px solid var(--accent);border-radius:0 18px 18px 0;padding:1.5rem 1.7rem;font-size:1.25rem;font-family:'Fredoka',sans-serif;color:var(--accent-dark)}
+
+  .nz-box{background:var(--wool);border:3px dashed var(--accent);border-radius:20px;padding:1.4rem 1.6rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .nz-box .ico{font-size:2rem;flex:none}
+  .nz-box b{color:var(--clover)}
+  .history-box{background:var(--cream-deep);border-radius:18px;padding:1.3rem 1.5rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .history-box .ico{font-size:1.8rem;flex:none}
+
+  /* finch beaks */
+  .pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.2rem}
+  .pair{background:var(--wool);border-radius:18px;padding:1.2rem;text-align:center;border:2px solid var(--cream-deep);box-shadow:0 5px 0 rgba(61,50,40,.08)}
+  .pair .faces{font-size:2.2rem}
+  .pair p{margin-top:.4rem;color:var(--ink-soft);font-size:.95rem}
+  .pair b{color:var(--accent-dark)}
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.2rem}
+  .vcard{background:var(--wool);border:2px solid var(--accent-soft);border-radius:18px;padding:1.2rem;cursor:pointer;text-align:center;transition:transform .15s ease;box-shadow:0 5px 0 rgba(61,50,40,.08);user-select:none}
+  .vcard:hover{transform:translateY(-3px)}
+  .vcard .word{font-family:'Fredoka',sans-serif;font-size:1.25rem;color:var(--accent-deep)}
+  .vcard .hintline{font-size:.85rem;color:var(--ink-soft);margin-top:.3rem}
+  .vcard .meaning{display:none;margin-top:.7rem;color:var(--ink);font-size:.98rem}
+  .vcard.open{background:var(--accent-soft)}
+  .vcard.open .meaning{display:block}
+  .vcard.open .hintline{display:none}
+
+  .watch-list{display:grid;gap:.8rem;margin-top:1rem}
+  .watch{display:flex;gap:.9rem;align-items:center;background:var(--wool);border-radius:16px;padding:1rem 1.2rem;text-decoration:none;color:inherit;border:2px solid var(--cream-deep);transition:transform .15s ease}
+  .watch:hover{transform:translateX(4px)}
+  .watch .play{font-size:1.6rem}
+  .watch b{color:var(--accent-deep)}
+  .watch small{color:var(--ink-soft)}
+  .grownup{font-size:.85rem;color:var(--ink-soft);font-style:italic;margin-top:.7rem}
+
+  .quiz{background:var(--wool);border-radius:22px;padding:1.6rem;border:2px solid var(--cream-deep);box-shadow:0 6px 0 rgba(61,50,40,.08)}
+  .q{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:2px dashed var(--cream-deep)}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q .qtext{font-family:'Fredoka',sans-serif;font-size:1.15rem;color:var(--accent-dark);margin-bottom:.8rem}
+  .q .qtext .n{background:var(--accent);color:#fff;border-radius:50%;padding:.1rem .6rem;margin-right:.4rem;font-size:.95rem}
+  .opt{display:block;width:100%;text-align:left;background:var(--cream);border:2px solid var(--cream-deep);border-radius:12px;padding:.7rem 1rem;margin-bottom:.5rem;cursor:pointer;font-family:'Nunito',sans-serif;font-size:1rem;color:var(--ink);transition:all .12s ease}
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{background:#cfe9d9;border-color:#4a9e6e;font-weight:700}
+  .opt.wrong{background:#f6d6cf;border-color:var(--clover)}
+  .opt:disabled{cursor:default}
+  .explain{display:none;margin-top:.6rem;padding:.8rem 1rem;border-radius:12px;font-size:.98rem}
+  .explain.show{display:block}
+  .explain.good{background:#dff0e6;color:#256445}
+  .explain.bad{background:#fbe7e2;color:#9a3a28}
+
+  .done-banner{display:none;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;border-radius:22px;padding:2rem;margin-top:2rem}
+  .done-banner.show{display:block;animation:pop .4s ease}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .done-banner h3{font-size:1.8rem;margin-bottom:.5rem}
+  .done-banner a{display:inline-block;margin-top:1rem;background:#fff;color:var(--accent-deep);text-decoration:none;font-family:'Fredoka',sans-serif;padding:.7rem 1.6rem;border-radius:30px;font-size:1.05rem;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+
+  .discuss{background:#fff3d6;border-radius:20px;padding:1.4rem 1.6rem;border:2px solid #f0dca0;display:flex;gap:1rem;align-items:flex-start;margin-top:1rem}
+  .discuss .ico{font-size:2rem}
+  .discuss b{color:#9a7a1f}
+
+  .deeper{background:var(--accent-soft);border-radius:20px;padding:1.4rem 1.6rem}
+  .deeper ul{margin:.6rem 0 0 1.2rem}.deeper li{margin-bottom:.5rem}
+  .resources li{margin-bottom:.5rem}
+  .lesson-nav{display:flex;justify-content:space-between;gap:1rem;margin:2.5rem 0 1rem;flex-wrap:wrap}
+  .lesson-nav a{flex:1;min-width:160px;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);border-radius:16px;padding:1rem 1.2rem;color:var(--accent-deep);font-family:'Fredoka',sans-serif;text-align:center}
+  .lesson-nav a.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  footer{background:var(--accent-dark);color:#e3eef2;text-align:center;padding:2.5rem 1.25rem;margin-top:2rem}
+  footer .brand{font-size:1.3rem;color:#fff}
+  footer p{font-size:.92rem;opacity:.85;margin-top:.3rem}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="topbar">
+  <a href="animals-lesson-1.html">← Lesson 1</a>
+  <a href="animals-lesson-3.html">Next: The Sheep →</a>
+</div>
+
+<header class="hero">
+  <div class="big-emoji">⛵🔭</div>
+  <span class="lesson-tag">Lesson 2</span>
+  <h1>Darwin's Big Idea</h1>
+  <p class="sub">Meet a curious man who sailed around the whole world — and worked out one of the most important ideas ever: how animals slowly change.</p>
+  <div class="scroll-hint">Set sail<span class="arrow">↓</span></div>
+</header>
+
+<main>
+  <!-- BIG IDEA -->
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow reveal">The Big Idea</div>
+      <h2 class="section-title reveal">Animals slowly change over a very, very long time</h2>
+      <div class="big-idea reveal">Animals don't stay exactly the same forever. Bit by bit, over <b>thousands and thousands</b> of years, they change. The ones that fit their home best have the most babies — and those babies pass on what made them fit. This slow change is called <b>evolution</b>. 🐢</div>
+      <p class="lead reveal" style="margin-top:1.2rem">Here's the tricky part: this happens so slowly that you'd never see it in one lifetime. It takes longer than your whole family — your parents, grandparents, and <em>their</em> grandparents, going back hundreds of times. That's why nobody worked it out for so long!</p>
+    </div>
+  </section>
+
+  <!-- DARWIN -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Meet the man</div>
+      <h2 class="section-title reveal">Who was Charles Darwin? 🧔</h2>
+      <p class="lead reveal">Charles Darwin was a scientist who loved nature. In <b>1831</b>, when he was a young man, he climbed aboard a ship called <b>HMS Beagle</b> and sailed all the way around the world. It took almost <b>five years</b>!</p>
+      <p class="lead reveal">Everywhere the ship stopped, Darwin collected things — beetles, shells, bones, rocks, even little lizards. He kept asking himself one question: <em>"Why are the animals here a bit different from the animals over there?"</em></p>
+
+      <div class="eyebrow reveal" style="margin-top:2rem">The famous clue</div>
+      <h2 class="section-title reveal">The finches with different beaks 🐦</h2>
+      <p class="lead reveal">On some islands called the <b>Galápagos</b>, Darwin found little birds called finches. They were almost the same — except their <b>beaks</b> were all different shapes, depending on what food was on each island:</p>
+      <div class="pairs">
+        <div class="pair reveal"><div class="faces">🐦</div><p><b>Big strong beak</b><br>for cracking hard seeds</p></div>
+        <div class="pair reveal"><div class="faces">🐦</div><p><b>Thin pointy beak</b><br>for picking tiny insects</p></div>
+        <div class="pair reveal"><div class="faces">🐦</div><p><b>Medium beak</b><br>for soft fruit and buds</p></div>
+      </div>
+      <p class="lead reveal" style="margin-top:1.2rem">Darwin realised the birds had slowly changed to suit their island's food. The ones with the <em>right</em> beak found more to eat, stayed strong, and had more babies. Over time, the whole island's finches ended up with that beak. That's <b>natural selection</b> — nature is the "chooser"!</p>
+      <p class="lead reveal">In <b>1859</b>, Darwin wrote a famous book about it called <em>On the Origin of Species</em>. It changed how the whole world thinks about animals.</p>
+
+      <div class="nz-box reveal">
+        <span class="ico">🥝</span>
+        <div><b>Aotearoa connection — a true and funny story:</b> Darwin's ship actually stopped in <b>New Zealand in December 1835</b>! He visited the Bay of Islands and collected a little <b>gecko</b>. But poor Darwin was tired and homesick after years at sea, and he grumpily wrote in his diary that New Zealand was <em>"not a pleasant place."</em> 😆 (Don't worry — lots of people disagree with him now!)</div>
+      </div>
+      <div class="history-box reveal">
+        <span class="ico">📜</span>
+        <div><b>A bit of history:</b> Darwin's big idea was a huge surprise in his time, and many people argued about it. Today, scientists all over the world have tested it again and again — and evolution is one of the best-understood ideas in all of science.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOCAB -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Key Words</div>
+      <h2 class="section-title reveal">Tap a card to reveal the meaning 👆</h2>
+      <div class="vocab-grid">
+        <div class="vcard reveal"><div class="word">Evolution</div><div class="hintline">tap to reveal</div><div class="meaning">The slow change of living things over a very, very long time. 🐟→🦎</div></div>
+        <div class="vcard reveal"><div class="word">Natural selection</div><div class="hintline">tap to reveal</div><div class="meaning">Nature's way of "choosing": the animals that fit best survive and have the most babies.</div></div>
+        <div class="vcard reveal"><div class="word">Adapt</div><div class="hintline">tap to reveal</div><div class="meaning">To slowly change to suit your home — like finches getting the right beak for their food.</div></div>
+        <div class="vcard reveal"><div class="word">Naturalist</div><div class="hintline">tap to reveal</div><div class="meaning">A scientist who studies nature, plants and animals — like Darwin. 🔍</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WATCH -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Watch</div>
+      <h2 class="section-title reveal">See it for yourself</h2>
+      <div class="watch-list">
+        <a class="watch reveal" href="https://www.youtube.com/@SciShowKids" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>SciShow Kids</b><br><small>Search "Charles Darwin" and "natural selection for kids".</small></span></a>
+        <a class="watch reveal" href="https://www.bbc.co.uk/bitesize" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>BBC Bitesize</b><br><small>Simple explanations of Darwin, evolution and adaptation.</small></span></a>
+      </div>
+      <p class="grownup reveal">👨‍👩‍👧 Grown-ups: please preview videos first to pick the best one for your kid.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Quiz Time</div>
+      <h2 class="section-title reveal">5 questions — give them a go! 🌟</h2>
+      <p class="lead reveal">Pick an answer for each one. We'll tell you why it's right or wrong — getting it wrong is just learning!</p>
+      <div class="quiz reveal" id="quiz"></div>
+      <div class="done-banner" id="doneBanner">
+        <h3>🎉 You finished Lesson 2!</h3>
+        <p>You now understand Darwin's big idea: animals slowly change to fit their world. Next comes the BIG one — the sheep's own story!</p>
+        <a href="animals-lesson-3.html">Go to Lesson 3: Where Does a Sheep Really Come From? →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCUSS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="discuss reveal">
+        <span class="ico">🗣️</span>
+        <div><b>Discuss with a friend or grown-up:</b> If an island only had really hard nuts to eat, what kind of beak would help a bird survive? What might happen to birds with thin, weak beaks? This is exactly the puzzle Darwin solved!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GO DEEPER -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Go Deeper</div>
+      <h2 class="section-title reveal">A challenge for curious minds 🧠</h2>
+      <div class="deeper reveal">
+        <p><b>Be a beak detective.</b> Try picking up different things using different "beaks": tweezers, a spoon, and chopsticks. Which "beak" is best for picking up rice? Which is best for scooping water? This is how different beaks help different birds!</p>
+        <ul>
+          <li>🦎 Darwin collected a gecko in New Zealand. Can you find a picture of a New Zealand gecko? How is it different from other lizards?</li>
+          <li>⏳ Try to imagine how long "thousands of years" is. If one year was one step, how far would you have to walk?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Resources</div>
+      <h2 class="section-title reveal">Where to find out more</h2>
+      <ul class="resources reveal" style="margin-left:1.2rem">
+        <li><a href="https://nzhistory.govt.nz/charles-darwin-leaves-nz-noting-that-it-is-not-a-pleasant-place" target="_blank" rel="noopener">NZ History – Darwin's visit to New Zealand</a></li>
+        <li><a href="https://www.nhm.ac.uk/discover/charles-darwin.html" target="_blank" rel="noopener">Natural History Museum – Charles Darwin for kids</a></li>
+        <li>Your local library: ask for a children's book about Charles Darwin or the Galápagos Islands</li>
+      </ul>
+
+      <div class="lesson-nav reveal">
+        <a href="animals-lesson-1.html">← Lesson 1</a>
+        <a class="next" href="animals-lesson-3.html">Next: The Sheep's Story →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="brand">antomatic.design</div>
+  <p>Crafted with curiosity · Wellington, NZ</p>
+</footer>
+
+<script>
+  const LESSON_KEY='animals-lesson-2-complete';
+  const bar=document.getElementById('progress-bar');
+  window.addEventListener('scroll',()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  document.querySelectorAll('.vcard').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+
+  const questions=[
+    {q:"What does <b>evolution</b> mean?",
+     opts:["Animals change quickly overnight","Living things slowly change over a very long time","Animals never change","Animals turn into plants"],
+     correct:1,
+     good:"Yes! Evolution is the slow change of living things over thousands and thousands of years.",
+     bad:"Not quite. Evolution is <b>slow</b> change over a very, very long time — far longer than one lifetime."},
+    {q:"What was the name of Darwin's ship?",
+     opts:["The Titanic","HMS Beagle","The Endeavour","The Mayflower"],
+     correct:1,
+     good:"Correct! Darwin sailed around the world on HMS Beagle for almost five years.",
+     bad:"Nope — Darwin sailed on <b>HMS Beagle</b>. (The Endeavour was Captain Cook's ship!)"},
+    {q:"What did Darwin notice about the Galápagos finches?",
+     opts:["They were all exactly the same","Their beaks were different shapes for different foods","They couldn't fly","They were all blue"],
+     correct:1,
+     good:"Exactly! Their beaks had slowly changed to suit the food on each island. A brilliant clue!",
+     bad:"Not this one. Darwin saw their <b>beaks</b> were different shapes, matched to the food on each island."},
+    {q:"In <b>natural selection</b>, who or what is the 'chooser'?",
+     opts:["People","Nature","The finches themselves","Nobody"],
+     correct:1,
+     good:"Right! In natural selection, <b>nature</b> does the choosing — whoever fits best survives and has more babies.",
+     bad:"Close, but in <b>natural</b> selection it's <b>nature</b> doing the choosing. (People can be the chooser too — that's a different kind, coming up in Lesson 3!)"},
+    {q:"What did Darwin grumpily say about New Zealand in 1835?",
+     opts:["\"The best place ever!\"","\"It is not a pleasant place\"","\"Too many sheep\"","He never went there"],
+     correct:1,
+     good:"Ha — yes! Tired and homesick, Darwin wrote it was 'not a pleasant place.' Lots of people disagree with him today!",
+     bad:"Actually he was a bit grumpy and wrote it was <b>'not a pleasant place'</b> — he was tired after years at sea. He did visit, in 1835!"}
+  ];
+
+  const quizEl=document.getElementById('quiz');
+  const answered=new Array(questions.length).fill(false);
+  questions.forEach((item,qi)=>{
+    const qDiv=document.createElement('div');qDiv.className='q';
+    qDiv.innerHTML=`<div class="qtext"><span class="n">${qi+1}</span>${item.q}</div>`;
+    item.opts.forEach((opt,oi)=>{const btn=document.createElement('button');btn.className='opt';btn.innerHTML=opt;
+      btn.addEventListener('click',()=>handleAnswer(qDiv,item,qi,oi,btn));qDiv.appendChild(btn);});
+    const ex=document.createElement('div');ex.className='explain';qDiv.appendChild(ex);quizEl.appendChild(qDiv);
+  });
+  function handleAnswer(qDiv,item,qi,oi,btn){
+    if(answered[qi])return;answered[qi]=true;
+    qDiv.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===item.correct)b.classList.add('correct');});
+    const ex=qDiv.querySelector('.explain');
+    if(oi===item.correct){ex.className='explain show good';ex.innerHTML='✅ '+item.good;}
+    else{btn.classList.add('wrong');ex.className='explain show bad';ex.innerHTML='💡 '+item.bad;}
+    checkDone();
+  }
+  function checkDone(){if(answered.every(a=>a)){localStorage.setItem(LESSON_KEY,'true');document.getElementById('doneBanner').classList.add('show');}}
+  if(localStorage.getItem(LESSON_KEY)==='true'){document.getElementById('doneBanner').classList.add('show');}
+</script>
+</body>
+</html>

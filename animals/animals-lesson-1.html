@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 · Every Animal Has a Family</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f9f4e6;--cream-deep:#f1e9d2;--ink:#3d3228;--ink-soft:#6a5b49;
+    --wool:#fffdf7;--clover:#d6553f;
+    --accent:#6b8e4e;--accent-deep:#4a6b35;--accent-dark:#37502a;--accent-soft:#e4efd6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.7;overflow-x:hidden}
+  #progress-bar{position:fixed;top:0;left:0;height:6px;width:0;background:linear-gradient(90deg,var(--accent),var(--clover));z-index:999;transition:width .15s ease}
+  h1,h2,h3,.brand{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.15}
+  a{color:var(--accent-deep)}
+
+  .topbar{position:fixed;top:6px;left:0;width:100%;display:flex;justify-content:space-between;
+    padding:.6rem 1.1rem;z-index:50;pointer-events:none}
+  .topbar a{pointer-events:auto;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);
+    color:var(--accent-deep);font-family:'Fredoka',sans-serif;font-size:.9rem;padding:.35rem .9rem;border-radius:30px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+
+  .hero{min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:5rem 1.25rem 2rem;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,#eaf4e6,var(--cream))}
+  .lesson-tag{font-family:'Fredoka',sans-serif;background:var(--accent);color:#fff;padding:.3rem 1rem;
+    border-radius:30px;font-size:.95rem;transform:rotate(-2deg);box-shadow:0 4px 0 var(--accent-deep);margin-bottom:1.2rem}
+  .hero h1{font-size:clamp(2.1rem,5.5vw,3.6rem);color:var(--accent-dark);margin-bottom:.6rem}
+  .hero .sub{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--ink-soft);max-width:600px}
+  .hero .big-emoji{font-size:3.4rem;margin-bottom:1rem;animation:bobble 3s ease-in-out infinite}
+  @keyframes bobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .scroll-hint{margin-top:1.8rem;color:var(--accent-dark);font-family:'Fredoka',sans-serif;font-size:.95rem;animation:bob 1.8s ease-in-out infinite}
+  .scroll-hint .arrow{font-size:1.4rem;display:block}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  .wrap{max-width:780px;margin:0 auto;padding:0 1.25rem}
+  section.block{padding:3rem 0}
+  .eyebrow{font-family:'Fredoka',sans-serif;color:var(--clover);font-size:1rem;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.4rem}
+  h2.section-title{font-size:clamp(1.6rem,4vw,2.3rem);color:var(--accent-dark);margin-bottom:1rem}
+  p.lead{font-size:1.15rem;margin-bottom:1rem}
+  .big-idea{background:var(--accent-soft);border-left:8px solid var(--accent);border-radius:0 18px 18px 0;
+    padding:1.5rem 1.7rem;font-size:1.25rem;font-family:'Fredoka',sans-serif;color:var(--accent-dark)}
+
+  /* fun fact / NZ box */
+  .nz-box{background:var(--wool);border:3px dashed var(--accent);border-radius:20px;padding:1.4rem 1.6rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .nz-box .ico{font-size:2rem;flex:none}
+  .nz-box b{color:var(--clover)}
+  .history-box{background:var(--cream-deep);border-radius:18px;padding:1.3rem 1.5rem;margin:1.4rem 0;display:flex;gap:1rem;align-items:flex-start}
+  .history-box .ico{font-size:1.8rem;flex:none}
+
+  /* connection grid */
+  .pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1.2rem}
+  .pair{background:var(--wool);border-radius:18px;padding:1.2rem;text-align:center;border:2px solid var(--cream-deep);box-shadow:0 5px 0 rgba(61,50,40,.08)}
+  .pair .faces{font-size:2.2rem}
+  .pair .arrow{color:var(--accent);font-weight:700}
+  .pair p{margin-top:.4rem;color:var(--ink-soft);font-size:.98rem}
+  .pair b{color:var(--accent-dark)}
+
+  /* vocab */
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.2rem}
+  .vcard{background:var(--wool);border:2px solid var(--accent-soft);border-radius:18px;padding:1.2rem;cursor:pointer;
+    text-align:center;transition:transform .15s ease,box-shadow .15s ease;box-shadow:0 5px 0 rgba(61,50,40,.08);user-select:none}
+  .vcard:hover{transform:translateY(-3px)}
+  .vcard .word{font-family:'Fredoka',sans-serif;font-size:1.25rem;color:var(--accent-deep)}
+  .vcard .hintline{font-size:.85rem;color:var(--ink-soft);margin-top:.3rem}
+  .vcard .meaning{display:none;margin-top:.7rem;color:var(--ink);font-size:.98rem}
+  .vcard.open{background:var(--accent-soft)}
+  .vcard.open .meaning{display:block}
+  .vcard.open .hintline{display:none}
+
+  /* watch */
+  .watch-list{display:grid;gap:.8rem;margin-top:1rem}
+  .watch{display:flex;gap:.9rem;align-items:center;background:var(--wool);border-radius:16px;padding:1rem 1.2rem;text-decoration:none;color:inherit;border:2px solid var(--cream-deep);transition:transform .15s ease}
+  .watch:hover{transform:translateX(4px)}
+  .watch .play{font-size:1.6rem}
+  .watch b{color:var(--accent-deep)}
+  .watch small{color:var(--ink-soft)}
+  .grownup{font-size:.85rem;color:var(--ink-soft);font-style:italic;margin-top:.7rem}
+
+  /* quiz */
+  .quiz{background:var(--wool);border-radius:22px;padding:1.6rem;border:2px solid var(--cream-deep);box-shadow:0 6px 0 rgba(61,50,40,.08)}
+  .q{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:2px dashed var(--cream-deep)}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .q .qtext{font-family:'Fredoka',sans-serif;font-size:1.15rem;color:var(--accent-dark);margin-bottom:.8rem}
+  .q .qtext .n{background:var(--accent);color:#fff;border-radius:50%;padding:.1rem .6rem;margin-right:.4rem;font-size:.95rem}
+  .opt{display:block;width:100%;text-align:left;background:var(--cream);border:2px solid var(--cream-deep);
+    border-radius:12px;padding:.7rem 1rem;margin-bottom:.5rem;cursor:pointer;font-family:'Nunito',sans-serif;font-size:1rem;color:var(--ink);transition:all .12s ease}
+  .opt:hover{border-color:var(--accent)}
+  .opt.correct{background:#d8efc4;border-color:var(--accent);font-weight:700}
+  .opt.wrong{background:#f6d6cf;border-color:var(--clover)}
+  .opt:disabled{cursor:default}
+  .explain{display:none;margin-top:.6rem;padding:.8rem 1rem;border-radius:12px;font-size:.98rem}
+  .explain.show{display:block}
+  .explain.good{background:var(--accent-soft);color:var(--accent-dark)}
+  .explain.bad{background:#fbe7e2;color:#9a3a28}
+
+  .done-banner{display:none;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+    color:#fff;border-radius:22px;padding:2rem;margin-top:2rem}
+  .done-banner.show{display:block;animation:pop .4s ease}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+  .done-banner h3{font-size:1.8rem;margin-bottom:.5rem}
+  .done-banner a{display:inline-block;margin-top:1rem;background:#fff;color:var(--accent-deep);
+    text-decoration:none;font-family:'Fredoka',sans-serif;padding:.7rem 1.6rem;border-radius:30px;font-size:1.05rem;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+
+  /* discuss */
+  .discuss{background:#fff3d6;border-radius:20px;padding:1.4rem 1.6rem;border:2px solid #f0dca0;display:flex;gap:1rem;align-items:flex-start;margin-top:1rem}
+  .discuss .ico{font-size:2rem}
+  .discuss b{color:#9a7a1f}
+
+  /* go deeper */
+  .deeper{background:var(--accent-soft);border-radius:20px;padding:1.4rem 1.6rem}
+  .deeper ul{margin:.6rem 0 0 1.2rem}
+  .deeper li{margin-bottom:.5rem}
+
+  .resources li{margin-bottom:.5rem}
+  .lesson-nav{display:flex;justify-content:space-between;gap:1rem;margin:2.5rem 0 1rem;flex-wrap:wrap}
+  .lesson-nav a{flex:1;min-width:160px;text-decoration:none;background:var(--wool);border:2px solid var(--accent-soft);
+    border-radius:16px;padding:1rem 1.2rem;color:var(--accent-deep);font-family:'Fredoka',sans-serif;text-align:center}
+  .lesson-nav a.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  footer{background:var(--accent-dark);color:#e9f0df;text-align:center;padding:2.5rem 1.25rem;margin-top:2rem}
+  footer .brand{font-size:1.3rem;color:#fff}
+  footer p{font-size:.92rem;opacity:.85;margin-top:.3rem}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="topbar">
+  <a href="animals-index.html">← All lessons</a>
+  <a href="animals-lesson-2.html">Next: Darwin →</a>
+</div>
+
+<header class="hero">
+  <div class="big-emoji">🐱🦁</div>
+  <span class="lesson-tag">Lesson 1</span>
+  <h1>Every Animal Has a Family</h1>
+  <p class="sub">A house cat and a lion are cousins. So are a dog and a wolf. Let's find out how every animal on Earth is part of one giant family.</p>
+  <div class="scroll-hint">Scroll to start<span class="arrow">↓</span></div>
+</header>
+
+<main>
+  <!-- BIG IDEA -->
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow reveal">The Big Idea</div>
+      <h2 class="section-title reveal">Animals come in kinds — and the kinds are related</h2>
+      <div class="big-idea reveal">Every animal belongs to a <b>kind</b>, called a <b>species</b>. And animals that look alike are usually <b>cousins</b> — they share an old, old grandparent. Join the dots far enough back, and <em>all</em> living things are one enormous family. 🌳</div>
+      <p class="lead reveal" style="margin-top:1.2rem">Think about your own family. You might look a bit like your cousin because you share the same grandparents. Animals work the same way! A lion and your pet cat look alike because, long ago, they shared the same animal grandparent.</p>
+      <p class="lead reveal">Scientists love to sort animals into groups — like sorting LEGO by colour. The smallest group is a <b>species</b>: one kind of animal whose babies grow up to be the same kind. A sheep makes baby sheep. A penguin makes baby penguins. Easy!</p>
+    </div>
+  </section>
+
+  <!-- CONNECTIONS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Spot the family</div>
+      <h2 class="section-title reveal">Surprising animal cousins</h2>
+      <p class="lead reveal">Some animals are related in ways that might surprise you:</p>
+      <div class="pairs">
+        <div class="pair reveal"><div class="faces">🐱 <span class="arrow">↔</span> 🦁</div><p><b>Cat & Lion</b><br>Both are cats! One just got a lot bigger and louder.</p></div>
+        <div class="pair reveal"><div class="faces">🐕 <span class="arrow">↔</span> 🐺</div><p><b>Dog & Wolf</b><br>Your fluffy dog's great-great-grandparent was a wild wolf.</p></div>
+        <div class="pair reveal"><div class="faces">🐑 <span class="arrow">↔</span> 🐐</div><p><b>Sheep & Goat</b><br>Close cousins — like brother and sister kinds.</p></div>
+        <div class="pair reveal"><div class="faces">🐔 <span class="arrow">↔</span> 🦖</div><p><b>Chicken & Dinosaur</b><br>Birds are the great-grandchildren of dinosaurs. Really!</p></div>
+      </div>
+      <div class="nz-box reveal">
+        <span class="ico">🥝</span>
+        <div><b>Aotearoa connection:</b> New Zealand has the strangest animal family of all. For millions of years almost <b>no furry land animals</b> lived here — just birds, a lizard-like reptile called the <b>tuatara</b>, and two tiny <b>bats</b> (we call them <em>pekapeka</em>). That's why we have amazing birds like the kiwi and kākāpō. We'll find out why in Lesson 4!</div>
+      </div>
+      <div class="history-box reveal">
+        <span class="ico">📜</span>
+        <div><b>A bit of history:</b> People have been sorting animals into family groups for thousands of years. About 250 years ago a scientist named <b>Carl Linnaeus</b> invented the tidy naming system we still use today. The word "species" simply means "a kind."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOCAB -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Key Words</div>
+      <h2 class="section-title reveal">Tap a card to reveal the meaning 👆</h2>
+      <div class="vocab-grid">
+        <div class="vcard reveal"><div class="word">Species</div><div class="hintline">tap to reveal</div><div class="meaning">A <b>kind</b> of animal. Babies of one species grow up to be the same species. 🐑→🐑</div></div>
+        <div class="vcard reveal"><div class="word">Ancestor</div><div class="hintline">tap to reveal</div><div class="meaning">A relative from long ago — like a great-great-great-grandparent. 🌳</div></div>
+        <div class="vcard reveal"><div class="word">Cousin (in animals)</div><div class="hintline">tap to reveal</div><div class="meaning">An animal that shares an old ancestor with another — like cats and lions.</div></div>
+        <div class="vcard reveal"><div class="word">Mammal</div><div class="hintline">tap to reveal</div><div class="meaning">An animal with fur or hair that feeds its babies milk. Sheep, dogs, cats and YOU are mammals! 🍼</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WATCH -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Watch</div>
+      <h2 class="section-title reveal">See it for yourself</h2>
+      <div class="watch-list">
+        <a class="watch reveal" href="https://www.youtube.com/@SciShowKids" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>SciShow Kids</b><br><small>Search "what is a mammal?" and "animal groups" for short, friendly clips.</small></span></a>
+        <a class="watch reveal" href="https://www.bbcearth.com/" target="_blank" rel="noopener"><span class="play">▶️</span><span><b>BBC Earth</b><br><small>Amazing videos of real animals and their families around the world.</small></span></a>
+      </div>
+      <p class="grownup reveal">👨‍👩‍👧 Grown-ups: please preview videos first to pick the best one for your kid.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Quiz Time</div>
+      <h2 class="section-title reveal">5 questions — give them a go! 🌟</h2>
+      <p class="lead reveal">Pick an answer for each one. We'll tell you why it's right or wrong — getting it wrong is just learning!</p>
+      <div class="quiz reveal" id="quiz"></div>
+      <div class="done-banner" id="doneBanner">
+        <h3>🎉 You finished Lesson 1!</h3>
+        <p>You now know what a species is, and that animals come in families. Ready for the big one — how animals <em>change</em>?</p>
+        <a href="animals-lesson-2.html">Go to Lesson 2: Darwin's Big Idea →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCUSS -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="discuss reveal">
+        <span class="ico">🗣️</span>
+        <div><b>Discuss with a friend or grown-up:</b> Can you think of two animals that look alike and might be cousins? What about two that look completely different but are both mammals? (Hint: a mouse and a whale are both mammals!)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GO DEEPER -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Go Deeper</div>
+      <h2 class="section-title reveal">A challenge for curious minds 🧠</h2>
+      <div class="deeper reveal">
+        <p><b>Draw a family tree of animals.</b> Put a cat and a lion on two branches that join together lower down. Then add a dog and a wolf on their own joined branches. Can you draw where sheep and goats would go?</p>
+        <ul>
+          <li>🔎 Look out a window or in a park. How many different <b>species</b> can you spot in 5 minutes?</li>
+          <li>🐑 Which group do you think a sheep belongs to — mammal, bird, or fish? (Answer: mammal — it has wool and feeds its lambs milk!)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow reveal">Resources</div>
+      <h2 class="section-title reveal">Where to find out more</h2>
+      <ul class="resources reveal" style="margin-left:1.2rem">
+        <li><a href="https://www.doc.govt.nz/nature/native-animals/" target="_blank" rel="noopener">DOC – New Zealand native animals</a></li>
+        <li><a href="https://www.tepapa.govt.nz/" target="_blank" rel="noopener">Te Papa</a> – Wellington's national museum, full of animal stories</li>
+        <li>Your local library: ask for a book about "animal groups" or "classifying animals"</li>
+      </ul>
+
+      <div class="lesson-nav reveal">
+        <a href="animals-index.html">← All lessons</a>
+        <a class="next" href="animals-lesson-2.html">Next: Darwin's Big Idea →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="brand">antomatic.design</div>
+  <p>Crafted with curiosity · Wellington, NZ</p>
+</footer>
+
+<script>
+  const LESSON_KEY='animals-lesson-1-complete';
+
+  // progress bar
+  const bar=document.getElementById('progress-bar');
+  window.addEventListener('scroll',()=>{const h=document.documentElement;
+    bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+
+  // reveal
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // vocab
+  document.querySelectorAll('.vcard').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('open')));
+
+  // ---- QUIZ DATA ----
+  const questions=[
+    {q:"What is a <b>species</b>?",
+     opts:["A kind of animal whose babies grow up to be the same kind","A baby animal","A group of plants","A type of rock"],
+     correct:0,
+     good:"Exactly! A species is one kind of animal. Sheep make baby sheep, penguins make baby penguins.",
+     bad:"Not quite. A species is a <b>kind</b> of animal — its babies grow up to be the same kind, like sheep making lambs."},
+    {q:"A house cat and a lion are…",
+     opts:["Not related at all","Cousins — both are cats","The same species","Both birds"],
+     correct:1,
+     good:"Yes! They're both cats and share an old animal ancestor. One just grew much bigger.",
+     bad:"Actually they ARE related — both are cats and share an ancient ancestor. A lion is like a giant, wild cousin of your cat."},
+    {q:"Which animal is a pet dog most closely related to?",
+     opts:["A cat","A sheep","A wolf","A chicken"],
+     correct:2,
+     good:"Right! Every dog, from a tiny chihuahua to a big labrador, came from wild wolves long ago.",
+     bad:"Nope — dogs came from <b>wolves</b>. Your fluffy dog's distant grandparent was a wild wolf!"},
+    {q:"Which of these is a <b>mammal</b>, like a sheep?",
+     opts:["A frog","A goldfish","A dog","A spider"],
+     correct:2,
+     good:"Correct! Dogs (and sheep, and YOU) are mammals — we have hair and feed our babies milk.",
+     bad:"Not this one. A <b>dog</b> is the mammal here — mammals have fur or hair and feed their babies milk."},
+    {q:"What makes New Zealand's animal family so unusual?",
+     opts:["It has too many lions","It had almost no furry land animals, mostly birds","It has no fish","Everything here is purple"],
+     correct:1,
+     good:"Spot on! NZ had almost no native furry land animals — mostly birds, a tuatara and tiny bats. That's why our birds are so special.",
+     bad:"Not quite. New Zealand is special because it had almost <b>no furry land animals</b> — mostly birds! You'll learn why in Lesson 4."}
+  ];
+
+  const quizEl=document.getElementById('quiz');
+  const answered=new Array(questions.length).fill(false);
+
+  questions.forEach((item,qi)=>{
+    const qDiv=document.createElement('div');qDiv.className='q';
+    qDiv.innerHTML=`<div class="qtext"><span class="n">${qi+1}</span>${item.q}</div>`;
+    item.opts.forEach((opt,oi)=>{
+      const btn=document.createElement('button');btn.className='opt';btn.innerHTML=opt;
+      btn.addEventListener('click',()=>handleAnswer(qDiv,item,qi,oi,btn));
+      qDiv.appendChild(btn);
+    });
+    const ex=document.createElement('div');ex.className='explain';qDiv.appendChild(ex);
+    quizEl.appendChild(qDiv);
+  });
+
+  function handleAnswer(qDiv,item,qi,oi,btn){
+    if(answered[qi])return;
+    answered[qi]=true;
+    const buttons=qDiv.querySelectorAll('.opt');
+    buttons.forEach((b,i)=>{b.disabled=true;if(i===item.correct)b.classList.add('correct');});
+    const ex=qDiv.querySelector('.explain');
+    if(oi===item.correct){ex.className='explain show good';ex.innerHTML='✅ '+item.good;}
+    else{btn.classList.add('wrong');ex.className='explain show bad';ex.innerHTML='💡 '+item.bad;}
+    checkDone();
+  }
+
+  function checkDone(){
+    if(answered.every(a=>a)){
+      localStorage.setItem(LESSON_KEY,'true');
+      const banner=document.getElementById('doneBanner');
+      banner.classList.add('show');
+    }
+  }
+
+  // if already done before, show banner
+  if(localStorage.getItem(LESSON_KEY)==='true'){
+    document.getElementById('doneBanner').classList.add('show');
+  }
+</script>
+</body>
+</html>
