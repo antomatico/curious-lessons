@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wellington on Wheels — Curious Lessons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #0a0b18;
+      --bg2:      #0f1020;
+      --bg3:      #141528;
+      --green:    #00ff9f;
+      --orange:   #ff6b35;
+      --blue:     #3b8bff;
+      --purple:   #b56bff;
+      --yellow:   #ffe066;
+      --red:      #ff4f5e;
+      --white:    #e8e8f8;
+      --muted:    #8889a8;
+      --border:   rgba(255,255,255,0.07);
+      --card:     rgba(255,255,255,0.04);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      z-index: 1000;
+      transition: width 0.1s;
+    }
+
+    /* ===== SCROLL HINT ===== */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .scroll-hint svg { width: 18px; height: 18px; }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* Transit map grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,159,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,159,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridShift 20s linear infinite;
+    }
+    @keyframes gridShift {
+      from { background-position: 0 0; }
+      to   { background-position: 60px 60px; }
+    }
+
+    /* Route lines decoration */
+    .route-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .route-line {
+      position: absolute;
+      height: 2px;
+      opacity: 0.15;
+      transform-origin: left center;
+    }
+
+    .hero-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--green);
+      text-transform: uppercase;
+      background: rgba(0,255,159,0.08);
+      border: 1px solid rgba(0,255,159,0.25);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span {
+      display: block;
+      background: linear-gradient(135deg, var(--green) 0%, var(--blue) 60%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 540px;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero-stat strong {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+    }
+    .hero-stat span {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--green);
+    }
+
+    h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      line-height: 1.15;
+    }
+
+    p { margin-bottom: 1.2rem; color: rgba(232,232,248,0.88); }
+
+    /* ===== BIG IDEA ===== */
+    .big-idea-box {
+      background: linear-gradient(135deg, rgba(0,255,159,0.06), rgba(59,139,255,0.06));
+      border: 1px solid rgba(0,255,159,0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .big-idea-box p {
+      font-size: 1.2rem;
+      color: var(--white);
+      margin: 0;
+    }
+
+    /* ===== TRIVIA BLAST ===== */
+    .trivia-blast {
+      background: rgba(255,107,53,0.07);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 12px 12px 0;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+    }
+    .trivia-blast .tb-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .trivia-blast p {
+      color: var(--white);
+      margin: 0;
+      font-size: 0.98rem;
+    }
+
+    /* ===== FLEET CARDS ===== */
+    .fleet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .fleet-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .fleet-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .fleet-card.green::before  { background: var(--green); }
+    .fleet-card.blue::before   { background: var(--blue); }
+    .fleet-card.orange::before { background: var(--orange); }
+    .fleet-card.purple::before { background: var(--purple); }
+    .fleet-card .fc-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .fleet-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+    .fleet-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    .fleet-card .fc-stat {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .fleet-card.green .fc-stat  { color: var(--green); }
+    .fleet-card.blue .fc-stat   { color: var(--blue); }
+    .fleet-card.orange .fc-stat { color: var(--orange); }
+    .fleet-card.purple .fc-stat { color: var(--purple); }
+
+    /* ===== BUS TYPE TABLE ===== */
+    .bus-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.9rem;
+    }
+    .bus-table th {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bus-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: rgba(232,232,248,0.88);
+    }
+    .bus-table tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+    .bus-table .route-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+    .tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+    .tag.electric { background: rgba(0,255,159,0.12); color: var(--green); }
+    .tag.diesel   { background: rgba(255,107,53,0.12); color: var(--orange); }
+
+    /* ===== TIMELINE ===== */
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+      margin: 2rem 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.85rem;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--green), var(--blue), var(--purple), var(--orange));
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .tl-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .tl-dot {
+      position: absolute;
+      left: -2.15rem;
+      top: 0.3rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      background: var(--green);
+    }
+    .tl-item.steam    .tl-dot { background: var(--orange); }
+    .tl-item.horse    .tl-dot { background: var(--yellow); }
+    .tl-item.electric .tl-dot { background: var(--green); }
+    .tl-item.trolley  .tl-dot { background: var(--blue); }
+    .tl-item.modern   .tl-dot { background: var(--purple); }
+    .tl-item.future   .tl-dot { background: var(--red); }
+    .tl-year {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--green);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.2rem;
+    }
+    .tl-item.steam    .tl-year { color: var(--orange); }
+    .tl-item.horse    .tl-year { color: var(--yellow); }
+    .tl-item.electric .tl-year { color: var(--green); }
+    .tl-item.trolley  .tl-year { color: var(--blue); }
+    .tl-item.modern   .tl-year { color: var(--purple); }
+    .tl-item.future   .tl-year { color: var(--red); }
+    .tl-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .tl-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ===== TUNNELS / CABLECAR ===== */
+    .fact-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 600px) { .fact-row { grid-template-columns: 1fr; } }
+    .fact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .fact-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .fact-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .fact-card ul li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .fact-card ul li::before {
+      content: '→';
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* ===== VOCABULARY ===== */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+    .vocab-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+    .vocab-card:hover {
+      border-color: rgba(0,255,159,0.3);
+      background: rgba(0,255,159,0.04);
+    }
+    .vocab-card.revealed {
+      border-color: rgba(0,255,159,0.4);
+      background: rgba(0,255,159,0.06);
+    }
+    .vocab-term {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+    .vocab-def {
+      font-size: 0.83rem;
+      color: var(--muted);
+      display: none;
+    }
+    .vocab-card.revealed .vocab-def { display: block; }
+    .vocab-hint {
+      font-size: 0.68rem;
+      font-family: 'Space Mono', monospace;
+      color: rgba(136,137,168,0.5);
+      letter-spacing: 0.1em;
+    }
+    .vocab-card.revealed .vocab-hint { display: none; }
+
+    /* ===== WATCH ===== */
+    .video-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .video-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .video-item:hover {
+      border-color: rgba(59,139,255,0.4);
+      background: rgba(59,139,255,0.05);
+    }
+    .video-thumb {
+      width: 48px;
+      height: 48px;
+      background: rgba(59,139,255,0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.4rem;
+    }
+    .video-info .vi-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.15rem;
+    }
+    .video-info .vi-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+    .video-arrow {
+      margin-left: auto;
+      color: var(--blue);
+      font-size: 1.1rem;
+    }
+
+    /* ===== QUIZ ===== */
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .quiz-q {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .quiz-q.correct { border-color: rgba(0,255,159,0.5); }
+    .quiz-q.wrong   { border-color: rgba(255,79,94,0.5); }
+    .quiz-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .quiz-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      padding-top: 0.15rem;
+    }
+    .quiz-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .quiz-options {
+      padding: 0 1.5rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    @media (max-width: 500px) { .quiz-options { grid-template-columns: 1fr; } }
+    .quiz-option {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      color: var(--white);
+      font-family: inherit;
+    }
+    .quiz-option:hover:not(:disabled) {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .quiz-option.correct-answer {
+      background: rgba(0,255,159,0.12);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .quiz-option.wrong-answer {
+      background: rgba(255,79,94,0.1);
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .quiz-option:disabled { cursor: default; }
+    .quiz-explanation {
+      display: none;
+      padding: 0 1.5rem 1.25rem;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      margin-top: 0.25rem;
+    }
+    .quiz-explanation.show { display: block; }
+    .quiz-explanation.correct-exp { color: rgba(0,255,159,0.85); }
+    .quiz-explanation.wrong-exp   { color: rgba(255,79,94,0.85); }
+    .exp-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .quiz-score {
+      background: linear-gradient(135deg, rgba(0,255,159,0.08), rgba(59,139,255,0.08));
+      border: 1px solid rgba(0,255,159,0.2);
+      border-radius: 14px;
+      padding: 2rem;
+      text-align: center;
+      display: none;
+    }
+    .quiz-score.show { display: block; }
+    .quiz-score .score-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .quiz-score .score-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ===== GO DEEPER ===== */
+    .deeper-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .deeper-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: 0 12px 12px 0;
+      padding: 1.25rem 1.5rem;
+    }
+    .deeper-item .di-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--purple);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .deeper-item p { color: var(--white); margin: 0; font-size: 0.95rem; }
+    .deeper-item .di-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ===== RESOURCES ===== */
+    .resources-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin: 2rem 0;
+    }
+    .resource-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 0.92rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .resource-link:hover { color: var(--green); }
+    .resource-link::before { content: '↗'; font-size: 0.8rem; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .footer-brand span { color: var(--green); }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== ROUTE BADGE ===== */
+    .route-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .rb-1  { background: #e63946; color: white; }
+    .rb-2  { background: #2196f3; color: white; }
+    .rb-3  { background: #ff9800; color: white; }
+    .rb-4  { background: #4caf50; color: white; }
+
+    /* separator */
+    .sep {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* future banner */
+    .future-banner {
+      background: linear-gradient(135deg, rgba(181,107,255,0.08), rgba(255,79,94,0.05));
+      border: 1px solid rgba(181,107,255,0.25);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin: 2rem 0;
+    }
+    .future-banner h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .future-banner p { color: rgba(232,232,248,0.8); margin-bottom: 0.6rem; font-size: 0.93rem; }
+    .future-banner p:last-child { margin: 0; }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <div class="route-lines" aria-hidden="true">
+      <div class="route-line" style="top:20%;left:0;width:40%;background:var(--green);transform:rotate(-8deg);"></div>
+      <div class="route-line" style="top:55%;left:60%;width:50%;background:var(--blue);transform:rotate(5deg);"></div>
+      <div class="route-line" style="top:75%;left:10%;width:30%;background:var(--orange);transform:rotate(-3deg);"></div>
+      <div class="route-line" style="top:35%;left:70%;width:35%;background:var(--purple);transform:rotate(10deg);"></div>
+    </div>
+
+    <div class="hero-badge">Wellington · For the Curious · Lesson 1</div>
+
+    <h1>
+      Wellington<br>
+      <span>on Wheels</span>
+    </h1>
+
+    <p class="hero-sub">
+      From steam trams in 1878 to electric double deckers today — the wild,
+      140-year story of how Wellington gets around.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong>~100</strong>
+        <span>Bus Routes</span>
+      </div>
+      <div class="hero-stat">
+        <strong>450+</strong>
+        <span>Buses</span>
+      </div>
+      <div class="hero-stat">
+        <strong>100K</strong>
+        <span>Riders / Day</span>
+      </div>
+      <div class="hero-stat">
+        <strong>1878</strong>
+        <span>First Tram</span>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ===== BIG IDEA ===== -->
+  <section class="reveal">
+    <div class="section-label">The Big Idea</div>
+    <h2>Wellington moves on two things: wind and wheels.</h2>
+    <div class="big-idea-box">
+      <p>
+        Wellington's hills, narrow valleys, and windy harbour have always made getting around a puzzle.
+        For 140 years, the city has tried steam trams, horse trams, electric trams, trolleybuses,
+        diesel buses, and now electric double deckers and (soon) bendy buses — each one a direct
+        response to Wellington's geography and the technology of its time. The transit map is a
+        map of Wellington itself.
+      </p>
+    </div>
+
+    <div class="trivia-blast">
+      <div class="tb-label">⚡ Trivia Blast</div>
+      <p>Wellington's bus fleet is <strong>lime and yellow</strong> — the same colours since the Metlink rebrand. On a busy weekday, Metlink buses carry close to <strong>100,000 people</strong>. That's more than the entire population of Porirua!</p>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== THE FLEET TODAY ===== -->
+  <section>
+    <div class="section-label reveal">The Fleet Today</div>
+    <h2 class="reveal">What's actually out there?</h2>
+    <p class="reveal">Metlink (run by Greater Wellington Regional Council) operates the whole public transport network — buses, trains, and the Harbour Ferry. Here's how the bus side of things shapes up right now.</p>
+
+    <div class="fleet-grid reveal">
+      <div class="fleet-card green">
+        <div class="fc-stat">~100</div>
+        <h3>Public Bus Routes</h3>
+        <p>Plus 180+ school bus services across the region</p>
+      </div>
+      <div class="fleet-card blue">
+        <div class="fc-stat">450+</div>
+        <h3>Buses in the Fleet</h3>
+        <p>Lime and yellow livery — all sizes from minibuses to double deckers</p>
+      </div>
+      <div class="fleet-card orange">
+        <div class="fc-stat">3,700+</div>
+        <h3>Services Per Day</h3>
+        <p>Every single day, rain or gale-force Wellington wind</p>
+      </div>
+      <div class="fleet-card purple">
+        <div class="fc-stat">25%</div>
+        <h3>Electric Fleet Share</h3>
+        <p>119 electric buses as of 2025, up from near-zero five years ago</p>
+      </div>
+    </div>
+
+    <div class="section-label reveal" style="margin-top:2.5rem;">Bus Types</div>
+    <p class="reveal">Wellington runs several different types of bus, each designed for different routes and different challenges (including those pesky tunnels).</p>
+
+    <table class="bus-table reveal">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Length</th>
+          <th>Capacity</th>
+          <th>Power</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Standard Single-Deck</strong></td>
+          <td>12 m</td>
+          <td>~70 total</td>
+          <td><span class="tag diesel">Diesel</span> / <span class="tag electric">Electric</span></td>
+          <td>Most common. The eT12-max is the electric version (T = twin rear axle).</td>
+        </tr>
+        <tr>
+          <td><strong>Electric Double-Decker</strong></td>
+          <td>~12 m</td>
+          <td>~90–100 total</td>
+          <td><span class="tag electric">Electric</span></td>
+          <td>43 in fleet. First introduced 2018 — first in the Southern Hemisphere!</td>
+        </tr>
+        <tr>
+          <td><strong>Articulated (Bendy Bus)</strong></td>
+          <td>~18 m</td>
+          <td>~110+ total</td>
+          <td><span class="tag electric">Electric</span></td>
+          <td>5 arriving 2027 for Route 2. 65% more capacity than a standard bus. Can't use double deckers on Route 2 because Karori tunnel is too low.</td>
+        </tr>
+        <tr>
+          <td><strong>Minibus</strong></td>
+          <td>~8–9 m</td>
+          <td>~25–35 total</td>
+          <td><span class="tag diesel">Diesel</span></td>
+          <td>Used on lower-demand routes and school services</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="trivia-blast reveal">
+      <div class="tb-label">⚡ Trivia Blast</div>
+      <p>The <strong>Karori Tunnel</strong> and <strong>Seatoun Tunnel</strong> are both too low for double-decker buses — that's why Karori (Route 2) is getting <em>articulated</em> (bendy) buses instead. One bendy bus carries 65% more people than a standard single-decker.</p>
+    </div>
+
+    <div class="section-label reveal" style="margin-top:2.5rem;">Star Routes</div>
+    <p class="reveal">Wellington's route numbering isn't random — the lowest numbers are the busiest central city corridors, known as the "frequent network".</p>
+
+    <div class="fleet-grid reveal" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));">
+      <div class="fleet-card" style="border-top: 3px solid #e63946;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+          <div class="route-badge rb-1">1</div>
+          <strong style="font-family:'Rajdhani',sans-serif;font-size:1rem;">Island Bay ↔ Johnsonville</strong>
+        </div>
+        <p style="font-size:0.82rem;">Spine of the network. Electric double deckers.</p>
+      </div>
+      <div class="fleet-card" style="border-top: 3px solid #2196f3;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+          <div class="route-badge rb-2">2</div>
+          <strong style="font-family:'Rajdhani',sans-serif;font-size:1rem;">Karori ↔ Courtenay Pl</strong>
+        </div>
+        <p style="font-size:0.82rem;">Fully electric. Gets bendy buses in 2027!</p>
+      </div>
+      <div class="fleet-card" style="border-top: 3px solid #4caf50;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+          <div class="route-badge rb-4">4</div>
+          <strong style="font-family:'Rajdhani',sans-serif;font-size:1rem;">Newtown ↔ Tawa</strong>
+        </div>
+        <p style="font-size:0.82rem;">Almost fully electric. One of the busiest routes.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== TUNNELS & CABLE CAR ===== -->
+  <section>
+    <div class="section-label reveal">Getting Through Wellington</div>
+    <h2 class="reveal">Tunnels, hills, and a very famous cable car</h2>
+    <p class="reveal">Wellington's geography means buses are constantly negotiating tunnels. Some tunnels are over 100 years old — and one was originally built for trams.</p>
+
+    <div class="fact-row reveal">
+      <div class="fact-card">
+        <h3>🚇 Road Tunnels Buses Use</h3>
+        <ul>
+          <li><strong>Hataitai Bus Tunnel</strong> — single-lane, 100+ years old, Pirie Street. Built for trams, now bus-only.</li>
+          <li><strong>Mount Victoria Tunnel</strong> — the main SH1 route to the eastern suburbs</li>
+          <li><strong>Terrace Tunnel</strong> — SH1 under the Terrace</li>
+          <li><strong>Arras Tunnel</strong> — connects Basin Reserve area to the motorway</li>
+          <li><strong>Karori Tunnel</strong> — too low for double deckers (hence bendy buses!)</li>
+          <li><strong>Coming soon:</strong> Second Mt Victoria + Second Terrace tunnels approved 2025</li>
+        </ul>
+      </div>
+      <div class="fact-card">
+        <h3>🚡 The Wellington Cable Car</h3>
+        <ul>
+          <li>Opened <strong>22 February 1902</strong> — NZ's only funicular railway</li>
+          <li><strong>609 metres</strong> long, rises <strong>120 metres</strong> up to Kelburn</li>
+          <li>Passes through <strong>3 tunnels</strong> and over <strong>3 viaducts</strong></li>
+          <li>Originally <strong>steam-powered</strong> when it opened</li>
+          <li><strong>425,000 passengers</strong> in its very first year; over 1 million by 1912</li>
+          <li>Rebuilt as a proper funicular in <strong>1978–79</strong></li>
+          <li>Built by the Kelburne & Karori Tramway Company</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="trivia-blast reveal">
+      <div class="tb-label">⚡ Trivia Blast</div>
+      <p>The Hataitai Bus Tunnel was built over <strong>100 years ago for trams</strong> — it's so narrow only one bus can use it at a time, and there's a traffic-light system at each end to prevent head-on collisions. Modern buses barely fit!</p>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== HISTORY TIMELINE ===== -->
+  <section>
+    <div class="section-label reveal">140 Years of Wellington Transport</div>
+    <h2 class="reveal">From steam to electric — the long way round</h2>
+    <p class="reveal">Wellington's transport history is a story of constant reinvention. Each technology replaced the last as the city grew and the hills stayed just as steep.</p>
+
+    <div class="timeline">
+
+      <div class="tl-item steam">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1878 — STEAM ERA BEGINS</div>
+        <div class="tl-title">Wellington's first trams: steam-powered and hated</div>
+        <div class="tl-desc">A tiny steam engine hauled a single passenger car from the Railway Station to Adelaide Road, with a branch to Queens Wharf. They were a disaster — belching smoke and fumes, terrifying horses pulling cabs, and hammering the rails so hard they needed constant repair. Passengers complained about the noise and the smell.</div>
+      </div>
+
+      <div class="tl-item horse">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1882 — HORSE POWER</div>
+        <div class="tl-title">Horse-drawn trams replace steam</div>
+        <div class="tl-desc">The heavy steam trams gave way to horse-drawn trams, which Wellingtonians actually liked. Routes extended to Tinakori Road and Courtenay Place. Much quieter, much less smelly (well, mostly), and the horses didn't terrify other horses.</div>
+      </div>
+
+      <div class="tl-item electric">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1900 — CITY COUNCIL TAKES OVER</div>
+        <div class="tl-title">Wellington City Corporation buys the tramways</div>
+        <div class="tl-desc">The Wellington City Corporation (WCC) purchased the Wellington City Tramways Company. Two years later, the council decided to electrify — because Wellington had plenty of hydroelectric power from the Wairarapa rivers.</div>
+      </div>
+
+      <div class="tl-item electric">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1902 — CABLE CAR OPENS</div>
+        <div class="tl-title">The cable car climbs to Kelburn for the first time</div>
+        <div class="tl-desc">On 22 February 1902, the Kelburne & Karori Tramway Company opened the cable car — originally steam-powered, later electric. It was an immediate hit: 425,000 riders in year one, over a million by 1912. It opened up Kelburn for residential development and is still running today, 120+ years later.</div>
+      </div>
+
+      <div class="tl-item electric">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1904 — ELECTRIC TRAMS ARRIVE</div>
+        <div class="tl-title">30 June 1904: the first electric tram runs</div>
+        <div class="tl-desc">The first electric tram ran from a new depot in Newtown to the northern side of the Basin Reserve. Within three years, trams were running through the Hataitai Tunnel to Kilbirnie, Miramar and Seatoun, out to Island Bay, and up to Brooklyn and Karori Cemetery. At their peak, Wellington's trams covered <strong>52 kilometres</strong> of route.</div>
+      </div>
+
+      <div class="tl-item trolley">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1924 — FIRST TROLLEYBUSES</div>
+        <div class="tl-title">Era 1: trolleybuses debut on 29 September 1924</div>
+        <div class="tl-desc">Wellington tried its first trolleybus — an AEC 602 running from Thorndon along Hutt Road to Kaiwharawhara. Trolleybuses use overhead electric wires (like trams) but rubber tyres (like buses). But this first attempt flopped: low patronage led to closure by <strong>30 May 1932</strong>.</div>
+      </div>
+
+      <div class="tl-item trolley">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1945–1964 — THE TROLLEYBUS TAKEOVER</div>
+        <div class="tl-title">Trams out, trolleybuses in</div>
+        <div class="tl-desc">In 1945, WCC decided to replace all trams with trolleybuses. The second trolleybus era began on <strong>20 June 1949</strong> with the Roseneath route. One by one, tram routes were converted: Wadestown (1951), Karori (1954), Northland (1956), Seatoun and Miramar (1958), Aro Street, Brooklyn and Mornington (1960), Lyall Bay (1963), Island Bay (1964). On <strong>2 May 1964</strong>, the very last tram in all of New Zealand ran its final journey (Thorndon to Newtown).</div>
+      </div>
+
+      <div class="tl-item trolley">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1992 — PRIVATISATION</div>
+        <div class="tl-title">WCC sells its transport arm to Stagecoach</div>
+        <div class="tl-desc">The Wellington City Council privatised its transport operations, selling to Stagecoach (a UK bus company). WCC kept ownership of the overhead wire infrastructure; Stagecoach maintained it under contract. The trolleybuses kept rolling — but the clock was ticking.</div>
+      </div>
+
+      <div class="tl-item trolley">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2017 — THE END OF THE TROLLEYBUSES</div>
+        <div class="tl-title">31 October 2017: last trolleybus runs in Wellington</div>
+        <div class="tl-desc">After a contentious consultation process, Greater Wellington Regional Council voted to close the trolleybus system entirely. The last trolleybus ran on Halloween 2017. Wellington had been the <strong>last trolleybus system in Oceania</strong>, and the last major system in any left-hand-traffic country. Fans were heartbroken. The overhead wires came down soon after.</div>
+      </div>
+
+      <div class="tl-item modern">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2018 — ELECTRIC DOUBLE DECKERS ARRIVE</div>
+        <div class="tl-title">First electric double deckers in the Southern Hemisphere</div>
+        <div class="tl-desc">From <strong>15 July 2018</strong>, Wellington's first electric double-decker buses went into service — built by <strong>Kiwi Bus Builders in Tauranga</strong> using Microvast lithium-ion batteries. They were the <strong>first electric double-deckers in the entire Southern Hemisphere</strong>. Today Metlink has 43 electric double deckers, mainly on Route 1 (Johnsonville to Island Bay).</div>
+      </div>
+
+      <div class="tl-item future">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2027 & BEYOND — THE FUTURE</div>
+        <div class="tl-title">Bendy buses and a fully electric fleet by 2030</div>
+        <div class="tl-desc">Five electric articulated (bendy) buses are coming for Route 2 in <strong>2027</strong> — the first ever in Wellington, chosen because the Karori Tunnel is too low for double deckers. Meanwhile, Metlink's goal is for all core bus routes to be fully electric by <strong>2030</strong>, and a completely emissions-free fleet by <strong>2035</strong>. As of 2025, 25% of the fleet is electric — up from almost zero five years ago.</div>
+      </div>
+
+    </div>
+
+    <div class="trivia-blast reveal">
+      <div class="tb-label">⚡ Trivia Blast</div>
+      <p>Wellington's trolleybuses ran for a combined <strong>76 years</strong> across two eras (1924–32 and 1949–2017). When they closed in 2017, Wellington was the last city in Oceania still running trolleybuses — a title it held, somewhat reluctantly, to the very end.</p>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== FUTURE ===== -->
+  <section class="reveal">
+    <div class="section-label">What's Coming</div>
+    <h2>The electric revolution (for real this time)</h2>
+    <p>Wellington has been electric before — the trolleybuses were zero-emission at the point of use. But this time it's batteries, not wires, which means no need for expensive overhead infrastructure.</p>
+
+    <div class="future-banner">
+      <h3>🔋 Wellington's Electric Bus Goals</h3>
+      <p><strong>2027:</strong> First bendy buses (electric articulated vehicles) on Route 2. Five EAVs, each carrying 65% more people than a standard bus, snaking through the Karori Tunnel.</p>
+      <p><strong>2030:</strong> All core bus routes fully electric. About one-third of all kilometres driven by Metlink buses are already electric.</p>
+      <p><strong>2035:</strong> Entire Metlink bus fleet emissions-free. Wellington had trolleybuses for 76 years — electric buses might last even longer.</p>
+      <p><strong>Future tunnels:</strong> A second Mount Victoria Tunnel and second Terrace Tunnel were approved in 2025, which could dramatically speed up bus journeys to the eastern suburbs.</p>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== VOCABULARY ===== -->
+  <section>
+    <div class="section-label reveal">Key Vocabulary</div>
+    <h2 class="reveal">Tap each card to reveal the definition</h2>
+
+    <div class="vocab-grid reveal">
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Trolleybus</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">A bus that runs on rubber tyres but is powered by electricity from overhead wires (not rails). Quieter and smoother than diesel, but can't go off its wired route.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Funicular</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">A type of railway on a very steep slope where two cars are connected by a cable — as one goes up, the other comes down, counterbalancing each other. The Wellington Cable Car is a funicular.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Articulated Bus</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">A very long bus made of two sections joined by a flexible accordion joint in the middle. Can carry 65% more passengers than a standard bus, and can still navigate corners.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">BEV</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">Battery Electric Vehicle. A bus (or car) powered entirely by rechargeable batteries, with no combustion engine. Wellington's new electric buses are BEVs — they recharge overnight at the depot.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Golden Mile</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">Wellington's main city bus corridor — Lambton Quay and Courtenay Place. So many buses run here that congestion is a constant challenge, which is one reason why higher-capacity buses (double deckers, bendy buses) are valuable.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Frequent Network</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">The set of Metlink routes that run at least every 15 minutes for most of the day. In Wellington this is mostly routes 1–4. The goal is you never need to check a timetable — just show up and a bus will come.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Electrification</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">The process of switching a fleet from fossil-fuel engines to electric power. Wellington is targeting 100% electric buses by 2030–2035, which would eliminate all diesel emissions from the bus fleet.</div>
+      </div>
+      <div class="vocab-card" onclick="this.classList.toggle('revealed')">
+        <div class="vocab-term">Metlink</div>
+        <div class="vocab-hint">tap to reveal ↓</div>
+        <div class="vocab-def">The brand name for Greater Wellington Regional Council's public transport network. Metlink doesn't directly drive buses — it contracts private operators (like Tranzit/Tranzurban and NZ Bus) to run the routes.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== WATCH ===== -->
+  <section>
+    <div class="section-label reveal">Watch</div>
+    <h2 class="reveal">See the history in motion</h2>
+    <p class="reveal">Real archive footage and sharp explainers — these are worth your time.</p>
+
+    <div class="video-list reveal">
+      <a class="video-item" href="https://www.youtube.com/watch?v=xxqnkLcMn4g" target="_blank" rel="noopener">
+        <div class="video-thumb">🚎</div>
+        <div class="video-info">
+          <div class="vi-title">60 Years of Bad Decisions — Wellington's Trolleybus Story</div>
+          <div class="vi-sub">YouTube · 2024 · ~15 min · How Wellington lost its trolleybus system</div>
+        </div>
+        <div class="video-arrow">↗</div>
+      </a>
+      <a class="video-item" href="https://www.youtube.com/watch?v=g8Yn8tOqg7A" target="_blank" rel="noopener">
+        <div class="video-thumb">🚃</div>
+        <div class="video-info">
+          <div class="vi-title">Wellington Trams Then & Now 1955–2020</div>
+          <div class="vi-sub">YouTube · Rare 1955 footage from "Transport Matters" + modern comparison</div>
+        </div>
+        <div class="video-arrow">↗</div>
+      </a>
+      <a class="video-item" href="https://www.youtube.com/watch?v=pDjD6MLPOJo" target="_blank" rel="noopener">
+        <div class="video-thumb">📽️</div>
+        <div class="video-info">
+          <div class="vi-title">Wellington Buses and Old Kelburn Cablecars</div>
+          <div class="vi-sub">YouTube · Filmed 1976 by Alan Mortimer · Rare vintage footage</div>
+        </div>
+        <div class="video-arrow">↗</div>
+      </a>
+      <a class="video-item" href="https://m.youtube.com/watch?v=Qzcy4PVKCkM" target="_blank" rel="noopener">
+        <div class="video-thumb">🏙️</div>
+        <div class="video-info">
+          <div class="vi-title">Capital of New Zealand Wellington 1925–1960</div>
+          <div class="vi-sub">YouTube · Rare archival footage of trams and old Wellington street life</div>
+        </div>
+        <div class="video-arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== QUIZ ===== -->
+  <section>
+    <div class="section-label reveal">Quiz Time</div>
+    <h2 class="reveal">How much did you take in?</h2>
+    <p class="reveal">Five questions. Choose your answer and read the explanation — even if you get it right, the extra info is worth it.</p>
+
+    <div class="quiz-container reveal" id="quiz">
+
+      <!-- Q1 -->
+      <div class="quiz-q" id="q1">
+        <div class="quiz-header">
+          <div class="quiz-num">01 /05</div>
+          <div class="quiz-text">As of 2025, how many electric buses are in Wellington's Metlink fleet?</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this,'q1',false)">58</button>
+          <button class="quiz-option" onclick="answer(this,'q1',true)">119</button>
+          <button class="quiz-option" onclick="answer(this,'q1',false)">200</button>
+          <button class="quiz-option" onclick="answer(this,'q1',false)">450</button>
+        </div>
+        <div class="quiz-explanation" id="q1-exp">
+          <div class="exp-title">✅ Correct! 119 electric buses.</div>
+          <div>As of 2025, Metlink has 119 electric buses — that's 25% of the total fleet of 450+. The goal is for all core routes to be electric by 2030. 450 is the total fleet size (all power types combined).</div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-q" id="q2">
+        <div class="quiz-header">
+          <div class="quiz-num">02 /05</div>
+          <div class="quiz-text">In what year did the very last tram run in Wellington — and in all of New Zealand?</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this,'q2',false)">1958</button>
+          <button class="quiz-option" onclick="answer(this,'q2',false)">1971</button>
+          <button class="quiz-option" onclick="answer(this,'q2',true)">1964</button>
+          <button class="quiz-option" onclick="answer(this,'q2',false)">1979</button>
+        </div>
+        <div class="quiz-explanation" id="q2-exp">
+          <div class="exp-title">✅ 1964 — 2 May 1964 to be precise.</div>
+          <div>The Thorndon to Newtown tram route was the last surviving tram route in all of New Zealand. It closed on 2 May 1964, replaced by buses. The trams were 60 years old by then, and the city had decided cars and buses were the future. A decision many now regret.</div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="quiz-q" id="q3">
+        <div class="quiz-header">
+          <div class="quiz-num">03 /05</div>
+          <div class="quiz-text">Wellington's electric double-decker buses arrived in 2018. What record did they set?</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this,'q3',false)">First double deckers in NZ</button>
+          <button class="quiz-option" onclick="answer(this,'q3',true)">First electric double deckers in the Southern Hemisphere</button>
+          <button class="quiz-option" onclick="answer(this,'q3',false)">Largest bus fleet in Oceania</button>
+          <button class="quiz-option" onclick="answer(this,'q3',false)">First buses made in NZ</button>
+        </div>
+        <div class="quiz-explanation" id="q3-exp">
+          <div class="exp-title">✅ First electric double deckers in the Southern Hemisphere!</div>
+          <div>Wellington's electric double deckers — built by <strong>Kiwi Bus Builders in Tauranga</strong> — were the first of their kind anywhere in the Southern Hemisphere. They went into service on 15 July 2018, mainly on Route 1. Metlink now has 43 of them.</div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="quiz-q" id="q4">
+        <div class="quiz-header">
+          <div class="quiz-num">04 /05</div>
+          <div class="quiz-text">Why is Route 2 (Karori) getting bendy (articulated) buses instead of double deckers?</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this,'q4',false)">Double deckers are too expensive</button>
+          <button class="quiz-option" onclick="answer(this,'q4',false)">Karori roads are too narrow</button>
+          <button class="quiz-option" onclick="answer(this,'q4',true)">The Karori Tunnel is too low for double deckers</button>
+          <button class="quiz-option" onclick="answer(this,'q4',false)">Double deckers aren't electric</button>
+        </div>
+        <div class="quiz-explanation" id="q4-exp">
+          <div class="exp-title">✅ Exactly — the tunnel is too low!</div>
+          <div>The Karori Tunnel is not tall enough for a double-decker bus to fit through. So to increase capacity on the busy Route 2 corridor, Metlink chose articulated buses instead. Five electric articulated vehicles (EAVs) will arrive in 2027, each carrying 65% more people than a standard single-decker.</div>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="quiz-q" id="q5">
+        <div class="quiz-header">
+          <div class="quiz-num">05 /05</div>
+          <div class="quiz-text">Wellington's trolleybus system finally closed in 2017. What made it historically significant?</div>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this,'q5',false)">It was the oldest trolleybus system in the world</button>
+          <button class="quiz-option" onclick="answer(this,'q5',false)">It had the most routes of any trolleybus system</button>
+          <button class="quiz-option" onclick="answer(this,'q5',true)">It was the last trolleybus system in Oceania</button>
+          <button class="quiz-option" onclick="answer(this,'q5',false)">It ran the world's longest trolleybus route</button>
+        </div>
+        <div class="quiz-explanation" id="q5-exp">
+          <div class="exp-title">✅ The last in all of Oceania!</div>
+          <div>When Wellington's trolleybuses closed on 31 October 2017, they were the last commercially operating trolleybus system in Oceania — and the last major one in any country where traffic drives on the left. Wellington held on to trolleybuses for 76 years across two eras. Many Wellingtonians still miss them today.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="quiz-score" id="quiz-score">
+      <div class="score-num" id="score-display">0/5</div>
+      <div class="score-label">Questions correct</div>
+      <p style="margin-top:1rem;color:var(--muted);font-size:0.9rem;" id="score-message"></p>
+    </div>
+
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== GO DEEPER ===== -->
+  <section>
+    <div class="section-label reveal">Go Deeper</div>
+    <h2 class="reveal">Challenge problems — think it through</h2>
+    <p class="reveal">These don't have a single right answer. Work them out, discuss them, or look them up.</p>
+
+    <div class="deeper-list reveal">
+      <div class="deeper-item">
+        <div class="di-num">Challenge 01</div>
+        <p>A bendy bus carries <strong>65% more passengers</strong> than a standard single-decker. If a standard bus seats and carries 70 people at capacity, how many people can the bendy bus carry? Show your working.</p>
+        <div class="di-hint">Hint: 65% of 70 is 45.5. Add that to 70. What do you get?</div>
+      </div>
+      <div class="deeper-item">
+        <div class="di-num">Challenge 02</div>
+        <p>Wellington's tram network covered <strong>52 kilometres</strong> at its peak. If you tried to walk the entire tram network at 5 km/h, how long would it take? Compare that to catching a bus the same distance at an average speed of 25 km/h in city traffic.</p>
+        <div class="di-hint">Hint: Distance ÷ Speed = Time. Convert to hours and minutes.</div>
+      </div>
+      <div class="deeper-item">
+        <div class="di-num">Challenge 03</div>
+        <p>The Wellington Cable Car opened in 1902. How many years has it been running? It carried 425,000 people in its first year and crossed 1 million by 1912. If it's carried roughly 1.5 million passengers per year for the past 30 years, how many total trips have been made on it since opening?</p>
+        <div class="di-hint">This will be a very large number. Think about how you'd estimate it.</div>
+      </div>
+      <div class="deeper-item">
+        <div class="di-num">Challenge 04 — Research</div>
+        <p>The trolleybuses were closed in 2017 partly because the overhead wire infrastructure was expensive to maintain. But Wellington is now spending money to electrify the bus fleet with batteries. <strong>Was closing the trolleybuses the right decision?</strong> Find two arguments for and two arguments against, then decide what you think.</p>
+        <div class="di-hint">Think about: infrastructure cost, flexibility, carbon emissions, the 76-year history of the system.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- ===== RESOURCES ===== -->
+  <section>
+    <div class="section-label reveal">Go Further</div>
+    <h2 class="reveal">Resources to explore</h2>
+
+    <div class="resources-list reveal">
+      <a class="resource-link" href="https://www.metlink.org.nz" target="_blank" rel="noopener">Metlink — live routes, maps, and news about the fleet</a>
+      <a class="resource-link" href="https://en.wikipedia.org/wiki/Trolleybuses_in_Wellington" target="_blank" rel="noopener">Wikipedia — Trolleybuses in Wellington (very detailed history)</a>
+      <a class="resource-link" href="https://www.wcl.govt.nz/heritage/stories-and-guides/heritage-resource-guides/trams-in-wellington-1878-1964/" target="_blank" rel="noopener">Wellington City Libraries — Trams in Wellington, 1878–1964</a>
+      <a class="resource-link" href="https://www.wellingtoncablecar.co.nz/history" target="_blank" rel="noopener">Wellington Cable Car — official history page</a>
+      <a class="resource-link" href="https://www.engineeringnz.org/programmes/heritage/heritage-records/wellington-trolley-buses/" target="_blank" rel="noopener">Engineering New Zealand — Wellington Trolley Buses heritage record</a>
+      <a class="resource-link" href="https://en.wikipedia.org/wiki/Wellington_tramway_system" target="_blank" rel="noopener">Wikipedia — Wellington Tramway System (full route history)</a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-brand">
+      <span>antomatic.design</span> · Crafted with curiosity · Wellington, NZ
+    </div>
+    <div style="margin-top:0.5rem;font-size:0.7rem;color:rgba(136,137,168,0.4);font-family:'Space Mono',monospace;">
+      Wellington Series · Lesson 01 · For James
+    </div>
+  </footer>
+
+  <script>
+    // ── Progress bar ──────────────────────────────────────────────
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const s = document.documentElement;
+      const pct = (s.scrollTop / (s.scrollHeight - s.clientHeight)) * 100;
+      bar.style.width = pct + '%';
+    });
+
+    // ── Scroll reveal ─────────────────────────────────────────────
+    const reveals = document.querySelectorAll('.reveal, .tl-item');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => obs.observe(el));
+
+    // ── Quiz logic ────────────────────────────────────────────────
+    let score = 0;
+    let answered = 0;
+    const total = 5;
+
+    function answer(btn, qId, isCorrect) {
+      const q = document.getElementById(qId);
+      const opts = q.querySelectorAll('.quiz-option');
+      const exp = document.getElementById(qId + '-exp');
+
+      // disable all buttons
+      opts.forEach(o => o.disabled = true);
+
+      if (isCorrect) {
+        btn.classList.add('correct-answer');
+        q.classList.add('correct');
+        exp.classList.add('correct-exp');
+        score++;
+      } else {
+        btn.classList.add('wrong-answer');
+        q.classList.add('wrong');
+        exp.classList.add('wrong-exp');
+        exp.querySelector('.exp-title').textContent = '❌ Not quite — here\'s what you need to know:';
+        // highlight correct answer
+        opts.forEach(o => {
+          o.onclick = null;
+          // we need to mark the correct one — find it by checking if its onclick was called with true
+        });
+      }
+
+      exp.classList.add('show');
+      answered++;
+
+      if (answered === total) {
+        setTimeout(() => {
+          const scoreEl = document.getElementById('quiz-score');
+          const display = document.getElementById('score-display');
+          const msg = document.getElementById('score-message');
+          display.textContent = score + '/' + total;
+          const messages = [
+            'Keep reading — the history is the best part.',
+            'Good start! Re-read the timeline and try again.',
+            'Solid — you\'re getting the picture.',
+            'Very good — Wellington transport nerd in training.',
+            '🏆 Perfect! You\'ve earned your transit card.'
+          ];
+          msg.textContent = messages[score];
+          scoreEl.classList.add('show');
+          scoreEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 600);
+      }
+    }
+
+    // ── localStorage progress tracking ──────────────────────────
+    const LESSON_KEY = 'curious_wellington_lesson1';
+    window.addEventListener('beforeunload', () => {
+      const s = document.documentElement;
+      const pct = Math.round((s.scrollTop / (s.scrollHeight - s.clientHeight)) * 100);
+      localStorage.setItem(LESSON_KEY, JSON.stringify({ pct, score, date: new Date().toISOString() }));
+    });
+
+    const saved = localStorage.getItem(LESSON_KEY);
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        if (d.pct > 5) {
+          const banner = document.createElement('div');
+          banner.style.cssText = `
+            position:fixed;bottom:1.5rem;right:1.5rem;
+            background:#141528;border:1px solid rgba(0,255,159,0.3);
+            color:#e8e8f8;padding:0.75rem 1.25rem;border-radius:10px;
+            font-family:'Space Mono',monospace;font-size:0.68rem;
+            z-index:900;cursor:pointer;letter-spacing:0.05em;
+          `;
+          banner.textContent = `↩ Resume from ${d.pct}%`;
+          banner.onclick = () => {
+            const target = (d.pct / 100) * (document.documentElement.scrollHeight - window.innerHeight);
+            window.scrollTo({ top: target, behavior: 'smooth' });
+            banner.remove();
+          };
+          document.body.appendChild(banner);
+          setTimeout(() => banner.remove(), 8000);
+        }
+      } catch(e) {}
+    }
+  </script>
+</body>
+</html>
