@@ -16,10 +16,11 @@
     --muted:     #9A9488;
     --accent:    #C8411A;
     --accent-2:  #1A5FA8;
-    --course-geo:     #2D4A3E;
-    --course-maths:   #1A2818;
-    --course-cleo:    #5C1A7A;
-    --course-animals: #8A5E2C;
+    --course-geo:        #2D4A3E;
+    --course-maths:      #1A2818;
+    --course-cleo:       #5C1A7A;
+    --course-animals:    #8A5E2C;
+    --course-wellington: #1A3A5C;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -292,10 +293,11 @@
     font-size: 0.58rem; color: var(--muted);
   }
 
-  .card:nth-child(1) { animation-delay: 0.3s;  --col: var(--course-maths); }
-  .card:nth-child(2) { animation-delay: 0.38s; --col: var(--course-geo); }
-  .card:nth-child(3) { animation-delay: 0.46s; --col: var(--course-cleo); }
-  .card:nth-child(4) { animation-delay: 0.54s; --col: var(--course-animals); }
+  .card-maths      { animation-delay: 0.3s;  --col: var(--course-maths); }
+  .card-geo        { animation-delay: 0.38s; --col: var(--course-geo); }
+  .card-cleo       { animation-delay: 0.3s;  --col: var(--course-cleo); }
+  .card-animals    { animation-delay: 0.38s; --col: var(--course-animals); }
+  .card-wellington { animation-delay: 0.3s;  --col: var(--course-wellington); }
 
   /* ── HOW IT WORKS ── */
   .how {
@@ -392,11 +394,11 @@
   <div class="hero-text">
     <div class="hero-kicker">Self-directed · Wellington, New Zealand</div>
     <h1 class="hero-h1">Learning for<br><em>curious</em> minds</h1>
-    <p class="hero-sub">Four courses. Twenty-plus lessons. Topics that go <strong>far beyond the school curriculum</strong> — built for kids who want to understand how the world actually works.</p>
+    <p class="hero-sub">Five courses. Twenty-two lessons. Topics that go <strong>far beyond the school curriculum</strong> — built for kids who want to understand how the world actually works.</p>
 
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-val">4</span>
+        <span class="stat-val">5</span>
         <span class="stat-label">Courses</span>
       </div>
       <div class="stat">
@@ -430,22 +432,24 @@
 <!-- INTRO -->
 <div class="intro reveal">
   <p>These lessons were built for self-directed learning — no teacher needed, no schedule, no pressure. Each course has its own visual identity, its own set of videos and resources, and a quiz at the end of every lesson.</p>
-  <p>Pick a course. Open any lesson. <strong>Go at your own pace.</strong> When the quiz feels easy, dig into the challenge sections at the bottom of each page.</p>
+  <p>Pick a course. Open any lesson. <strong>Go at your own pace.</strong> When the quiz feels easy, dig into the challenge sections at the bottom of each page. The <em>For Experts</em> section is for anyone who wants to go really deep.</p>
 </div>
 
 <div class="rule"></div>
 
 <!-- COURSES -->
 <div class="courses" id="courses">
-  <div class="section-header">
-    <span class="section-label">✦ Four Courses</span>
+
+  <!-- FOR JAMES -->
+  <div class="section-header reveal">
+    <span class="section-label">✦ For James</span>
     <div class="section-rule"></div>
   </div>
 
-  <div class="course-grid">
+  <div class="course-grid" style="margin-bottom: 3.5rem;">
 
     <!-- MATHS -->
-    <a class="card" href="maths/maths-index.html">
+    <a class="card card-maths" href="maths/maths-index.html">
       <div class="card-body">
         <div class="card-eyebrow">
           Mathematics
@@ -471,7 +475,7 @@
     </a>
 
     <!-- GEOGRAPHY -->
-    <a class="card" href="geography/index.html">
+    <a class="card card-geo" href="geography/index.html">
       <div class="card-body">
         <div class="card-eyebrow">
           Geography
@@ -497,8 +501,18 @@
       </div>
     </a>
 
+  </div>
+
+  <!-- FOR CLEO -->
+  <div class="section-header reveal">
+    <span class="section-label">✦ For Cleo</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="course-grid" style="margin-bottom: 3.5rem;">
+
     <!-- CLEO -->
-    <a class="card" href="cleo/cleo-index.html">
+    <a class="card card-cleo" href="cleo/cleo-index.html">
       <div class="card-body">
         <div class="card-eyebrow">
           Astrophysics
@@ -522,7 +536,7 @@
     </a>
 
     <!-- ANIMALS / EVOLUTION -->
-    <a class="card" href="animals/animals-index.html">
+    <a class="card card-animals" href="animals/animals-index.html">
       <div class="card-body">
         <div class="card-eyebrow">
           Evolution &amp; Biology
@@ -547,6 +561,41 @@
     </a>
 
   </div>
+
+  <!-- FOR EXPERTS -->
+  <div class="section-header reveal">
+    <span class="section-label">✦ For Experts</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="course-grid">
+
+    <!-- WELLINGTON ON WHEELS -->
+    <a class="card card-wellington" href="wellington/wellington-lesson-1.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Urban History · Wellington
+          <span class="card-age">Any age</span>
+        </div>
+        <span class="card-icon">⬡</span>
+        <h2 class="card-title">Wellington on Wheels</h2>
+        <p class="card-hook">"From steam trams in 1878 to electric double deckers today — 140 years of getting around."</p>
+        <p class="card-desc">The wild, fascinating story of how Wellington moves. Steam trams, electric trams, trolleybuses, ferries, cable cars — and the decisions that shaped the city we live in now. A deep dive for the genuinely curious.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Trams</span>
+        <span class="tag">Trolleybuses</span>
+        <span class="tag">Urban Planning</span>
+        <span class="tag">Wellington History</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start lesson <span>→</span></span>
+        <span class="card-count">1 lesson</span>
+      </div>
+    </a>
+
+  </div>
+
 </div>
 
 <!-- HOW IT WORKS -->
