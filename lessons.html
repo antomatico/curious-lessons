@@ -1,81 +1,523 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-NZ">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lessons</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .lessons-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .lesson-card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .lesson-card a {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .lesson-card a:hover {
-            background-color: #0056b3;
-        }
-        .lesson-card h2 {
-            color: #333;
-            margin: 0 0 10px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curious Lessons · antomatic.design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────────── */
+    :root {
+      --cream:       #faf6ee;
+      --cream-mid:   #f2ebe0;
+      --cream-deep:  #e8ddd0;
+      --ink:         #1e1a16;
+      --ink-soft:    #6b5e50;
+      --ink-faint:   #a3907e;
+      --rust:        #c0432a;
+      --rust-light:  #f4ede9;
+      --grass:       #3a6b3f;
+      --grass-light: #e8f0e5;
+      --sky:         #1e3a5f;
+      --sky-light:   #e4ecf5;
+      --gold:        #b07d2a;
+      --gold-light:  #f5eed8;
+      --border:      rgba(30,26,22,0.10);
+    }
+
+    /* ─── RESET & BASE ────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ─── PROGRESS BAR ────────────────────────────────────────────── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0;
+      background: linear-gradient(90deg, var(--rust), var(--gold));
+      z-index: 1000; transition: width .12s ease;
+    }
+
+    /* ─── TYPOGRAPHY ──────────────────────────────────────────────── */
+    h1, h2, h3, h4 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; line-height: 1.15; }
+    .mono { font-family: 'DM Mono', monospace; }
+
+    /* ─── HERO ────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 90vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem 4rem;
+      background: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle ruled-paper lines */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        transparent, transparent 39px,
+        var(--cream-mid) 39px, var(--cream-mid) 40px
+      );
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .hero-inner { position: relative; z-index: 2; max-width: 700px; }
+
+    .site-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border: 1.5px solid var(--cream-deep);
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      margin-bottom: 2.2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { color: var(--rust); font-style: italic; }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      color: var(--ink-soft);
+      max-width: 520px;
+      margin: 0 auto 2.8rem;
+    }
+
+    .hero-kids {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .kid-chip {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 100px;
+    }
+    .kid-chip.james { background: var(--sky-light);   color: var(--sky);   border: 1.5px solid #c0d2e8; }
+    .kid-chip.cleo  { background: var(--grass-light); color: var(--grass); border: 1.5px solid #bdd4be; }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--ink-faint);
+      text-align: center;
+      animation: bob 2s ease-in-out infinite;
+      text-decoration: none;
+    }
+    .scroll-hint .arrow { display: block; font-size: 1.1rem; margin-top: 0.2rem; }
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(7px); }
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .wrap { max-width: 940px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ─── YEAR SECTION ────────────────────────────────────────────── */
+    .year-section { padding: 5rem 0 3.5rem; }
+
+    .section-rule {
+      display: flex; align-items: center; gap: 1.2rem;
+      margin-bottom: 1.4rem;
+    }
+    .section-rule::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+    }
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+    .section-title {
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      max-width: 600px;
+      margin-bottom: 2.4rem;
+    }
+
+    /* ─── COURSE CARDS ────────────────────────────────────────────── */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.6rem;
+    }
+
+    .course-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(30,26,22,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .course-card:not(.soon):hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(30,26,22,0.12);
+    }
+
+    /* coming-soon state */
+    .course-card.soon {
+      opacity: 0.62;
+      cursor: default;
+      pointer-events: none;
+    }
+    .soon-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--cream-mid);
+      color: var(--ink-faint);
+      border: 1px solid var(--cream-deep);
+      padding: 0.25rem 0.65rem;
+      border-radius: 100px;
+    }
+
+    .card-band { height: 8px; }
+    .card-band.grass   { background: linear-gradient(90deg, #5a8c40, #8dc06e); }
+    .card-band.sky     { background: linear-gradient(90deg, #1e3a5f, #3b7ec0); }
+    .card-band.gold    { background: linear-gradient(90deg, #b07d2a, #d4a84b); }
+    .card-band.rust    { background: linear-gradient(90deg, #c0432a, #e07050); }
+    .card-band.teal    { background: linear-gradient(90deg, #0e6b6b, #2aadad); }
+    .card-band.dark    { background: linear-gradient(90deg, #0f1020, #1e3a5f); }
+    .card-band.chalk   { background: linear-gradient(90deg, #2a2a3a, #5a5a7a); }
+    .card-band.purple  { background: linear-gradient(90deg, #5a2a7a, #9a5abf); }
+
+    .card-body { padding: 1.6rem 1.7rem 1.8rem; }
+
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      margin-bottom: 1.1rem;
+      font-weight: 500;
+    }
+    .card-badge.grass  { background: var(--grass-light); color: var(--grass); }
+    .card-badge.sky    { background: var(--sky-light);   color: var(--sky);   }
+    .card-badge.gold   { background: var(--gold-light);  color: var(--gold);  }
+    .card-badge.rust   { background: var(--rust-light);  color: var(--rust);  }
+    .card-badge.teal   { background: #e0f4f4;            color: #0e6b6b;      }
+    .card-badge.chalk  { background: #e8e8f0;            color: #2a2a3a;      }
+    .card-badge.purple { background: #f0e8f8;            color: #5a2a7a;      }
+    .card-badge.dark   { background: #1a1c2e;            color: #7abfff;      }
+
+    .card-body h3 {
+      font-size: 1.45rem;
+      color: var(--ink);
+      margin-bottom: 0.55rem;
+    }
+    .card-body p {
+      font-size: 0.97rem;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin-bottom: 1.3rem;
+    }
+
+    .card-meta {
+      display: flex; gap: 1.2rem; flex-wrap: wrap;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+    }
+
+    .card-cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-top: 1.4rem;
+      padding: 0.55rem 1.2rem;
+      border-radius: 100px;
+      border: 1.5px solid var(--cream-deep);
+      background: var(--cream);
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .course-card:not(.soon):hover .card-cta {
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+    }
+
+    /* ─── SECTION DIVIDER ─────────────────────────────────────────── */
+    .section-divider {
+      height: 1px;
+      background: var(--cream-deep);
+      margin: 0 1.5rem;
+    }
+
+    /* ─── EVEN BETTER ─────────────────────────────────────────────── */
+    .even-better-bg { background: #f4efe7; }
+
+    .course-card.welly {
+      background: #0d0e1c;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .course-card.welly .card-body h3 { color: #e8e8f8; }
+    .course-card.welly .card-body p  { color: #8889a8; }
+    .course-card.welly .card-meta    { color: #555670; }
+    .course-card.welly .card-cta {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.12);
+      color: #e8e8f8;
+    }
+    .course-card.welly:hover .card-cta {
+      background: #00ff9f;
+      border-color: #00ff9f;
+      color: #0d0e1c;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: rgba(250,246,238,0.7);
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+      margin-top: 5rem;
+    }
+    footer .brand {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.6rem;
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+    footer p { font-size: 0.92rem; line-height: 1.8; }
+    footer .footer-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(250,246,238,0.35);
+      margin-top: 1.4rem;
+    }
+
+    /* ─── SCROLL REVEAL ───────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { min-height: 80vh; padding: 4rem 1.25rem 5rem; }
+      .year-section { padding: 3.5rem 0 2rem; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Curious Lessons</h1>
-    
-    <div class="lessons-container">
-        <div class="lesson-card">
-            <h2>Animals</h2>
-            <a href="https://antomatico.github.io/curious-lessons/animals/">Visit</a>
-        </div>
-        
-        <div class="lesson-card">
-            <h2>Cleo</h2>
-            <a href="https://antomatico.github.io/curious-lessons/cleo/">Visit</a>
-        </div>
-        
-        <div class="lesson-card">
-            <h2>Geography</h2>
-            <a href="https://antomatico.github.io/curious-lessons/geography/">Visit</a>
-        </div>
-        
-        <div class="lesson-card">
-            <h2>Maths</h2>
-            <a href="https://antomatico.github.io/curious-lessons/maths/">Visit</a>
-        </div>
-        
-        <div class="lesson-card">
-            <h2>Wellington</h2>
-            <a href="https://antomatico.github.io/curious-lessons/wellington/">Visit</a>
-        </div>
+<div id="progress-bar"></div>
+
+<!-- ═══ HERO ══════════════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-inner">
+    <span class="site-tag mono">antomatic.design · curious lessons</span>
+    <h1>Learning that<br><em>actually sticks</em></h1>
+    <p class="hero-sub">Self-directed courses for two very curious kids in Wellington, NZ — built around big questions, real history, and ideas worth keeping.</p>
+    <div class="hero-kids">
+      <span class="kid-chip james">James · Year 7</span>
+      <span class="kid-chip cleo">Cleo · Year 4</span>
     </div>
+  </div>
+  <a href="#cleo" class="scroll-hint mono">start exploring <span class="arrow">↓</span></a>
+</header>
+
+
+<!-- ═══ YEAR 4 — CLEO ══════════════════════════════════════════════ -->
+<section class="year-section" id="cleo">
+  <div class="wrap">
+    <div class="section-rule reveal">
+      <span class="section-label mono">Year 4 · Cleo</span>
+    </div>
+    <h2 class="section-title reveal">Cleo's Courses</h2>
+    <p class="section-desc reveal">Big questions, short lessons, and a few things that will surprise even the grown-ups.</p>
+
+    <div class="course-grid">
+
+      <!-- Big Bang -->
+      <a href="cleo/cleo-index.html" class="course-card soon reveal">
+        <span class="soon-badge">Coming soon</span>
+        <div class="card-band purple"></div>
+        <div class="card-body">
+          <span class="card-badge purple">🌌 4 lessons</span>
+          <h3>Cleo's Big Bang</h3>
+          <p>Before there was anything, there was something impossibly small. Follow the universe from a single point all the way to the stars you can see tonight.</p>
+          <div class="card-meta">
+            <span>✨ Astrophysics</span>
+            <span>🔭 Space science</span>
+          </div>
+          <span class="card-cta">Start course →</span>
+        </div>
+      </a>
+
+      <!-- Sheep -->
+      <a href="animals/animals-index.html" class="course-card reveal">
+        <div class="card-band grass"></div>
+        <div class="card-body">
+          <span class="card-badge grass">🐑 4 lessons</span>
+          <h3>Where Does a Sheep Come From?</h3>
+          <p>A wild mountain animal, a brilliant Victorian scientist, and 11,000 years of people choosing the fluffiest ones. The full story.</p>
+          <div class="card-meta">
+            <span>🌿 Evolution</span>
+            <span>🇳🇿 NZ connections</span>
+          </div>
+          <span class="card-cta">Start course →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ YEAR 7 — JAMES ═════════════════════════════════════════════ -->
+<section class="year-section" id="james">
+  <div class="wrap">
+    <div class="section-rule reveal">
+      <span class="section-label mono">Year 7 · James</span>
+    </div>
+    <h2 class="section-title reveal">James's Courses</h2>
+    <p class="section-desc reveal">Deeper dives for a curious Year 7 mind — more complexity, more history, more things to argue about.</p>
+
+    <div class="course-grid">
+
+      <!-- Geography -->
+      <a href="geography/index.html" class="course-card soon reveal">
+        <span class="soon-badge">Coming soon</span>
+        <div class="card-band chalk"></div>
+        <div class="card-body">
+          <span class="card-badge chalk">🗺️ 6 lessons + capstone</span>
+          <h3>Geography for the Curious</h3>
+          <p>Plate tectonics, rivers, climate, cities, population, global trade — and why Wellington is shaped exactly the way it is.</p>
+          <div class="card-meta">
+            <span>🌏 Physical &amp; human</span>
+            <span>🏔️ NZ focus</span>
+          </div>
+          <span class="card-cta">Start course →</span>
+        </div>
+      </a>
+
+      <!-- Maths -->
+      <a href="maths/maths-index.html" class="course-card soon reveal">
+        <span class="soon-badge">Coming soon</span>
+        <div class="card-band teal"></div>
+        <div class="card-body">
+          <span class="card-badge teal">∞ 6 lessons</span>
+          <h3>Maths for the Curious</h3>
+          <p>Pi, primes, Fibonacci, infinity, probability, and secret codes — the parts of maths that are genuinely, surprisingly beautiful.</p>
+          <div class="card-meta">
+            <span>🔢 Pure maths</span>
+            <span>🧩 Problem solving</span>
+          </div>
+          <span class="card-cta">Start course →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══ EVEN BETTER ════════════════════════════════════════════════ -->
+<section class="year-section even-better-bg" id="even-better" style="padding: 5rem 0;">
+  <div class="wrap">
+    <div class="section-rule reveal">
+      <span class="section-label mono">Even Better · both of you</span>
+    </div>
+    <h2 class="section-title reveal">Even Better Lessons</h2>
+    <p class="section-desc reveal">The lessons that don't fit neatly into a year group — because curiosity doesn't care about curriculum.</p>
+
+    <div class="course-grid">
+
+      <!-- Wellington -->
+      <a href="wellington/wellington-lesson-1.html" class="course-card welly reveal">
+        <div class="card-band dark"></div>
+        <div class="card-body">
+          <span class="card-badge dark">🚌 1 lesson</span>
+          <h3>Wellington on Wheels</h3>
+          <p>Why does Wellington look the way it does? Map the city's geography, history, and infrastructure — right from your doorstep.</p>
+          <div class="card-meta">
+            <span>🏙️ Wellington</span>
+            <span>🗺️ Geography</span>
+          </div>
+          <span class="card-cta">Open lesson →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<footer>
+  <div class="brand">antomatic.design</div>
+  <p>Crafted with curiosity · Wellington, NZ</p>
+  <p>Made by a dad, for two kids who ask good questions.</p>
+  <span class="footer-tag mono">Curious Lessons — self-directed courses for young explorers</span>
+</footer>
+
+<script>
+  // Reading progress bar
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
 </body>
 </html>
