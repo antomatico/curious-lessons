@@ -1,523 +1,649 @@
 <!DOCTYPE html>
-<html lang="en-NZ">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curious Lessons · antomatic.design</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <style>
-    /* ─── TOKENS ──────────────────────────────────────────────────── */
-    :root {
-      --cream:       #faf6ee;
-      --cream-mid:   #f2ebe0;
-      --cream-deep:  #e8ddd0;
-      --ink:         #1e1a16;
-      --ink-soft:    #6b5e50;
-      --ink-faint:   #a3907e;
-      --rust:        #c0432a;
-      --rust-light:  #f4ede9;
-      --grass:       #3a6b3f;
-      --grass-light: #e8f0e5;
-      --sky:         #1e3a5f;
-      --sky-light:   #e4ecf5;
-      --gold:        #b07d2a;
-      --gold-light:  #f5eed8;
-      --border:      rgba(30,26,22,0.10);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curious Minds · A Learning Collection</title>
+<meta name="description" content="Self-directed learning courses for curious kids. Geography, Mathematics, the Big Bang, and the story of evolution — built for minds that want more.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
 
-    /* ─── RESET & BASE ────────────────────────────────────────────── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'DM Sans', system-ui, sans-serif;
-      background: var(--cream);
-      color: var(--ink);
-      line-height: 1.65;
-      overflow-x: hidden;
-    }
+  :root {
+    --ink:       #0E0E0E;
+    --paper:     #F7F4EE;
+    --paper-2:   #F0EDE6;
+    --rule:      #DDD9D0;
+    --muted:     #9A9488;
+    --accent:    #C8411A;
+    --accent-2:  #1A5FA8;
+    --course-geo:        #2D4A3E;
+    --course-maths:      #1A2818;
+    --course-cleo:       #5C1A7A;
+    --course-animals:    #8A5E2C;
+    --course-wellington: #1A3A5C;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
 
-    /* ─── PROGRESS BAR ────────────────────────────────────────────── */
-    #progress-bar {
-      position: fixed; top: 0; left: 0;
-      height: 3px; width: 0;
-      background: linear-gradient(90deg, var(--rust), var(--gold));
-      z-index: 1000; transition: width .12s ease;
-    }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
 
-    /* ─── TYPOGRAPHY ──────────────────────────────────────────────── */
-    h1, h2, h3, h4 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; line-height: 1.15; }
-    .mono { font-family: 'DM Mono', monospace; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
 
-    /* ─── HERO ────────────────────────────────────────────────────── */
-    .hero {
-      min-height: 90vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 5rem 1.5rem 4rem;
-      background: var(--cream);
-      position: relative;
-      overflow: hidden;
-    }
+  /* grain */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
 
-    /* subtle ruled-paper lines */
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: repeating-linear-gradient(
-        transparent, transparent 39px,
-        var(--cream-mid) 39px, var(--cream-mid) 40px
-      );
-      opacity: 0.55;
-      pointer-events: none;
-    }
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.1rem 7vw;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(247,244,238,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    animation: fadeDown 0.5s var(--ease) both;
+  }
 
-    .hero-inner { position: relative; z-index: 2; max-width: 700px; }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem; color: var(--ink);
+    text-decoration: none;
+  }
 
-    .site-tag {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ink-soft);
-      border: 1.5px solid var(--cream-deep);
-      padding: 0.35rem 0.9rem;
-      border-radius: 100px;
-      margin-bottom: 2.2rem;
-    }
+  .nav-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+  }
 
-    .hero h1 {
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      color: var(--ink);
-      margin-bottom: 1.2rem;
-    }
-    .hero h1 em { color: var(--rust); font-style: italic; }
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 7vw 5rem;
+    gap: 4rem;
+    overflow: hidden;
+  }
 
-    .hero-sub {
-      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
-      color: var(--ink-soft);
-      max-width: 520px;
-      margin: 0 auto 2.8rem;
-    }
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; padding-top: 7rem; gap: 3rem; }
+    .hero-art { display: none; }
+  }
 
-    .hero-kids {
-      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    }
-    .kid-chip {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      padding: 0.45rem 1.1rem;
-      border-radius: 100px;
-    }
-    .kid-chip.james { background: var(--sky-light);   color: var(--sky);   border: 1.5px solid #c0d2e8; }
-    .kid-chip.cleo  { background: var(--grass-light); color: var(--grass); border: 1.5px solid #bdd4be; }
+  /* Art panel */
+  .hero-art {
+    position: relative; height: 460px;
+    animation: fadeUp 0.6s 0.3s var(--ease) both;
+    display: flex; align-items: center; justify-content: center;
+  }
 
-    .scroll-hint {
-      position: absolute;
-      bottom: 2rem; left: 50%;
-      transform: translateX(-50%);
-      z-index: 3;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      color: var(--ink-faint);
-      text-align: center;
-      animation: bob 2s ease-in-out infinite;
-      text-decoration: none;
-    }
-    .scroll-hint .arrow { display: block; font-size: 1.1rem; margin-top: 0.2rem; }
-    @keyframes bob {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(7px); }
-    }
+  .art-ring {
+    position: absolute; border-radius: 50%; border: 1px solid;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+  }
+  .art-ring-1 { width: 360px; height: 360px; border-color: var(--rule); }
+  .art-ring-2 { width: 230px; height: 230px; border-color: #D4A843; opacity:0.25; animation: spin 44s linear infinite; }
+  .art-ring-3 { width: 120px; height: 120px; border-color: var(--accent-2); opacity:0.2; animation: spin 22s linear infinite reverse; }
 
-    /* ─── LAYOUT ──────────────────────────────────────────────────── */
-    .wrap { max-width: 940px; margin: 0 auto; padding: 0 1.5rem; }
+  .art-symbols {
+    position: relative; z-index:2;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; text-align: center;
+  }
 
-    /* ─── YEAR SECTION ────────────────────────────────────────────── */
-    .year-section { padding: 5rem 0 3.5rem; }
+  .art-sym {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem; line-height: 1;
+    opacity: 0.16; cursor: default; user-select: none;
+    transition: opacity 0.3s;
+  }
+  .art-sym:hover { opacity: 0.45; }
+  .art-sym.m { color: var(--course-maths); }
+  .art-sym.g { color: var(--course-geo); }
+  .art-sym.c { color: var(--course-cleo); }
+  .art-sym.x { color: var(--accent); font-style: italic; }
 
-    .section-rule {
-      display: flex; align-items: center; gap: 1.2rem;
-      margin-bottom: 1.4rem;
-    }
-    .section-rule::after {
-      content: ''; flex: 1;
-      height: 1px; background: var(--border);
-    }
-    .section-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ink-faint);
-      white-space: nowrap;
-    }
-    .section-title {
-      font-size: clamp(1.9rem, 4vw, 2.8rem);
-      color: var(--ink);
-      margin-bottom: 0.6rem;
-    }
-    .section-desc {
-      font-size: 1.05rem;
-      color: var(--ink-soft);
-      max-width: 600px;
-      margin-bottom: 2.4rem;
-    }
+  /* Hero text */
+  .hero-text { position: relative; z-index: 2; }
 
-    /* ─── COURSE CARDS ────────────────────────────────────────────── */
-    .course-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 1.6rem;
-    }
+  .hero-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1.25rem;
+    animation: fadeUp 0.5s 0.05s var(--ease) both;
+  }
 
-    .course-card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1.5px solid var(--border);
-      background: #fff;
-      box-shadow: 0 2px 12px rgba(30,26,22,0.06);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-    }
-    .course-card:not(.soon):hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 28px rgba(30,26,22,0.12);
-    }
+  .hero-h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 1.05; color: var(--ink);
+    animation: fadeUp 0.5s 0.1s var(--ease) both;
+  }
+  .hero-h1 em { font-style: italic; color: var(--accent); }
 
-    /* coming-soon state */
-    .course-card.soon {
-      opacity: 0.62;
-      cursor: default;
-      pointer-events: none;
-    }
-    .soon-badge {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: var(--cream-mid);
-      color: var(--ink-faint);
-      border: 1px solid var(--cream-deep);
-      padding: 0.25rem 0.65rem;
-      border-radius: 100px;
-    }
+  .hero-sub {
+    margin-top: 1.5rem; max-width: 420px;
+    font-size: 1rem; color: var(--muted); line-height: 1.75;
+    animation: fadeUp 0.5s 0.15s var(--ease) both;
+  }
+  .hero-sub strong { color: var(--ink); }
 
-    .card-band { height: 8px; }
-    .card-band.grass   { background: linear-gradient(90deg, #5a8c40, #8dc06e); }
-    .card-band.sky     { background: linear-gradient(90deg, #1e3a5f, #3b7ec0); }
-    .card-band.gold    { background: linear-gradient(90deg, #b07d2a, #d4a84b); }
-    .card-band.rust    { background: linear-gradient(90deg, #c0432a, #e07050); }
-    .card-band.teal    { background: linear-gradient(90deg, #0e6b6b, #2aadad); }
-    .card-band.dark    { background: linear-gradient(90deg, #0f1020, #1e3a5f); }
-    .card-band.chalk   { background: linear-gradient(90deg, #2a2a3a, #5a5a7a); }
-    .card-band.purple  { background: linear-gradient(90deg, #5a2a7a, #9a5abf); }
+  .hero-stats {
+    margin-top: 2rem; display: flex; gap: 2.5rem; flex-wrap: wrap;
+    animation: fadeUp 0.5s 0.2s var(--ease) both;
+  }
 
-    .card-body { padding: 1.6rem 1.7rem 1.8rem; }
+  .stat { display: flex; flex-direction: column; gap: 0.12rem; }
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem; color: var(--ink); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted);
+  }
 
-    .card-badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.3rem 0.75rem;
-      border-radius: 100px;
-      margin-bottom: 1.1rem;
-      font-weight: 500;
-    }
-    .card-badge.grass  { background: var(--grass-light); color: var(--grass); }
-    .card-badge.sky    { background: var(--sky-light);   color: var(--sky);   }
-    .card-badge.gold   { background: var(--gold-light);  color: var(--gold);  }
-    .card-badge.rust   { background: var(--rust-light);  color: var(--rust);  }
-    .card-badge.teal   { background: #e0f4f4;            color: #0e6b6b;      }
-    .card-badge.chalk  { background: #e8e8f0;            color: #2a2a3a;      }
-    .card-badge.purple { background: #f0e8f8;            color: #5a2a7a;      }
-    .card-badge.dark   { background: #1a1c2e;            color: #7abfff;      }
+  .hero-cta {
+    margin-top: 2.5rem; display: inline-flex; align-items: center; gap: 0.75rem;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--rule); padding-bottom: 0.2rem;
+    transition: border-color 0.2s, color 0.2s;
+    animation: fadeUp 0.5s 0.25s var(--ease) both;
+  }
+  .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+  .hero-cta .arr { transition: transform 0.2s; }
+  .hero-cta:hover .arr { transform: translateX(4px); }
 
-    .card-body h3 {
-      font-size: 1.45rem;
-      color: var(--ink);
-      margin-bottom: 0.55rem;
-    }
-    .card-body p {
-      font-size: 0.97rem;
-      color: var(--ink-soft);
-      line-height: 1.6;
-      margin-bottom: 1.3rem;
-    }
+  /* ── DIVIDERS ── */
+  .rule { position:relative;z-index:1; height:1px; background:var(--rule); margin:0 7vw; }
 
-    .card-meta {
-      display: flex; gap: 1.2rem; flex-wrap: wrap;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--ink-faint);
-    }
+  /* ── INTRO ── */
+  .intro {
+    position: relative; z-index: 1;
+    padding: 4rem 7vw;
+  }
+  .intro p {
+    font-size: 1rem; color: var(--muted); line-height: 1.8; max-width: 620px;
+  }
+  .intro p strong { color: var(--ink); }
+  .intro p + p { margin-top: 1rem; }
 
-    .card-cta {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--ink);
-      margin-top: 1.4rem;
-      padding: 0.55rem 1.2rem;
-      border-radius: 100px;
-      border: 1.5px solid var(--cream-deep);
-      background: var(--cream);
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-    .course-card:not(.soon):hover .card-cta {
-      background: var(--ink);
-      color: var(--cream);
-      border-color: var(--ink);
-    }
+  /* ── COURSES ── */
+  .courses {
+    position: relative; z-index: 1;
+    padding: 0 7vw 5rem;
+  }
 
-    /* ─── SECTION DIVIDER ─────────────────────────────────────────── */
-    .section-divider {
-      height: 1px;
-      background: var(--cream-deep);
-      margin: 0 1.5rem;
-    }
+  .section-header {
+    display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+  .section-rule { flex:1; height:1px; background:var(--rule); }
 
-    /* ─── EVEN BETTER ─────────────────────────────────────────────── */
-    .even-better-bg { background: #f4efe7; }
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
 
-    .course-card.welly {
-      background: #0d0e1c;
-      border-color: rgba(255,255,255,0.08);
-    }
-    .course-card.welly .card-body h3 { color: #e8e8f8; }
-    .course-card.welly .card-body p  { color: #8889a8; }
-    .course-card.welly .card-meta    { color: #555670; }
-    .course-card.welly .card-cta {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.12);
-      color: #e8e8f8;
-    }
-    .course-card.welly:hover .card-cta {
-      background: #00ff9f;
-      border-color: #00ff9f;
-      color: #0d0e1c;
-    }
+  /* ── CARD ── */
+  .card {
+    text-decoration: none; color: inherit;
+    background: var(--paper-2); border: 1px solid var(--rule);
+    display: flex; flex-direction: column;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s;
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.5s var(--ease) both;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 44px rgba(0,0,0,0.08);
+    border-color: transparent;
+  }
+  .card::before {
+    content: '';
+    position: absolute; left:0; top:0; bottom:0; width:4px;
+    background: var(--col);
+    transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.3s var(--ease);
+  }
+  .card:hover::before { transform: scaleY(1); }
 
-    /* ─── FOOTER ──────────────────────────────────────────────────── */
-    footer {
-      background: var(--ink);
-      color: rgba(250,246,238,0.7);
-      text-align: center;
-      padding: 3.5rem 1.5rem;
-      margin-top: 5rem;
-    }
-    footer .brand {
-      font-family: 'DM Serif Display', Georgia, serif;
-      font-size: 1.6rem;
-      color: var(--cream);
-      margin-bottom: 0.5rem;
-    }
-    footer p { font-size: 0.92rem; line-height: 1.8; }
-    footer .footer-tag {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(250,246,238,0.35);
-      margin-top: 1.4rem;
-    }
+  .card-body { padding: 2rem 2rem 1.5rem; flex: 1; }
 
-    /* ─── SCROLL REVEAL ───────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal.in { opacity: 1; transform: none; }
+  .card-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--col); margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-age {
+    font-size: 0.56rem; color: var(--muted);
+    background: var(--paper); border: 1px solid var(--rule);
+    padding: 0.18rem 0.5rem;
+  }
 
-    /* ─── RESPONSIVE ──────────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      .hero { min-height: 80vh; padding: 4rem 1.25rem 5rem; }
-      .year-section { padding: 3.5rem 0 2rem; }
-    }
-  </style>
+  .card-icon {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem; color: var(--col); opacity: 0.14;
+    line-height: 1; margin-bottom: 0.6rem; display: block;
+    transition: opacity 0.25s;
+  }
+  .card:hover .card-icon { opacity: 0.28; }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem; color: var(--ink);
+    line-height: 1.15; margin-bottom: 0.6rem;
+  }
+  .card-hook {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 0.87rem; color: var(--col); margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  .card-desc {
+    font-size: 0.862rem; color: var(--muted); line-height: 1.65;
+  }
+
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    padding: 0 2rem 0.75rem;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 0.57rem; letter-spacing: 0.05em;
+    color: var(--muted); background: var(--paper);
+    border: 1px solid var(--rule); padding: 0.18rem 0.55rem;
+  }
+
+  .card-foot {
+    padding: 1rem 2rem 1.5rem; border-top: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-cta {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--col);
+    display: flex; align-items: center; gap: 0.4rem;
+    transition: gap 0.2s;
+  }
+  .card:hover .card-cta { gap: 0.7rem; }
+  .card-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; color: var(--muted);
+  }
+
+  .card-maths      { animation-delay: 0.3s;  --col: var(--course-maths); }
+  .card-geo        { animation-delay: 0.38s; --col: var(--course-geo); }
+  .card-cleo       { animation-delay: 0.3s;  --col: var(--course-cleo); }
+  .card-animals    { animation-delay: 0.38s; --col: var(--course-animals); }
+  .card-wellington { animation-delay: 0.3s;  --col: var(--course-wellington); }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    position: relative; z-index: 1;
+    padding: 4rem 7vw;
+    background: var(--paper-2);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 2rem; margin-top: 2.5rem;
+  }
+  .how-n {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 2.5rem; color: var(--rule); line-height: 1; margin-bottom: 0.6rem;
+  }
+  .how-title { font-weight: 500; font-size: 0.9rem; color: var(--ink); margin-bottom: 0.35rem; }
+  .how-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  .pre-footer {
+    position: relative; z-index: 1;
+    padding: 3rem 7vw;
+  }
+  .pre-footer p { font-size: 0.875rem; color: var(--muted); max-width: 480px; }
+  .pre-footer p strong { color: var(--ink); }
+
+  footer {
+    position: relative; z-index: 1;
+    background: var(--ink);
+    padding: 1.75rem 7vw;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-brand { display: flex; align-items: center; gap: 1rem; }
+
+  .footer-wordmark {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 1.2rem; color: var(--paper);
+  }
+
+  .footer-pip {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  .footer-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #4A4A4A;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.08em;
+    color: #383838; text-align: right; line-height: 1.7;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes spin {
+    from { transform: translate(-50%,-50%) rotate(0deg); }
+    to   { transform: translate(-50%,-50%) rotate(360deg); }
+  }
+
+  .reveal {
+    opacity:0; transform:translateY(14px);
+    transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+  }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+</style>
 </head>
 <body>
-<div id="progress-bar"></div>
 
-<!-- ═══ HERO ══════════════════════════════════════════════════════ -->
-<header class="hero">
-  <div class="hero-inner">
-    <span class="site-tag mono">antomatic.design · curious lessons</span>
-    <h1>Learning that<br><em>actually sticks</em></h1>
-    <p class="hero-sub">Self-directed courses for two very curious kids in Wellington, NZ — built around big questions, real history, and ideas worth keeping.</p>
-    <div class="hero-kids">
-      <span class="kid-chip james">James · Year 7</span>
-      <span class="kid-chip cleo">Cleo · Year 4</span>
+<nav>
+  <a href="index.html" class="nav-logo">Curious Minds</a>
+  <span class="nav-tag">A Learning Collection</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <div class="hero-kicker">Self-directed · Wellington, New Zealand</div>
+    <h1 class="hero-h1">Learning for<br><em>curious</em> minds</h1>
+    <p class="hero-sub">Five courses. Twenty-two lessons. Topics that go <strong>far beyond the school curriculum</strong> — built for kids who want to understand how the world actually works.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">5</span>
+        <span class="stat-label">Courses</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">20+</span>
+        <span class="stat-label">Lessons</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">∞</span>
+        <span class="stat-label">Curiosity</span>
+      </div>
+    </div>
+
+    <a href="#courses" class="hero-cta">Browse courses <span class="arr">→</span></a>
+  </div>
+
+  <div class="hero-art" aria-hidden="true">
+    <div class="art-ring art-ring-1"></div>
+    <div class="art-ring art-ring-2"></div>
+    <div class="art-ring art-ring-3"></div>
+    <div class="art-symbols">
+      <span class="art-sym m">π</span>
+      <span class="art-sym g">⊕</span>
+      <span class="art-sym c">★</span>
+      <span class="art-sym x">φ</span>
     </div>
   </div>
-  <a href="#cleo" class="scroll-hint mono">start exploring <span class="arrow">↓</span></a>
-</header>
+</div>
 
+<div class="rule"></div>
 
-<!-- ═══ YEAR 4 — CLEO ══════════════════════════════════════════════ -->
-<section class="year-section" id="cleo">
-  <div class="wrap">
-    <div class="section-rule reveal">
-      <span class="section-label mono">Year 4 · Cleo</span>
-    </div>
-    <h2 class="section-title reveal">Cleo's Courses</h2>
-    <p class="section-desc reveal">Big questions, short lessons, and a few things that will surprise even the grown-ups.</p>
+<!-- INTRO -->
+<div class="intro reveal">
+  <p>These lessons were built for self-directed learning — no teacher needed, no schedule, no pressure. Each course has its own visual identity, its own set of videos and resources, and a quiz at the end of every lesson.</p>
+  <p>Pick a course. Open any lesson. <strong>Go at your own pace.</strong> When the quiz feels easy, dig into the challenge sections at the bottom of each page. The <em>For Experts</em> section is for anyone who wants to go really deep.</p>
+</div>
 
-    <div class="course-grid">
+<div class="rule"></div>
 
-      <!-- Big Bang -->
-      <a href="cleo/cleo-index.html" class="course-card soon reveal">
-        <span class="soon-badge">Coming soon</span>
-        <div class="card-band purple"></div>
-        <div class="card-body">
-          <span class="card-badge purple">🌌 4 lessons</span>
-          <h3>Cleo's Big Bang</h3>
-          <p>Before there was anything, there was something impossibly small. Follow the universe from a single point all the way to the stars you can see tonight.</p>
-          <div class="card-meta">
-            <span>✨ Astrophysics</span>
-            <span>🔭 Space science</span>
-          </div>
-          <span class="card-cta">Start course →</span>
-        </div>
-      </a>
+<!-- COURSES -->
+<div class="courses" id="courses">
 
-      <!-- Sheep -->
-      <a href="animals/animals-index.html" class="course-card reveal">
-        <div class="card-band grass"></div>
-        <div class="card-body">
-          <span class="card-badge grass">🐑 4 lessons</span>
-          <h3>Where Does a Sheep Come From?</h3>
-          <p>A wild mountain animal, a brilliant Victorian scientist, and 11,000 years of people choosing the fluffiest ones. The full story.</p>
-          <div class="card-meta">
-            <span>🌿 Evolution</span>
-            <span>🇳🇿 NZ connections</span>
-          </div>
-          <span class="card-cta">Start course →</span>
-        </div>
-      </a>
-
-    </div>
+  <!-- FOR JAMES -->
+  <div class="section-header reveal">
+    <span class="section-label">✦ For James</span>
+    <div class="section-rule"></div>
   </div>
-</section>
 
-<div class="section-divider"></div>
+  <div class="course-grid" style="margin-bottom: 3.5rem;">
 
-<!-- ═══ YEAR 7 — JAMES ═════════════════════════════════════════════ -->
-<section class="year-section" id="james">
-  <div class="wrap">
-    <div class="section-rule reveal">
-      <span class="section-label mono">Year 7 · James</span>
-    </div>
-    <h2 class="section-title reveal">James's Courses</h2>
-    <p class="section-desc reveal">Deeper dives for a curious Year 7 mind — more complexity, more history, more things to argue about.</p>
-
-    <div class="course-grid">
-
-      <!-- Geography -->
-      <a href="geography/index.html" class="course-card soon reveal">
-        <span class="soon-badge">Coming soon</span>
-        <div class="card-band chalk"></div>
-        <div class="card-body">
-          <span class="card-badge chalk">🗺️ 6 lessons + capstone</span>
-          <h3>Geography for the Curious</h3>
-          <p>Plate tectonics, rivers, climate, cities, population, global trade — and why Wellington is shaped exactly the way it is.</p>
-          <div class="card-meta">
-            <span>🌏 Physical &amp; human</span>
-            <span>🏔️ NZ focus</span>
-          </div>
-          <span class="card-cta">Start course →</span>
+    <!-- MATHS -->
+    <a class="card card-maths" href="maths/maths-index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Mathematics
+          <span class="card-age">Year 7 · Age 11+</span>
         </div>
-      </a>
+        <span class="card-icon">∑</span>
+        <h2 class="card-title">Maths for the Curious</h2>
+        <p class="card-hook">"The most beautiful ideas in mathematics — none of which are taught in school."</p>
+        <p class="card-desc">From the never-ending digits of π to the infinities that broke mathematicians' brains, six lessons on the ideas that make maths genuinely extraordinary. History, puzzles, and real-world connections throughout.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">π &amp; Circles</span>
+        <span class="tag">Prime Numbers</span>
+        <span class="tag">Fibonacci</span>
+        <span class="tag">Infinity</span>
+        <span class="tag">Probability</span>
+        <span class="tag">Cryptography</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">6 lessons</span>
+      </div>
+    </a>
 
-      <!-- Maths -->
-      <a href="maths/maths-index.html" class="course-card soon reveal">
-        <span class="soon-badge">Coming soon</span>
-        <div class="card-band teal"></div>
-        <div class="card-body">
-          <span class="card-badge teal">∞ 6 lessons</span>
-          <h3>Maths for the Curious</h3>
-          <p>Pi, primes, Fibonacci, infinity, probability, and secret codes — the parts of maths that are genuinely, surprisingly beautiful.</p>
-          <div class="card-meta">
-            <span>🔢 Pure maths</span>
-            <span>🧩 Problem solving</span>
-          </div>
-          <span class="card-cta">Start course →</span>
+    <!-- GEOGRAPHY -->
+    <a class="card card-geo" href="geography/index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Geography
+          <span class="card-age">Year 7 · Age 11+</span>
         </div>
-      </a>
+        <span class="card-icon">⊕</span>
+        <h2 class="card-title">Geography for the Curious</h2>
+        <p class="card-hook">"Why is the world the shape it's in — physically, politically, and humanly?"</p>
+        <p class="card-desc">Plate tectonics to global trade, urbanisation to climate. Six lessons on physical and human geography with strong New Zealand connections — finishing with a Wellington capstone investigation.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Plate Tectonics</span>
+        <span class="tag">Rivers</span>
+        <span class="tag">Climate</span>
+        <span class="tag">Urbanisation</span>
+        <span class="tag">Migration</span>
+        <span class="tag">Global Trade</span>
+        <span class="tag">+ Capstone</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">6 lessons + capstone</span>
+      </div>
+    </a>
 
-    </div>
   </div>
-</section>
 
-<div class="section-divider"></div>
-
-<!-- ═══ EVEN BETTER ════════════════════════════════════════════════ -->
-<section class="year-section even-better-bg" id="even-better" style="padding: 5rem 0;">
-  <div class="wrap">
-    <div class="section-rule reveal">
-      <span class="section-label mono">Even Better · both of you</span>
-    </div>
-    <h2 class="section-title reveal">Even Better Lessons</h2>
-    <p class="section-desc reveal">The lessons that don't fit neatly into a year group — because curiosity doesn't care about curriculum.</p>
-
-    <div class="course-grid">
-
-      <!-- Wellington -->
-      <a href="wellington/wellington-lesson-1.html" class="course-card welly reveal">
-        <div class="card-band dark"></div>
-        <div class="card-body">
-          <span class="card-badge dark">🚌 1 lesson</span>
-          <h3>Wellington on Wheels</h3>
-          <p>Why does Wellington look the way it does? Map the city's geography, history, and infrastructure — right from your doorstep.</p>
-          <div class="card-meta">
-            <span>🏙️ Wellington</span>
-            <span>🗺️ Geography</span>
-          </div>
-          <span class="card-cta">Open lesson →</span>
-        </div>
-      </a>
-
-    </div>
+  <!-- FOR CLEO -->
+  <div class="section-header reveal">
+    <span class="section-label">✦ For Cleo</span>
+    <div class="section-rule"></div>
   </div>
-</section>
 
+  <div class="course-grid" style="margin-bottom: 3.5rem;">
 
-<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+    <!-- CLEO -->
+    <a class="card card-cleo" href="cleo/cleo-index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Astrophysics
+          <span class="card-age">Year 4 · Age 7+</span>
+        </div>
+        <span class="card-icon">★</span>
+        <h2 class="card-title">Cleo's Big Bang Course</h2>
+        <p class="card-hook">"From nothing, everything — the 13.8 billion year story of how we got here."</p>
+        <p class="card-desc">Four lessons on the origin of the universe for a future astrophysicist. The Big Bang, the first stars, the evidence — and the extraordinary women scientists who found it. Creative activities throughout.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Before the Bang</span>
+        <span class="tag">First 3 Minutes</span>
+        <span class="tag">Lights On</span>
+        <span class="tag">How Do We Know?</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">4 lessons</span>
+      </div>
+    </a>
+
+    <!-- ANIMALS / EVOLUTION -->
+    <a class="card card-animals" href="animals/animals-index.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Evolution &amp; Biology
+          <span class="card-age">Year 4 · Age 7+</span>
+        </div>
+        <span class="card-icon">❦</span>
+        <h2 class="card-title">Where Does a Sheep Come From?</h2>
+        <p class="card-hook">"A wild mountain animal, a clever idea, and 11,000 years — the whole story of where a sheep comes from."</p>
+        <p class="card-desc">Four lessons on animal families, Darwin's big idea, and the journey from the wild mouflon to the woolly sheep — with the native, wild, domesticated and farmed animals of Aotearoa woven throughout. Built for a curious young learner.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Animal Families</span>
+        <span class="tag">Darwin</span>
+        <span class="tag">Evolution</span>
+        <span class="tag">The Sheep's Story</span>
+        <span class="tag">NZ Animals</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start course <span>→</span></span>
+        <span class="card-count">4 lessons</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FOR EXPERTS -->
+  <div class="section-header reveal">
+    <span class="section-label">✦ For Experts</span>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="course-grid">
+
+    <!-- WELLINGTON ON WHEELS -->
+    <a class="card card-wellington" href="wellington/wellington-lesson-1.html">
+      <div class="card-body">
+        <div class="card-eyebrow">
+          Urban History · Wellington
+          <span class="card-age">Any age</span>
+        </div>
+        <span class="card-icon">⬡</span>
+        <h2 class="card-title">Wellington on Wheels</h2>
+        <p class="card-hook">"From steam trams in 1878 to electric double deckers today — 140 years of getting around."</p>
+        <p class="card-desc">The wild, fascinating story of how Wellington moves. Steam trams, electric trams, trolleybuses, ferries, cable cars — and the decisions that shaped the city we live in now. A deep dive for the genuinely curious.</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">Trams</span>
+        <span class="tag">Trolleybuses</span>
+        <span class="tag">Urban Planning</span>
+        <span class="tag">Wellington History</span>
+      </div>
+      <div class="card-foot">
+        <span class="card-cta">Start lesson <span>→</span></span>
+        <span class="card-count">1 lesson</span>
+      </div>
+    </a>
+
+  </div>
+
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how reveal">
+  <div class="section-header">
+    <span class="section-label">How each lesson works</span>
+    <div class="section-rule"></div>
+  </div>
+  <div class="how-grid">
+    <div><div class="how-n">01</div><div class="how-title">The Big Idea</div><div class="how-desc">The concept explained clearly, with its history and why it matters.</div></div>
+    <div><div class="how-n">02</div><div class="how-title">Vocabulary</div><div class="how-desc">Tap-to-reveal definitions. Try to guess before opening each one.</div></div>
+    <div><div class="how-n">03</div><div class="how-title">Watch</div><div class="how-desc">Curated videos — the best explainers on YouTube for each topic.</div></div>
+    <div><div class="how-n">04</div><div class="how-title">Quiz</div><div class="how-desc">Five questions per lesson. Every answer has a full explanation.</div></div>
+    <div><div class="how-n">05</div><div class="how-title">Go Deeper</div><div class="how-desc">Challenge problems for when the quiz feels too easy.</div></div>
+    <div><div class="how-n">06</div><div class="how-title">Resources</div><div class="how-desc">Books, websites, and channels for further exploration.</div></div>
+  </div>
+</div>
+
+<!-- PRE-FOOTER -->
+<div class="pre-footer reveal">
+  <p><strong>No login. No account. No tracking.</strong> Open the files in a browser and learn. Progress is saved locally in your browser only.</p>
+</div>
+
+<!-- FOOTER — antomatic.design -->
 <footer>
-  <div class="brand">antomatic.design</div>
-  <p>Crafted with curiosity · Wellington, NZ</p>
-  <p>Made by a dad, for two kids who ask good questions.</p>
-  <span class="footer-tag mono">Curious Lessons — self-directed courses for young explorers</span>
+  <div class="footer-brand">
+    <span class="footer-wordmark">antomatic.design</span>
+    <div class="footer-pip"></div>
+    <span class="footer-sub">Crafted with curiosity · Wellington, NZ</span>
+  </div>
+  <div class="footer-right">
+    Built for curious minds<br>
+    Free to share &amp; remix
+  </div>
 </footer>
 
 <script>
-  // Reading progress bar
-  const bar = document.getElementById('progress-bar');
-  window.addEventListener('scroll', () => {
-    const h = document.documentElement;
-    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
-    bar.style.width = pct + '%';
+  document.querySelector('.hero-cta').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
   });
 
-  // Scroll reveal
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
+
 </body>
 </html>
